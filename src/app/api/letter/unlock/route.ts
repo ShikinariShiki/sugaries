@@ -85,10 +85,10 @@ export async function POST(request: NextRequest) {
     // SUCCESS: Return the content
     return NextResponse.json({
       content: letter.content,
-      musicUrl: letter.musicUrl,
-      imageUrl: letter.imageUrl,
-      letterColor: letter.letterColor,
-      letterFont: letter.letterFont,
+      musicUrl: letter.musicUrl || null,
+      imageUrl: letter.imageUrl || null,
+      letterColor: letter.letterColor || 'mint',
+      letterFont: letter.letterFont || 'handwriting',
     })
   } catch (error) {
     console.error('Unlock letter error:', error)
