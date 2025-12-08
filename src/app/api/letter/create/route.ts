@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
         imageUrl: imageUrl || null,
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',
+        isReply: false,
       },
       select: {
         id: true,

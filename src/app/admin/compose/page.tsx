@@ -10,6 +10,7 @@ import ColorPicker from '@/components/ColorPicker'
 import FontPicker from '@/components/FontPicker'
 import SugariesIcon from '@/components/SugariesIcon'
 import Link from 'next/link'
+import { songs } from '@/data/songs'
 
 export default function ComposePage() {
   const [step, setStep] = useState<'compose' | 'success'>('compose')
@@ -17,7 +18,8 @@ export default function ComposePage() {
   const [content, setContent] = useState('')
   const [pin, setPin] = useState('')
   const [musicUrl, setMusicUrl] = useState('')
-  const [musicSource, setMusicSource] = useState<'youtube' | 'local'>('youtube')
+  const [musicSource, setMusicSource] = useState<'youtube' | 'local' | 'preset'>('preset')
+  const [selectedSong, setSelectedSong] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -47,7 +49,7 @@ export default function ComposePage() {
           recipientName: recipientName.trim(),
           content: content.trim(),
           pin,
-          musicUrl: musicUrl.trim() || undefined,
+          musicUrl: (musicSource === 'preset' && selectedSong ? songs.find(s => s.id === selectedSong)?.src : musicUrl.trim()) || undefined,
           imageUrl: imageUrl.trim() || undefined,
           letterColor,
           letterFont,
@@ -169,29 +171,65 @@ export default function ComposePage() {
                   <div className="flex gap-3 mb-3">
                     <button
                       type="button"
-                      onClick={() => setMusicSource('youtube')}
+                      onClick={() => {
+                        setMusicSource('preset')
+                        setMusicUrl('')
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
+                        musicSource === 'preset'
+                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 text-gray-900 font-medium'
+                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      🎼 Preset
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMusicSource('youtube')
+                        setSelectedSong('')
+                      }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
                         musicSource === 'youtube'
                           ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 text-gray-900 font-medium'
                           : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}
                     >
-                      📺 YouTube Music
+                      📺 YouTube
                     </button>
                     <button
                       type="button"
-                      onClick={() => setMusicSource('local')}
+                      onClick={() => {
+                        setMusicSource('local')
+                        setSelectedSong('')
+                      }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
                         musicSource === 'local'
                           ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 text-gray-900 font-medium'
                           : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}
                     >
-                      💿 Local File
+                      💿 Local
                     </button>
                   </div>
 
-                  {musicSource === 'youtube' ? (
+                  {musicSource === 'preset' ? (
+                    <>
+                      <select
+                        value={selectedSong}
+                        onChange={(e) => setSelectedSong(e.target.value)}
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins bg-white"
+                        disabled={isLoading}
+                      >
+                        <option value="">-- Select a song --</option>
+                        {songs.map((song) => (
+                          <option key={song.id} value={song.id}>
+                            {song.title} - {song.artist}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  ) : musicSource === 'youtube' ? (
                     <>
                       <p className="text-sm text-gray-600 mb-2 font-poppins">
                         Paste YouTube Music or YouTube URL
