@@ -1,4 +1,4 @@
-# 🎨 Sugar Cubes - Component & Architecture Reference
+# 🎨 Sugaries - Component & Architecture Reference
 
 ## 📋 Table of Contents
 

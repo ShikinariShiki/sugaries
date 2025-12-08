@@ -1,4 +1,4 @@
-# 🚀 Setup Guide for Sugar Cubes
+# 🚀 Setup Guide for Sugaries
 
 ## Step-by-Step Setup
 

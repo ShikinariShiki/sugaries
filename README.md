@@ -1,8 +1,8 @@
-# 🍬 Sugar Cubes
+# 🍬 Sugaries
 
 > A whimsical digital stationery app for sending encrypted, highly aesthetic letters with a "soft paper" design system.
 
-![Sugar Cubes](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
+![Sugaries](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=flat-square&logo=tailwind-css)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-10-ff69b4?style=flat-square)
@@ -60,7 +60,7 @@
    ```
    Edit `.env` and add your PostgreSQL connection string:
    ```
-   DATABASE_URL="postgresql://user:password@localhost:5432/sugar_cubes"
+   DATABASE_URL="postgresql://user:password@localhost:5432/sugaries"
    ```
 
 4. **Initialize database**:

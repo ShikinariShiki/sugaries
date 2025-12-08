@@ -86,6 +86,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [showReplyModal, setShowReplyModal] = useState(false)
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const paperSoundRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
   
   // Get theme colors and font
@@ -100,6 +101,15 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
       })
     }
   }, [state.state, state.musicUrl])
+
+  // Play paper sound when envelope opens (transitioning to PIN_CHECK)
+  useEffect(() => {
+    if (state.state === 'PIN_CHECK' && paperSoundRef.current) {
+      paperSoundRef.current.play().catch(err => {
+        console.log('Paper sound autoplay prevented:', err)
+      })
+    }
+  }, [state.state])
 
   const handleNameSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -401,6 +411,13 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
           />
         )}
       </AnimatePresence>
+
+      {/* Hidden audio element for paper sound effect */}
+      <audio
+        ref={paperSoundRef}
+        src="https://assets.mixkit.co/active_storage/sfx/2205/2205-preview.mp3"
+        preload="auto"
+      />
     </div>
   )
 }

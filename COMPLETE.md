@@ -1,8 +1,8 @@
-# ✅ Sugar Cubes - Project Complete! 🎉
+# ✅ Sugaries - Project Complete! 🎉
 
 ## 🎨 What Was Built
 
-**Sugar Cubes** is a fully functional, production-ready digital stationery app for sending encrypted, aesthetic letters with a whimsical "soft paper" design system.
+**Sugaries** is a fully functional, production-ready digital stationery app for sending encrypted, aesthetic letters with a whimsical "soft paper" design system.
 
 ---
 
