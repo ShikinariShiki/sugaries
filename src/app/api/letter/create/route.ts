@@ -4,9 +4,9 @@ import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
-    const { recipientName, pin, content, musicUrl, imageUrl, letterColor, letterFont } = await request.json()
+    const { recipientName, pin, content, musicUrl, musicTitle, musicArtist, imageUrl, letterColor, letterFont } = await request.json()
 
-    console.log('Creating letter with:', { recipientName, pin, content, musicUrl, imageUrl, letterColor, letterFont })
+    console.log('Creating letter with:', { recipientName, pin, content, musicUrl, musicTitle, musicArtist, imageUrl, letterColor, letterFont })
 
     if (!recipientName || !pin || !content) {
       return NextResponse.json(
@@ -23,8 +23,11 @@ export async function POST(request: NextRequest) {
       data: {
         recipientName,
         pinHash,
+        pin, // Store plain PIN for admin viewing
         content,
         musicUrl: musicUrl || null,
+        musicTitle: musicTitle || null,
+        musicArtist: musicArtist || null,
         imageUrl: imageUrl || null,
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',

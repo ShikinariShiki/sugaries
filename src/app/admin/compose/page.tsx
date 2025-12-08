@@ -20,6 +20,8 @@ export default function ComposePage() {
   const [musicUrl, setMusicUrl] = useState('')
   const [musicSource, setMusicSource] = useState<'youtube' | 'local' | 'preset'>('preset')
   const [selectedSong, setSelectedSong] = useState('')
+  const [musicTitle, setMusicTitle] = useState('')
+  const [musicArtist, setMusicArtist] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -50,6 +52,8 @@ export default function ComposePage() {
           content: content.trim(),
           pin,
           musicUrl: (musicSource === 'preset' && selectedSong ? songs.find(s => s.id === selectedSong)?.src : musicUrl.trim()) || undefined,
+          musicTitle: musicSource === 'local' ? musicTitle.trim() || undefined : undefined,
+          musicArtist: musicSource === 'local' ? musicArtist.trim() || undefined : undefined,
           imageUrl: imageUrl.trim() || undefined,
           letterColor,
           letterFont,
@@ -83,6 +87,8 @@ export default function ComposePage() {
     setPin('')
     setMusicUrl('')
     setMusicSource('youtube')
+    setMusicTitle('')
+    setMusicArtist('')
     setImageUrl('')
     setImageFile(null)
     setLetterUrl('')
@@ -236,9 +242,37 @@ export default function ComposePage() {
                         value={musicUrl}
                         onChange={(e) => setMusicUrl(e.target.value)}
                         placeholder="https://example.com/audio.mp3"
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins mb-3"
                         disabled={isLoading}
                       />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 font-poppins">
+                            Song Title (optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={musicTitle}
+                            onChange={(e) => setMusicTitle(e.target.value)}
+                            placeholder="My Favorite Song"
+                            className="w-full px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs font-poppins"
+                            disabled={isLoading}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 font-poppins">
+                            Artist (optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={musicArtist}
+                            onChange={(e) => setMusicArtist(e.target.value)}
+                            placeholder="Artist Name"
+                            className="w-full px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs font-poppins"
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-poppins">
                         💡 Tip: Upload your audio file to Google Drive, Dropbox, or any hosting service and paste the direct link here.
                       </p>

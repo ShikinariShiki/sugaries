@@ -16,8 +16,14 @@ interface Letter {
   isReply?: boolean
   senderName?: string
   pinHash?: string
+  pin?: string
+  rating?: number
   imageUrl?: string
   musicUrl?: string
+  musicTitle?: string
+  musicArtist?: string
+  letterColor?: string
+  letterFont?: string
 }
 
 export default function DashboardPage() {
@@ -519,19 +525,19 @@ export default function DashboardPage() {
                 onClick={(e) => e.stopPropagation()}
                 className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
               >
-                <div className="sticky top-0 bg-white border-b border-gray-100 p-6 rounded-t-2xl z-10">
+                <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 p-6 rounded-t-2xl z-10">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-1 font-poppins">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-poppins">
                         📧 Letter Preview
                       </h2>
-                      <p className="text-gray-600 font-poppins text-sm">
+                      <p className="text-gray-600 dark:text-gray-400 font-poppins text-sm">
                         {activeTab === 'sent' ? 'To' : 'From'}: {previewLetter.senderName || previewLetter.recipientName}
                       </p>
                     </div>
                     <button
                       onClick={() => setPreviewLetter(null)}
-                      className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+                      className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -542,47 +548,53 @@ export default function DashboardPage() {
 
                 <div className="p-6">
                   {/* Letter Info */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                    <h3 className="font-poppins font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-4">
+                    <h3 className="font-poppins font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
                       ℹ️ Letter Details
                     </h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Recipient:</span>
-                        <span className="font-medium text-gray-900">{previewLetter.recipientName}</span>
+                        <span className="text-gray-600 dark:text-gray-400">Recipient:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{previewLetter.recipientName}</span>
                       </div>
                       {previewLetter.senderName && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Sender:</span>
-                          <span className="font-medium text-gray-900">{previewLetter.senderName}</span>
+                          <span className="text-gray-600 dark:text-gray-400">Sender:</span>
+                          <span className="font-medium text-gray-900 dark:text-white">{previewLetter.senderName}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Status:</span>
-                        <span className={`font-medium ${previewLetter.isOpened ? 'text-green-600' : 'text-orange-600'}`}>
+                        <span className="text-gray-600 dark:text-gray-400">Status:</span>
+                        <span className={`font-medium ${previewLetter.isOpened ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}`}>
                           {previewLetter.isOpened ? '✓ Opened' : '○ Not Opened'}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Protected:</span>
-                        <span className="font-medium text-gray-900">
+                        <span className="text-gray-600 dark:text-gray-400">Protected:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
                           {previewLetter.pinHash ? '🔒 Yes (PIN required)' : '🔓 No'}
                         </span>
                       </div>
+                      {previewLetter.pin && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 dark:text-gray-400">PIN Code:</span>
+                          <span className="font-mono font-bold text-pink-600 dark:text-pink-400">{previewLetter.pin}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Created:</span>
-                        <span className="font-medium text-gray-900">{formatDate(previewLetter.createdAt)}</span>
+                        <span className="text-gray-600 dark:text-gray-400">Created:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{formatDate(previewLetter.createdAt)}</span>
                       </div>
                       {previewLetter.musicUrl && (
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Music:</span>
-                          <span className="text-xs text-blue-600">🎵 Attached</span>
+                          <span className="text-gray-600 dark:text-gray-400">Music:</span>
+                          <span className="text-xs text-blue-600 dark:text-blue-400">🎵 Attached</span>
                         </div>
                       )}
                       {previewLetter.imageUrl && (
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Image:</span>
-                          <span className="text-xs text-blue-600">📷 Attached</span>
+                          <span className="text-gray-600 dark:text-gray-400">Image:</span>
+                          <span className="text-xs text-blue-600 dark:text-blue-400">📷 Attached</span>
                         </div>
                       )}
                     </div>
@@ -600,8 +612,8 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  <div className="bg-pink-50 rounded-xl p-6 mb-6">
-                    <p className="text-gray-800 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
+                  <div className="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-6 mb-6">
+                    <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
                       {previewLetter.content}
                     </p>
                   </div>

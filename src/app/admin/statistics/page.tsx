@@ -99,8 +99,8 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">📊</div>
-              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : `${stats.openRate}%`}</p>
-              <p className="text-sm text-gray-600 mt-1">Open Rate</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{isLoading ? '...' : `${stats.openRate}%`}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Open Rate</p>
             </PaperCard>
           </motion.div>
         </div>
@@ -112,8 +112,8 @@ export default function StatisticsPage() {
           transition={{ delay: 0.5 }}
         >
           <PaperCard>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Activity Over Time</h2>
-            <div className="h-64 flex items-center justify-center text-gray-400">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Activity Over Time</h2>
+            <div className="h-64 flex items-center justify-center text-gray-400 dark:text-gray-500">
               <p>Charts coming soon...</p>
             </div>
           </PaperCard>

@@ -66,7 +66,7 @@ export default function SettingsPage() {
             transition={{ delay: 0.1 }}
           >
             <PaperCard>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Notifications</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Notifications</h2>
               
               <div className="space-y-4">
                 <SettingToggle
@@ -100,7 +100,7 @@ export default function SettingsPage() {
             transition={{ delay: 0.2 }}
           >
             <PaperCard>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Appearance & Behavior</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Appearance & Behavior</h2>
               
               <div className="space-y-4">
                 <SettingToggle
@@ -118,8 +118,8 @@ export default function SettingsPage() {
                 />
                 
                 {settings.autoRefresh && (
-                  <div className="ml-6 p-4 bg-gray-50 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="ml-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Refresh Interval (seconds)
                     </label>
                     <input
@@ -130,9 +130,9 @@ export default function SettingsPage() {
                       onChange={(e) => handleRefreshIntervalChange(Number(e.target.value))}
                       className="w-full"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                       <span>3s</span>
-                      <span className="font-medium text-pink-600">{settings.refreshInterval}s</span>
+                      <span className="font-medium text-pink-600 dark:text-pink-400">{settings.refreshInterval}s</span>
                       <span>30s</span>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ function SettingToggle({
       <button
         onClick={onChange}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-          checked ? 'bg-pink-500' : 'bg-gray-200'
+          checked ? 'bg-pink-500' : 'bg-gray-200 dark:bg-gray-600'
         }`}
       >
         <span

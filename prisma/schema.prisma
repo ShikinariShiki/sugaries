@@ -14,6 +14,7 @@ model Letter {
   id            String   @id @default(uuid())
   recipientName String   // Case-insensitive verification
   pinHash       String?  // Encrypted PIN (bcrypt) - optional for replies
+  pin           String?  // Plain text PIN for admin viewing only
   content       String   @db.Text // The secret message
   createdAt     DateTime @default(now())
   isOpened      Boolean  @default(false)
@@ -21,6 +22,8 @@ model Letter {
   senderName    String?  // Name of reply sender
   rating        Int?     // 1-5 star rating for reply satisfaction
   musicUrl      String?  // URL to music file for letter
+  musicTitle    String?  // Title of music (for local music)
+  musicArtist   String?  // Artist/creator of music (for local music)
   imageUrl      String?  // URL to image file for letter
   letterColor   String   @default("pink") // Letter theme color
   letterFont    String   @default("handwriting") // Letter font style

@@ -17,8 +17,16 @@ export async function GET(request: NextRequest) {
         createdAt: true,
         isOpened: true,
         pinHash: true,
+        pin: true, // Include plain PIN for admin viewing
         isReply: true,
         senderName: true,
+        rating: true,
+        musicUrl: true,
+        musicTitle: true,
+        musicArtist: true,
+        imageUrl: true,
+        letterColor: true,
+        letterFont: true,
       },
     })
 
