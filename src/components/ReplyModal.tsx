@@ -19,6 +19,8 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
   const [showRating, setShowRating] = useState(false)
   const [rating, setRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imageUrl, setImageUrl] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,6 +34,28 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
     setIsLoading(true)
 
     try {
+      let uploadedImageUrl = imageUrl
+
+      // Upload image file if exists
+      if (imageFile) {
+        const formData = new FormData()
+        formData.append('file', imageFile)
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+        
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          uploadedImageUrl = uploadData.url
+        } else {
+          setError('Failed to upload image')
+          setIsLoading(false)
+          return
+        }
+      }
+
       const response = await fetch('/api/letter/reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,6 +63,8 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
           recipientName: 'Kevin',
           content: content.trim(),
           senderName: recipientName,
+          rating: rating > 0 ? rating : undefined,
+          imageUrl: uploadedImageUrl || undefined,
         }),
       })
 
@@ -128,6 +154,52 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
                   <p className="text-sm text-gray-500 mt-1 font-poppins">
                     {content.length} / 10,000 characters
                   </p>
+                </div>
+
+                {/* Image Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                    📷 Attach Image (optional):
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 hover:border-gray-400 rounded-xl p-6 text-center transition-all bg-gray-50">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          setImageFile(file)
+                          setImageUrl(URL.createObjectURL(file))
+                        }
+                      }}
+                      className="hidden"
+                      id="reply-image-upload"
+                      disabled={isLoading}
+                    />
+                    <label htmlFor="reply-image-upload" className="cursor-pointer">
+                      {imageUrl ? (
+                        <div className="relative">
+                          <img src={imageUrl} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setImageFile(null)
+                              setImageUrl('')
+                            }}
+                            className="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full hover:bg-red-600 transition-colors"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="py-4">
+                          <p className="text-gray-600 font-poppins mb-2">Click to upload image</p>
+                          <p className="text-xs text-gray-400 font-poppins">PNG, JPG up to 5MB</p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
                 </div>
 
                 {error && (

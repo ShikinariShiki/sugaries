@@ -14,11 +14,29 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: 'New letter from John opened', time: '5 min ago', unread: true },
-    { id: 2, message: 'You received a reply from Sarah', time: '1 hour ago', unread: true },
-    { id: 3, message: 'Letter to Mike was delivered', time: '3 hours ago', unread: false },
-  ])
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  // Fetch notifications from API
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('/api/notifications')
+        const data = await response.json()
+        if (response.ok) {
+          setNotifications(data.notifications || [])
+          setUnreadCount(data.unreadCount || 0)
+        }
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error)
+      }
+    }
+
+    fetchNotifications()
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 lg:px-6 py-4">
@@ -68,7 +86,7 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
               className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors relative"
             >
               <span className="text-lg">🔔</span>
-              {notifications.some(n => n.unread) && (
+              {unreadCount > 0 && (
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               )}
             </motion.button>

@@ -44,6 +44,28 @@ export default function ComposePage() {
     setIsLoading(true)
 
     try {
+      let uploadedImageUrl = imageUrl
+
+      // Upload image file if exists
+      if (imageFile) {
+        const formData = new FormData()
+        formData.append('file', imageFile)
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+        
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          uploadedImageUrl = uploadData.url
+        } else {
+          setError('Failed to upload image')
+          setIsLoading(false)
+          return
+        }
+      }
+
       const response = await fetch('/api/letter/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,7 +76,7 @@ export default function ComposePage() {
           musicUrl: (musicSource === 'preset' && selectedSong ? songs.find(s => s.id === selectedSong)?.src : musicUrl.trim()) || undefined,
           musicTitle: musicSource === 'local' ? musicTitle.trim() || undefined : undefined,
           musicArtist: musicSource === 'local' ? musicArtist.trim() || undefined : undefined,
-          imageUrl: imageUrl.trim() || undefined,
+          imageUrl: uploadedImageUrl?.trim() || undefined,
           letterColor,
           letterFont,
         }),
