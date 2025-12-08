@@ -17,6 +17,8 @@ interface Letter {
   isReply?: boolean
   senderName?: string
   pinHash?: string
+  imageUrl?: string
+  musicUrl?: string
 }
 
 export default function DashboardPage() {
@@ -484,8 +486,32 @@ export default function DashboardPage() {
                         <span className="text-gray-600">Created:</span>
                         <span className="font-medium text-gray-900">{formatDate(previewLetter.createdAt)}</span>
                       </div>
+                      {previewLetter.musicUrl && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">Music:</span>
+                          <span className="text-xs text-blue-600">🎵 Attached</span>
+                        </div>
+                      )}
+                      {previewLetter.imageUrl && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">Image:</span>
+                          <span className="text-xs text-blue-600">📷 Attached</span>
+                        </div>
+                      )}
                     </div>
                   </div>
+
+                  {/* Image Preview */}
+                  {previewLetter.imageUrl && (
+                    <div className="mb-4 rounded-xl overflow-hidden shadow-lg">
+                      <img 
+                        src={previewLetter.imageUrl} 
+                        alt="Letter attachment" 
+                        className="w-full h-auto object-contain"
+                        style={{ maxHeight: '300px' }}
+                      />
+                    </div>
+                  )}
 
                   <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 mb-6">
                     <p className="text-gray-800 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
