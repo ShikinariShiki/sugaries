@@ -56,8 +56,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       />
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-[240px]">
-        {/* Top Bar */}
+      <div className="flex-1 lg:ml-[240px] bg-gray-50 dark:bg-gray-900">{/* Top Bar */}
         <TopBar 
           adminName="Admin"
           isDark={isDark}

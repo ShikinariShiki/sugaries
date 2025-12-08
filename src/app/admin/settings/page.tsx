@@ -54,8 +54,8 @@ export default function SettingsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-          <p className="text-gray-600">Manage your application preferences</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Settings</h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage your application preferences</p>
         </motion.div>
 
         <div className="grid gap-6">
@@ -174,10 +174,10 @@ function SettingToggle({
   onChange: () => void
 }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700 last:border-0">
       <div className="flex-1">
-        <h3 className="font-medium text-gray-900">{label}</h3>
-        <p className="text-sm text-gray-500">{description}</p>
+        <h3 className="font-medium text-gray-900 dark:text-white">{label}</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>
       </div>
       <button
         onClick={onChange}

@@ -12,15 +12,21 @@ interface TopBarProps {
 
 export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = false, onMobileMenuToggle }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: 'New letter from John opened', time: '5 min ago', unread: true },
+    { id: 2, message: 'You received a reply from Sarah', time: '1 hour ago', unread: true },
+    { id: 3, message: 'Letter to Mike was delivered', time: '3 hours ago', unread: false },
+  ])
 
   return (
-    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
+    <div className="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 lg:px-6 py-4">
       <div className="flex items-center justify-between gap-4">
         {/* Hamburger Menu (Mobile) */}
         <button
           onClick={onMobileMenuToggle}
-          className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -35,7 +41,7 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
               placeholder="Search letters..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-sm"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
           </div>
@@ -48,20 +54,91 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onThemeToggle}
-            className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
           >
             <span className="text-lg">{isDark ? '☀️' : '🌙'}</span>
           </motion.button>
 
           {/* Notifications */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors relative"
-          >
-            <span className="text-lg">🔔</span>
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </motion.button>
+          <div className="relative">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors relative"
+            >
+              <span className="text-lg">🔔</span>
+              {notifications.some(n => n.unread) && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              )}
+            </motion.button>
+
+            {/* Notifications Dropdown */}
+            <AnimatePresence>
+              {showNotifications && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowNotifications(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                  >
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
+                        <button 
+                          onClick={() => setNotifications(notifications.map(n => ({ ...n, unread: false })))}
+                          className="text-xs text-pink-500 hover:text-pink-600"
+                        >
+                          Mark all read
+                        </button>
+                      </div>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <div className="text-4xl mb-2">🔕</div>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm">No notifications</p>
+                        </div>
+                      ) : (
+                        notifications.map((notif) => (
+                          <div
+                            key={notif.id}
+                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${
+                              notif.unread ? 'bg-pink-50 dark:bg-pink-900/10' : ''
+                            }`}
+                            onClick={() => {
+                              setNotifications(notifications.map(n => 
+                                n.id === notif.id ? { ...n, unread: false } : n
+                              ))
+                            }}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="text-2xl">📬</div>
+                              <div className="flex-1">
+                                <p className="text-sm text-gray-900 dark:text-white font-medium">{notif.message}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notif.time}</p>
+                              </div>
+                              {notif.unread && (
+                                <div className="w-2 h-2 bg-pink-500 rounded-full mt-1"></div>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Profile Dropdown */}
           <div className="relative">
@@ -69,12 +146,12 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-sm">
                 {adminName.charAt(0).toUpperCase()}
               </div>
-              <span className="font-medium text-sm text-gray-700">{adminName}</span>
+              <span className="font-medium text-sm text-gray-700 dark:text-gray-300">{adminName}</span>
               <span className="text-gray-400 text-xs">▼</span>
             </motion.button>
 
@@ -93,32 +170,32 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                    className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
                   >
                     <a
                       href="/admin/profile"
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <span className="text-lg">👤</span>
-                      <span className="text-sm font-medium text-gray-700">Profile Settings</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Profile Settings</span>
                     </a>
                     <a
-                      href="/admin/dashboard"
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                      href="/admin/settings"
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <span className="text-lg">⚙️</span>
-                      <span className="text-sm font-medium text-gray-700">Settings</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Settings</span>
                     </a>
-                    <div className="border-t border-gray-200 my-2" />
+                    <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                     <button
                       onClick={async () => {
                         await fetch('/api/auth/logout', { method: 'POST' })
                         window.location.href = '/admin/login'
                       }}
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors w-full text-left"
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors w-full text-left"
                     >
                       <span className="text-lg">🚪</span>
-                      <span className="text-sm font-medium text-red-600">Logout</span>
+                      <span className="text-sm font-medium text-red-600 dark:text-red-400">Logout</span>
                     </button>
                   </motion.div>
                 </>

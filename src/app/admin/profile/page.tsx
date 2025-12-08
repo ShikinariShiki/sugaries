@@ -31,8 +31,8 @@ export default function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Settings</h1>
-          <p className="text-gray-600">Manage your account information and preferences</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Profile Settings</h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage your account information and preferences</p>
         </motion.div>
 
         {/* Profile Information */}

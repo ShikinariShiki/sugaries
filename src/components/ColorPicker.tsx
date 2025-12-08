@@ -14,6 +14,12 @@ const colors = [
   { name: 'Peach', value: 'peach', gradient: 'from-orange-100 via-orange-50 to-white' },
   { name: 'Sky', value: 'sky', gradient: 'from-blue-100 via-blue-50 to-white' },
   { name: 'Cream', value: 'cream', gradient: 'from-amber-50 via-yellow-50 to-white' },
+  { name: 'Rose Gold', value: 'rose-gold', gradient: 'from-pink-200 via-orange-100 to-yellow-50' },
+  { name: 'Ocean', value: 'ocean', gradient: 'from-cyan-200 via-blue-100 to-indigo-50' },
+  { name: 'Sunset', value: 'sunset', gradient: 'from-orange-200 via-pink-100 to-purple-50' },
+  { name: 'Forest', value: 'forest', gradient: 'from-emerald-200 via-green-100 to-teal-50' },
+  { name: 'Cherry', value: 'cherry', gradient: 'from-red-200 via-pink-100 to-rose-50' },
+  { name: 'Galaxy', value: 'galaxy', gradient: 'from-purple-300 via-indigo-200 to-blue-100' },
 ]
 
 export default function ColorPicker({ selectedColor, onChange }: ColorPickerProps) {
@@ -22,7 +28,7 @@ export default function ColorPicker({ selectedColor, onChange }: ColorPickerProp
       <label className="block text-sm font-medium text-gray-700">
         Letter Color Theme
       </label>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
         {colors.map((color) => (
           <motion.button
             key={color.value}

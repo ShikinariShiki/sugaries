@@ -173,8 +173,8 @@ export default function DashboardPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-              <p className="text-gray-600">Manage your letters</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
+              <p className="text-gray-600 dark:text-gray-400">Manage your letters</p>
             </div>
             <div className="flex gap-2">
               {selectedLetters.size > 0 && (
@@ -203,42 +203,42 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">📤</span>
-                <span className="text-[10px] md:text-sm text-gray-500 font-poppins">Sent</span>
+                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400 font-poppins">Sent</span>
               </div>
-              <p className="text-xl md:text-3xl font-bold text-gray-900 font-poppins">{totalSent}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 font-poppins mt-1">{openedSent} opened</p>
+              <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent}</p>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-1">{openedSent} opened</p>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">📥</span>
-                <span className="text-[10px] md:text-sm text-gray-500 font-poppins">Received</span>
+                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400 font-poppins">Received</span>
               </div>
-              <p className="text-xl md:text-3xl font-bold text-gray-900 font-poppins">{totalReceived}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 font-poppins mt-1">{unreadReceived} unread</p>
+              <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalReceived}</p>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-1">{unreadReceived} unread</p>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">💌</span>
-                <span className="text-[10px] md:text-sm text-gray-500 font-poppins">Total</span>
+                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400 font-poppins">Total</span>
               </div>
-              <p className="text-xl md:text-3xl font-bold text-gray-900 font-poppins">{totalSent + totalReceived}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 font-poppins mt-1">All letters</p>
+              <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent + totalReceived}</p>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-1">All letters</p>
             </motion.div>
 
             <motion.div
@@ -259,13 +259,13 @@ export default function DashboardPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 bg-white rounded-xl p-1 shadow-sm overflow-x-auto mb-4">
+          <div className="flex gap-2 bg-white dark:bg-gray-800 rounded-xl p-1 shadow-sm overflow-x-auto mb-4">
             <button
               onClick={() => setActiveTab('sent')}
               className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
                 activeTab === 'sent'
                   ? 'bg-pink-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               <span className="hidden md:inline">📤 Sent Letters</span>
@@ -277,7 +277,7 @@ export default function DashboardPage() {
               className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
                 activeTab === 'received'
                   ? 'bg-pink-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               <span className="hidden md:inline">📥 Received</span>
@@ -288,7 +288,7 @@ export default function DashboardPage() {
 
           {/* Batch Actions Bar */}
           {(activeTab === 'sent' ? sentLetters : receivedLetters).length > 0 && (
-            <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm mb-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                   onChange={toggleSelectAll}
                   className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer"
                 />
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {selectedLetters.size > 0 ? `${selectedLetters.size} selected` : 'Select All'}
                 </span>
               </label>
@@ -314,10 +314,10 @@ export default function DashboardPage() {
 
         {/* Letters List */}
         {isLoading ? (
-          <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent mb-4"></div>
-              <p className="text-gray-500 font-poppins">Loading letters...</p>
+              <p className="text-gray-500 dark:text-gray-400 font-poppins">Loading letters...</p>
             </div>
           </div>
         ) : (
@@ -326,11 +326,11 @@ export default function DashboardPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-2xl shadow-sm p-8 md:p-12 text-center"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 text-center"
               >
                 <div className="text-6xl mb-4">✉️</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 font-poppins">No letters sent yet</h3>
-                <p className="text-gray-500 mb-6 font-poppins">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">No letters sent yet</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-6 font-poppins">
                   Start by composing your first letter!
                 </p>
                 <Link href="/admin/compose">
@@ -345,11 +345,11 @@ export default function DashboardPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-2xl shadow-sm p-8 md:p-12 text-center"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 text-center"
               >
                 <div className="text-6xl mb-4">📭</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 font-poppins">No letters received yet</h3>
-                <p className="text-gray-500 font-poppins">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">No letters received yet</h3>
+                <p className="text-gray-500 dark:text-gray-400 font-poppins">
                   Letters sent to you will appear here.
                 </p>
               </motion.div>
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
+                  className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
                 >
                   <div className="flex items-start gap-3">
                     {/* Checkbox */}
@@ -383,7 +383,7 @@ export default function DashboardPage() {
                                 {letter.recipientName.charAt(0).toUpperCase()}
                               </div>
                               <div className="min-w-0">
-                                <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
+                                <h3 className="text-sm md:text-lg font-bold text-gray-900 dark:text-white font-poppins truncate">
                                   {letter.recipientName}
                                 </h3>
                                 <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
@@ -437,7 +437,7 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
+                  className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
                 >
                   <div className="flex items-start gap-3">
                     {/* Checkbox */}
@@ -458,7 +458,7 @@ export default function DashboardPage() {
                                 {(letter.senderName || letter.recipientName).charAt(0).toUpperCase()}
                               </div>
                               <div className="min-w-0">
-                                <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
+                                <h3 className="text-sm md:text-lg font-bold text-gray-900 dark:text-white font-poppins truncate">
                                   {letter.senderName || letter.recipientName}
                                 </h3>
                                 <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
