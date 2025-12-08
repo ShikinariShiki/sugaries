@@ -1,10 +1,46 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import AdminLayout from '@/components/admin/AdminLayout'
 import { PaperCard } from '@/components/ui/PaperCard'
 
 export default function StatisticsPage() {
+  const [stats, setStats] = useState({
+    totalSent: 0,
+    opened: 0,
+    replies: 0,
+    openRate: 0
+  })
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/letter/list')
+      const data = await response.json()
+      
+      if (response.ok) {
+        const sent = data.sent || []
+        const received = data.received || []
+        
+        setStats({
+          totalSent: sent.length,
+          opened: sent.filter((l: any) => l.isOpened).length,
+          replies: received.length,
+          openRate: sent.length > 0 ? Math.round((sent.filter((l: any) => l.isOpened).length / sent.length) * 100) : 0
+        })
+      }
+    } catch (error) {
+      console.error('Failed to fetch stats:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <AdminLayout>
       <div className="max-w-6xl">
@@ -27,7 +63,7 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">📨</div>
-              <p className="text-3xl font-bold text-gray-900">0</p>
+              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : stats.totalSent}</p>
               <p className="text-sm text-gray-600 mt-1">Total Sent</p>
             </PaperCard>
           </motion.div>
@@ -39,7 +75,7 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">✅</div>
-              <p className="text-3xl font-bold text-gray-900">0</p>
+              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : stats.opened}</p>
               <p className="text-sm text-gray-600 mt-1">Opened</p>
             </PaperCard>
           </motion.div>
@@ -51,7 +87,7 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">💌</div>
-              <p className="text-3xl font-bold text-gray-900">0</p>
+              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : stats.replies}</p>
               <p className="text-sm text-gray-600 mt-1">Replies</p>
             </PaperCard>
           </motion.div>
@@ -63,7 +99,7 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">📊</div>
-              <p className="text-3xl font-bold text-gray-900">0%</p>
+              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : `${stats.openRate}%`}</p>
               <p className="text-sm text-gray-600 mt-1">Open Rate</p>
             </PaperCard>
           </motion.div>
