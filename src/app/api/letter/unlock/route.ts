@@ -35,6 +35,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if letter has PIN protection
+    if (!letter.pinHash) {
+      return NextResponse.json(
+        { error: 'This letter is not PIN protected' },
+        { status: 400 }
+      )
+    }
+
     // Verify PIN using bcrypt
     const pinMatch = await bcrypt.compare(pin, letter.pinHash)
 
