@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
         imageUrl: true,
         letterColor: true,
         letterFont: true,
+        recipientName: true,
       },
     })
 
@@ -59,6 +60,24 @@ export async function POST(request: NextRequest) {
         where: { id: letterId },
         data: { isOpened: true },
       })
+
+      // Send email notification
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/notify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'opened',
+            letterData: {
+              letterId: letter.id,
+              recipientName: letter.recipientName,
+            },
+          }),
+        })
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError)
+        // Don't fail the request if email fails
+      }
     }
 
     console.log('Unlocking letter:', { id: letterId, musicUrl: letter.musicUrl, imageUrl: letter.imageUrl, letterColor: letter.letterColor, letterFont: letter.letterFont })

@@ -297,35 +297,17 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-[90%]"
+                className="fixed top-2 left-2 z-50 max-w-xs w-auto"
               >
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-2xl p-2 md:p-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 md:w-8 md:h-8 bg-white/20 rounded-full flex items-center justify-center text-xs md:text-base">
                       🔑
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">Admin View</h3>
-                      <p className="text-xs text-white/80">PIN verification bypassed</p>
+                      <h3 className="font-bold text-xs md:text-sm">Admin View</h3>
+                      <p className="text-[10px] md:text-xs text-white/80">PIN bypassed</p>
                     </div>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3 space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-white/70">To:</span>
-                      <span className="font-semibold">{state.recipientName || 'Loading...'}</span>
-                    </div>
-                    {state.senderName && (
-                      <div className="flex justify-between">
-                        <span className="text-white/70">From:</span>
-                        <span className="font-semibold">{state.senderName}</span>
-                      </div>
-                    )}
-                    {state.pinHash && (
-                      <div className="flex justify-between">
-                        <span className="text-white/70">Protection:</span>
-                        <span className="font-semibold">🔒 PIN Protected</span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </motion.div>
@@ -337,7 +319,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               animate={{ opacity: 1, rotateX: 0 }}
               exit={{ opacity: 0, rotateX: 90 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="max-w-2xl w-full mt-24 md:mt-0 px-4"
+              className="max-w-2xl w-full px-4"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <PaperCard className={`shadow-stack-floating bg-gradient-to-br ${themeColors.gradient}`} animate={false}>
@@ -364,7 +346,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                       <img 
                         src={state.imageUrl} 
                         alt="Letter attachment" 
-                        className="w-full h-auto max-h-96 object-cover"
+                        className="w-full h-auto max-h-[50vh] md:max-h-96 object-contain"
                         onError={(e) => {
                           console.error('Image failed to load:', state.imageUrl)
                           e.currentTarget.style.display = 'none'

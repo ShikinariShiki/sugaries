@@ -122,28 +122,28 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center justify-between mb-6 gap-3">
+            <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
               <Link href="/">
-                <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
+                <button className="p-2 hover:bg-white/50 rounded-lg transition-colors flex-shrink-0">
                   <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                   </svg>
                 </button>
               </Link>
-              <div className="w-10 h-10 md:w-12 md:h-12">
+              <div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0">
                 <SugariesIcon className="w-full h-full" />
               </div>
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-poppins">
+              <div className="min-w-0">
+                <h1 className="text-2xl md:text-4xl font-bold text-gray-900 font-poppins truncate">
                   Dashboard
                 </h1>
-                <p className="text-gray-600 font-poppins text-sm md:text-base">
+                <p className="text-gray-600 font-poppins text-xs md:text-base truncate">
                   Manage your letters
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
               <Link href="/admin/compose">
                 <SquishButton variant="primary" size="lg">
                   <span className="hidden md:inline">✉️ Compose New</span>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 md:px-6 md:py-3 bg-white text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all border-2 border-gray-200 text-sm md:text-base"
+                className="px-3 py-2 md:px-6 md:py-3 bg-white text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all border-2 border-gray-200 text-xs md:text-base whitespace-nowrap"
               >
                 Logout
               </button>
@@ -160,71 +160,71 @@ export default function DashboardPage() {
           </div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">📤</span>
-                <span className="text-xs md:text-sm text-gray-500 font-poppins">Sent</span>
+                <span className="text-xl md:text-2xl">📤</span>
+                <span className="text-[10px] md:text-sm text-gray-500 font-poppins">Sent</span>
               </div>
-              <p className="text-2xl md:text-3xl font-bold text-gray-900 font-poppins">{totalSent}</p>
-              <p className="text-xs text-gray-500 font-poppins mt-1">{openedSent} opened</p>
+              <p className="text-xl md:text-3xl font-bold text-gray-900 font-poppins">{totalSent}</p>
+              <p className="text-[10px] md:text-xs text-gray-500 font-poppins mt-1">{openedSent} opened</p>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">📥</span>
-                <span className="text-xs md:text-sm text-gray-500 font-poppins">Received</span>
+                <span className="text-xl md:text-2xl">📥</span>
+                <span className="text-[10px] md:text-sm text-gray-500 font-poppins">Received</span>
               </div>
-              <p className="text-2xl md:text-3xl font-bold text-gray-900 font-poppins">{totalReceived}</p>
-              <p className="text-xs text-gray-500 font-poppins mt-1">{unreadReceived} unread</p>
+              <p className="text-xl md:text-3xl font-bold text-gray-900 font-poppins">{totalReceived}</p>
+              <p className="text-[10px] md:text-xs text-gray-500 font-poppins mt-1">{unreadReceived} unread</p>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">💌</span>
-                <span className="text-xs md:text-sm text-gray-500 font-poppins">Total</span>
+                <span className="text-xl md:text-2xl">💌</span>
+                <span className="text-[10px] md:text-sm text-gray-500 font-poppins">Total</span>
               </div>
-              <p className="text-2xl md:text-3xl font-bold text-gray-900 font-poppins">{totalSent + totalReceived}</p>
-              <p className="text-xs text-gray-500 font-poppins mt-1">All letters</p>
+              <p className="text-xl md:text-3xl font-bold text-gray-900 font-poppins">{totalSent + totalReceived}</p>
+              <p className="text-[10px] md:text-xs text-gray-500 font-poppins mt-1">All letters</p>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white"
+              className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">✨</span>
-                <span className="text-xs md:text-sm font-poppins opacity-90">Open Rate</span>
+                <span className="text-xl md:text-2xl">✨</span>
+                <span className="text-[10px] md:text-sm font-poppins opacity-90">Open Rate</span>
               </div>
-              <p className="text-2xl md:text-3xl font-bold font-poppins">
+              <p className="text-xl md:text-3xl font-bold font-poppins">
                 {totalSent > 0 ? Math.round((openedSent / totalSent) * 100) : 0}%
               </p>
-              <p className="text-xs opacity-90 font-poppins mt-1">Success rate</p>
+              <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">Success rate</p>
             </motion.div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 bg-white rounded-xl p-1 shadow-sm">
+          <div className="flex gap-2 bg-white rounded-xl p-1 shadow-sm overflow-x-auto">
             <button
               onClick={() => setActiveTab('sent')}
-              className={`flex-1 px-4 md:px-6 py-3 rounded-lg font-medium transition-all font-poppins text-sm md:text-base ${
+              className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
                 activeTab === 'sent'
                   ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -236,7 +236,7 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={() => setActiveTab('received')}
-              className={`flex-1 px-4 md:px-6 py-3 rounded-lg font-medium transition-all font-poppins text-sm md:text-base ${
+              className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
                 activeTab === 'received'
                   ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -299,53 +299,53 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all p-4 md:p-6 group"
+                  className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
                         <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
                             {letter.recipientName.charAt(0).toUpperCase()}
                           </div>
-                          <div>
-                            <h3 className="text-base md:text-lg font-bold text-gray-900 font-poppins">
+                          <div className="min-w-0">
+                            <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
                               {letter.recipientName}
                             </h3>
-                            <p className="text-xs text-gray-500 font-poppins">
+                            <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
                               {formatDate(letter.createdAt)}
                             </p>
                           </div>
                         </div>
                         {letter.isOpened ? (
-                          <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-poppins font-medium">
+                          <span className="px-2 py-1 md:px-3 bg-green-100 text-green-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
                             ✓ Opened
                           </span>
                         ) : (
-                          <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-poppins font-medium">
+                          <span className="px-2 py-1 md:px-3 bg-yellow-100 text-yellow-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
                             ⏳ Pending
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-600 text-sm mb-2 font-poppins line-clamp-2">
+                      <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
                         {letter.content.substring(0, 120)}
                         {letter.content.length > 120 ? '...' : ''}
                       </p>
                       {letter.pinHash && (
                         <div className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md">
-                          <span className="text-xs text-gray-600 font-poppins">🔑 PIN Protected</span>
+                          <span className="text-[10px] md:text-xs text-gray-600 font-poppins">🔑 PIN Protected</span>
                         </div>
                       )}
                     </div>
-                    <div className="flex md:flex-col gap-2">
+                    <div className="flex gap-2 w-full md:w-auto md:flex-col">
                       <button 
                         onClick={() => setPreviewLetter(letter)}
-                        className="flex-1 md:flex-none px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-sm transition-colors"
+                        className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
                       >
                         👁️ Preview
                       </button>
-                      <Link href={`/letter/${letter.id}`} className="flex-1 md:flex-none">
-                        <button className="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins text-sm transition-all">
+                      <Link href={`/letter/${letter.id}?admin=true`} className="flex-1 md:flex-none">
+                        <button className="w-full px-3 md:px-4 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins text-xs md:text-sm transition-all whitespace-nowrap">
                           View →
                         </button>
                       </Link>
@@ -361,48 +361,48 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all p-4 md:p-6 group"
+                  className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
                         <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
                             {(letter.senderName || letter.recipientName).charAt(0).toUpperCase()}
                           </div>
-                          <div>
-                            <h3 className="text-base md:text-lg font-bold text-gray-900 font-poppins">
+                          <div className="min-w-0">
+                            <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
                               {letter.senderName || letter.recipientName}
                             </h3>
-                            <p className="text-xs text-gray-500 font-poppins">
+                            <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
                               {formatDate(letter.createdAt)}
                             </p>
                           </div>
                         </div>
                         {letter.isOpened ? (
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-poppins font-medium">
+                          <span className="px-2 py-1 md:px-3 bg-blue-100 text-blue-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
                             ✓ Read
                           </span>
                         ) : (
-                          <span className="px-3 py-1 bg-pink-100 text-pink-700 text-xs rounded-full font-poppins font-medium animate-pulse">
+                          <span className="px-2 py-1 md:px-3 bg-pink-100 text-pink-700 text-[10px] md:text-xs rounded-full font-poppins font-medium animate-pulse whitespace-nowrap">
                             ✉️ New
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-600 text-sm mb-2 font-poppins line-clamp-2">
+                      <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
                         {letter.content.substring(0, 120)}
                         {letter.content.length > 120 ? '...' : ''}
                       </p>
                     </div>
-                    <div className="flex md:flex-col gap-2">
+                    <div className="flex gap-2 w-full md:w-auto md:flex-col">
                       <button 
                         onClick={() => setPreviewLetter(letter)}
-                        className="flex-1 md:flex-none px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-sm transition-colors"
+                        className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
                       >
                         👁️ Preview
                       </button>
-                      <Link href={`/letter/${letter.id}`} className="flex-1 md:flex-none">
-                        <button className="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-poppins text-sm transition-all">
+                      <Link href={`/letter/${letter.id}?admin=true`} className="flex-1 md:flex-none">
+                        <button className="w-full px-3 md:px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-poppins text-xs md:text-sm transition-all whitespace-nowrap">
                           Open →
                         </button>
                       </Link>
