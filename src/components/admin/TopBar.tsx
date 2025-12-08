@@ -7,15 +7,26 @@ interface TopBarProps {
   adminName?: string
   onThemeToggle?: () => void
   isDark?: boolean
+  onMobileMenuToggle?: () => void
 }
 
-export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = false }: TopBarProps) {
+export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = false, onMobileMenuToggle }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-4">
+    <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
       <div className="flex items-center justify-between gap-4">
+        {/* Hamburger Menu (Mobile) */}
+        <button
+          onClick={onMobileMenuToggle}
+          className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
         {/* Search Bar */}
         <div className="flex-1 max-w-xl">
           <div className="relative">
