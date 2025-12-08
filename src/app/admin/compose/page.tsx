@@ -8,7 +8,7 @@ import { PINInput } from '@/components/ui/PINInput'
 import { ImageEditor } from '@/components/ImageEditor'
 import ColorPicker from '@/components/ColorPicker'
 import FontPicker from '@/components/FontPicker'
-import SugariesIcon from '@/components/SugariesIcon'
+import AdminLayout from '@/components/admin/AdminLayout'
 import Link from 'next/link'
 import { songs } from '@/data/songs'
 
@@ -92,52 +92,35 @@ export default function ComposePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4 md:p-8">
-      {/* Home Button */}
-      <div className="absolute top-4 left-4">
-        <Link href="/">
-          <button className="p-2 hover:bg-white/50 rounded-lg transition-colors">
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-        </Link>
-      </div>
-
-      <AnimatePresence mode="wait">
-        {step === 'compose' && (
-          <motion.div
-            key="compose"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="w-full max-w-2xl"
-          >
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-              <div className="mb-8 text-center">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <SugariesIcon className="w-12 h-12" />
-                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-poppins">
-                    Compose a Letter
-                  </h1>
-                </div>
-                <p className="text-gray-600 font-poppins">
-                  Send a secret, beautiful message ✨
-                </p>
+    <AdminLayout>
+      <div className="max-w-4xl mx-auto">
+        <AnimatePresence mode="wait">
+          {step === 'compose' && (
+            <motion.div
+              key="compose"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              {/* Page Header */}
+              <div className="mb-6">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Compose a Letter</h1>
+                <p className="text-gray-600">Send a secret, beautiful message ✨</p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Recipient Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
-                    To:
-                  </label>
-                  <input
-                    type="text"
-                    value={recipientName}
-                    onChange={(e) => setRecipientName(e.target.value)}
-                    placeholder="Recipient's name"
-                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
+              <PaperCard>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Recipient Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                      To:
+                    </label>
+                    <input
+                      type="text"
+                      value={recipientName}
+                      onChange={(e) => setRecipientName(e.target.value)}
+                      placeholder="Recipient's name"
+                      className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
                     disabled={isLoading}
                   />
                 </div>
@@ -417,29 +400,28 @@ export default function ComposePage() {
                   {isLoading ? 'Creating...' : '🎁 Create Letter'}
                 </button>
               </form>
-            </div>
-          </motion.div>
-        )}
+              </PaperCard>
+            </motion.div>
+          )}
 
-        {step === 'success' && (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="w-full max-w-2xl"
-          >
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-center"
-              >
+          {step === 'success' && (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+            >
+              <PaperCard>
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
                   className="text-6xl mb-4"
                 >
                   🎉
@@ -491,7 +473,7 @@ export default function ComposePage() {
                   </button>
                 </div>
               </motion.div>
-            </div>
+            </PaperCard>
           </motion.div>
         )}
       </AnimatePresence>
@@ -509,6 +491,7 @@ export default function ComposePage() {
           />
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </AdminLayout>
   )
 }

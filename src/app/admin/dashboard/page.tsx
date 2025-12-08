@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
-import SugariesIcon from '@/components/SugariesIcon'
+import AdminLayout from '@/components/admin/AdminLayout'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 interface Letter {
   id: string
@@ -22,7 +21,6 @@ interface Letter {
 }
 
 export default function DashboardPage() {
-  const router = useRouter()
   const [sentLetters, setSentLetters] = useState<Letter[]>([])
   const [receivedLetters, setReceivedLetters] = useState<Letter[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -31,15 +29,6 @@ export default function DashboardPage() {
   const [editingLetter, setEditingLetter] = useState<Letter | null>(null)
   const [editContent, setEditContent] = useState('')
   const [showDetailsModal, setShowDetailsModal] = useState(false)
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-      router.push('/admin/login')
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
 
   useEffect(() => {
     fetchLetters()
@@ -127,49 +116,29 @@ export default function DashboardPage() {
   const unreadReceived = receivedLetters.filter(l => !l.isOpened).length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6 gap-3">
-            <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
-              <Link href="/">
-                <button className="p-2 hover:bg-white/50 rounded-lg transition-colors flex-shrink-0">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                </button>
-              </Link>
-              <div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0">
-                <SugariesIcon className="w-full h-full" />
-              </div>
-              <div className="min-w-0">
-                <h1 className="text-2xl md:text-4xl font-bold text-gray-900 font-poppins truncate">
-                  Dashboard
-                </h1>
-                <p className="text-gray-600 font-poppins text-xs md:text-base truncate">
-                  Manage your letters
-                </p>
-              </div>
+    <AdminLayout>
+      <div className="max-w-7xl">
+        {/* Page Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+              <p className="text-gray-600">Manage your letters</p>
             </div>
-            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-              <Link href="/admin/compose">
-                <SquishButton variant="primary" size="lg">
-                  <span className="hidden md:inline">✉️ Compose New</span>
-                  <span className="md:hidden">✉️</span>
-                </SquishButton>
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="px-3 py-2 md:px-6 md:py-3 bg-white text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all border-2 border-gray-200 text-xs md:text-base whitespace-nowrap"
-              >
-                Logout
-              </button>
-            </div>
+            <Link href="/admin/compose">
+              <SquishButton variant="primary" size="lg">
+                ✉️ Compose New
+              </SquishButton>
+            </Link>
           </div>
+        </motion.div>
 
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -654,6 +623,6 @@ export default function DashboardPage() {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </AdminLayout>
   )
 }
