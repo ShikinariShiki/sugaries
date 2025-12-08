@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Letter {
+  id            String   @id @default(uuid())
+  recipientName String   // Case-insensitive verification
+  pinHash       String?  // Encrypted PIN (bcrypt) - optional for replies
+  content       String   @db.Text // The secret message
+  createdAt     DateTime @default(now())
+  isOpened      Boolean  @default(false)
+  isReply       Boolean  @default(false) // True if sent as reply
+  senderName    String?  // Name of reply sender
+  rating        Int?     // 1-5 star rating for reply satisfaction
+  musicUrl      String?  // URL to music file for letter
+  imageUrl      String?  // URL to image file for letter
+  letterColor   String   @default("pink") // Letter theme color
+  letterFont    String   @default("handwriting") // Letter font style
+  
+  @@index([recipientName])
+}

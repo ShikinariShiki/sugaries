@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Envelope Body -->
+  <rect x="15" y="30" width="70" height="45" rx="5" fill="#F5E6D3" stroke="#C9A88A" stroke-width="3"/>
+  
+  <!-- Envelope Flap Lines -->
+  <path d="M15 30 L50 55 L85 30" stroke="#C9A88A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Center Heart -->
+  <path d="M50 48 C50 45.5 48.5 43.5 46.5 43.5 C45.5 43.5 44.5 44 44 45 C43.5 44 42.5 43.5 41.5 43.5 C39.5 43.5 38 45.5 38 48 C38 51.5 44 58 44 58 C44 58 50 51.5 50 48 Z" fill="#FFC9E5"/>
+  <path d="M50 48 C50 45.5 51.5 43.5 53.5 43.5 C54.5 43.5 55.5 44 56 45 C56.5 44 57.5 43.5 58.5 43.5 C60.5 43.5 62 45.5 62 48 C62 51.5 56 58 56 58 C56 58 50 51.5 50 48 Z" fill="#FFC9E5"/>
+</svg>
