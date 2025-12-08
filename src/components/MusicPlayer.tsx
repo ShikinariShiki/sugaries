@@ -113,8 +113,8 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
       {!isYouTube && <audio ref={audioRef} loop src={musicUrl} />}
       
       {isYouTube && (
-        <div className="fixed bottom-20 md:bottom-24 left-1/2 transform -translate-x-1/2 z-40 w-[90%] max-w-2xl">
-          <div className="bg-black/90 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl">
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30 w-[95%] max-w-md">
+          <div className="bg-black/95 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl">
             <iframe
               ref={iframeRef}
               className="w-full aspect-video"

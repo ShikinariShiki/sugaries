@@ -341,12 +341,12 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.7 }}
-                      className="mb-6 rounded-xl overflow-hidden shadow-lg"
+                      className="mb-6 rounded-xl overflow-hidden shadow-lg max-w-full"
                     >
                       <img 
                         src={state.imageUrl} 
                         alt="Letter attachment" 
-                        className="w-full h-auto max-h-[50vh] md:max-h-96 object-contain"
+                        className="w-full h-auto max-h-[60vh] object-contain"
                         onError={(e) => {
                           console.error('Image failed to load:', state.imageUrl)
                           e.currentTarget.style.display = 'none'
