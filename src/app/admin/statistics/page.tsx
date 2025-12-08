@@ -50,8 +50,8 @@ export default function StatisticsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Statistics</h1>
-          <p className="text-gray-600">View detailed analytics and insights</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Statistics</h1>
+          <p className="text-gray-600 dark:text-gray-400">View detailed analytics and insights</p>
         </motion.div>
 
         {/* Stats Grid */}
@@ -63,8 +63,8 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">📨</div>
-              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : stats.totalSent}</p>
-              <p className="text-sm text-gray-600 mt-1">Total Sent</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{isLoading ? '...' : stats.totalSent}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Total Sent</p>
             </PaperCard>
           </motion.div>
 
@@ -75,8 +75,8 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">✅</div>
-              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : stats.opened}</p>
-              <p className="text-sm text-gray-600 mt-1">Opened</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{isLoading ? '...' : stats.opened}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Opened</p>
             </PaperCard>
           </motion.div>
 
@@ -87,8 +87,8 @@ export default function StatisticsPage() {
           >
             <PaperCard className="text-center">
               <div className="text-4xl mb-2">💌</div>
-              <p className="text-3xl font-bold text-gray-900">{isLoading ? '...' : stats.replies}</p>
-              <p className="text-sm text-gray-600 mt-1">Replies</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{isLoading ? '...' : stats.replies}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Replies</p>
             </PaperCard>
           </motion.div>
 

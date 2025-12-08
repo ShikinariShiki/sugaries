@@ -104,15 +104,15 @@ export default function ComposePage() {
             >
               {/* Page Header */}
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Compose a Letter</h1>
-                <p className="text-gray-600">Send a secret, beautiful message ✨</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Compose a Letter</h1>
+                <p className="text-gray-600 dark:text-gray-400">Send a secret, beautiful message ✨</p>
               </div>
 
               <PaperCard>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Recipient Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                       To:
                     </label>
                     <input
@@ -120,14 +120,14 @@ export default function ComposePage() {
                       value={recipientName}
                       onChange={(e) => setRecipientName(e.target.value)}
                       placeholder="Recipient's name"
-                      className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
+                      className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
                     disabled={isLoading}
                   />
                 </div>
 
                 {/* Message Content */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                     Your Message:
                   </label>
                   <textarea
@@ -136,17 +136,17 @@ export default function ComposePage() {
                     placeholder="Write your heartfelt message..."
                     rows={8}
                     maxLength={10000}
-                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg resize-none"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg resize-none"
                     disabled={isLoading}
                   />
-                  <p className="text-sm text-gray-500 mt-1 font-poppins">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-poppins">
                     {content.length} / 10000 characters
                   </p>
                 </div>
 
                 {/* Music URL */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                     🎵 Music (optional):
                   </label>
                   
@@ -160,8 +160,8 @@ export default function ComposePage() {
                       }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
                         musicSource === 'preset'
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 text-gray-900 font-medium'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
+                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                       }`}
                     >
                       🎼 Preset
@@ -174,8 +174,8 @@ export default function ComposePage() {
                       }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
                         musicSource === 'youtube'
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 text-gray-900 font-medium'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
+                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                       }`}
                     >
                       📺 YouTube
@@ -188,8 +188,8 @@ export default function ComposePage() {
                       }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
                         musicSource === 'local'
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 text-gray-900 font-medium'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
+                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                       }`}
                     >
                       💿 Local
@@ -201,7 +201,7 @@ export default function ComposePage() {
                       <select
                         value={selectedSong}
                         onChange={(e) => setSelectedSong(e.target.value)}
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins bg-white"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                         disabled={isLoading}
                       >
                         <option value="">-- Select a song --</option>
@@ -214,7 +214,7 @@ export default function ComposePage() {
                     </>
                   ) : musicSource === 'youtube' ? (
                     <>
-                      <p className="text-sm text-gray-600 mb-2 font-poppins">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
                         Paste YouTube Music or YouTube URL
                       </p>
                       <input
@@ -222,13 +222,13 @@ export default function ComposePage() {
                         value={musicUrl}
                         onChange={(e) => setMusicUrl(e.target.value)}
                         placeholder="https://youtube.com/watch?v=... or https://music.youtube.com/..."
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                         disabled={isLoading}
                       />
                     </>
                   ) : (
                     <>
-                      <p className="text-sm text-gray-600 mb-2 font-poppins">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
                         Paste direct MP3/audio file URL
                       </p>
                       <input
@@ -236,10 +236,10 @@ export default function ComposePage() {
                         value={musicUrl}
                         onChange={(e) => setMusicUrl(e.target.value)}
                         placeholder="https://example.com/audio.mp3"
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                         disabled={isLoading}
                       />
-                      <p className="text-xs text-gray-500 mt-2 font-poppins">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-poppins">
                         💡 Tip: Upload your audio file to Google Drive, Dropbox, or any hosting service and paste the direct link here.
                       </p>
                     </>
@@ -248,10 +248,10 @@ export default function ComposePage() {
 
                 {/* Image Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                     📷 Image (optional):
                   </label>
-                  <p className="text-sm text-gray-600 mb-3 font-poppins">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-poppins">
                     Drag & drop an image, or paste Google Photos link
                   </p>
                   
@@ -274,8 +274,8 @@ export default function ComposePage() {
                     }}
                     className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${
                       isDragging
-                        ? 'border-pink-500 bg-gradient-to-br from-pink-50 to-purple-50'
-                        : 'border-gray-300 hover:border-gray-400 bg-gray-50'
+                        ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
+                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/50'
                     }`}
                   >
                     <input
@@ -293,10 +293,10 @@ export default function ComposePage() {
                       disabled={isLoading}
                     />
                     <div className="pointer-events-none">
-                      <p className="text-gray-600 font-poppins mb-2">
+                      <p className="text-gray-600 dark:text-gray-300 font-poppins mb-2">
                         📎 Drag & drop image here, or click to browse
                       </p>
-                      <p className="text-xs text-gray-400 font-poppins">
+                      <p className="text-xs text-gray-400 dark:text-gray-500 font-poppins">
                         Supports JPG, PNG, GIF
                       </p>
                     </div>
@@ -304,7 +304,7 @@ export default function ComposePage() {
 
                   {/* Google Photos Link */}
                   <div className="mt-3">
-                    <p className="text-sm text-gray-600 mb-2 font-poppins">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
                       Or paste Google Photos share link:
                     </p>
                     <input
@@ -315,7 +315,7 @@ export default function ComposePage() {
                         setImageUrl(e.target.value)
                       }}
                       placeholder="https://photos.app.goo.gl/..."
-                      className="w-full px-3 md:px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
+                      className="w-full px-3 md:px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                       disabled={isLoading || !!imageFile}
                     />
                   </div>
@@ -323,7 +323,7 @@ export default function ComposePage() {
                   {/* Image Preview */}
                   {imageUrl && (
                     <div className="mt-4 space-y-2">
-                      <div className="relative rounded-lg overflow-hidden border-2 border-gray-200">
+                      <div className="relative rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
                         <img 
                           src={imageUrl} 
                           alt="Preview" 
@@ -369,10 +369,10 @@ export default function ComposePage() {
 
                 {/* Letter Code Setup */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                     Set a Letter Code:
                   </label>
-                  <p className="text-sm text-gray-600 mb-4 font-poppins">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-poppins">
                     The recipient will need this to open the letter
                   </p>
                   <PINInput
@@ -386,9 +386,9 @@ export default function ComposePage() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="bg-red-50 border border-red-200 rounded-xl p-4"
+                    className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4"
                   >
-                    <p className="text-red-600 text-sm font-poppins">{error}</p>
+                    <p className="text-red-600 dark:text-red-400 text-sm font-poppins">{error}</p>
                   </motion.div>
                 )}
 
@@ -427,33 +427,33 @@ export default function ComposePage() {
                   🎉
                 </motion.div>
 
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 font-poppins">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">
                   Letter Created!
                 </h2>
-                <p className="text-gray-600 mb-8 font-poppins">
+                <p className="text-gray-600 dark:text-gray-400 mb-8 font-poppins">
                   Share this link with {recipientName}
                 </p>
 
-                <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 mb-6">
-                  <p className="text-sm text-gray-600 mb-2 font-poppins">Letter URL:</p>
+                <div className="bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 rounded-xl p-6 mb-6">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">Letter URL:</p>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={letterUrl}
                       readOnly
-                      className="flex-1 px-4 py-2 rounded-lg bg-white border-2 border-gray-200 text-sm font-mono"
+                      className="flex-1 px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white text-sm font-mono"
                     />
                     <button
                       onClick={handleCopyUrl}
-                      className="px-4 py-2 rounded-lg bg-white hover:bg-gray-50 border-2 border-gray-200 text-gray-700 font-poppins text-sm transition-colors"
+                      className="px-4 py-2 rounded-lg bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-poppins text-sm transition-colors"
                     >
                       📋 Copy
                     </button>
                   </div>
                 </div>
 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                  <p className="text-sm text-yellow-800 font-poppins">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 mb-6">
+                  <p className="text-sm text-yellow-800 dark:text-yellow-400 font-poppins">
                     <strong>⚠️ Remember:</strong> Share the Letter Code ({pin}) with {recipientName} separately (not through the same channel as the link)
                   </p>
                 </div>
@@ -461,7 +461,7 @@ export default function ComposePage() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleReset}
-                    className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors text-sm md:text-base"
+                    className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-poppins font-medium transition-colors text-sm md:text-base"
                   >
                     ✉️ Create Another Letter
                   </button>
