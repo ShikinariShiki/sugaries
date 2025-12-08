@@ -34,6 +34,7 @@ export async function GET(
         senderName: true,
         pinHash: true,
         isOpened: true,
+        isReply: true,
         createdAt: true,
       },
     })
@@ -45,8 +46,9 @@ export async function GET(
       )
     }
 
-    // Mark as opened when admin views it (if it's a reply)
-    if (!letter.isOpened && letter.senderName) {
+    // Mark as opened ONLY for received letters (replies) when admin views it
+    // Sent letters should only be marked as opened when recipient unlocks with PIN
+    if (!letter.isOpened && letter.senderName && letter.isReply) {
       await prisma.letter.update({
         where: { id },
         data: { isOpened: true },
