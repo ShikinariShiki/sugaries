@@ -45,6 +45,14 @@ export async function GET(
       )
     }
 
+    // Mark as opened when admin views it (if it's a reply)
+    if (!letter.isOpened && letter.senderName) {
+      await prisma.letter.update({
+        where: { id },
+        data: { isOpened: true },
+      })
+    }
+
     return NextResponse.json(letter)
   } catch (error) {
     console.error('Error fetching letter:', error)
