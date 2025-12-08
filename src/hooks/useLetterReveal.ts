@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducer, useCallback } from 'react'
+import { useReducer, useCallback, useEffect } from 'react'
 import { LetterState, LetterStateData, LetterAction } from '@/types/letter'
 
 const initialState: LetterStateData = {
@@ -48,6 +48,9 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         imageUrl: action.payload.imageUrl,
         letterColor: action.payload.letterColor,
         letterFont: action.payload.letterFont,
+        senderName: action.payload.senderName,
+        pinHash: action.payload.pinHash,
+        recipientName: action.payload.recipientName || state.recipientName,
         isLoading: false,
         error: undefined,
       }
@@ -68,8 +71,41 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
   }
 }
 
-export function useLetterReveal(letterId: string) {
+export function useLetterReveal(letterId: string, isAdminView = false) {
   const [state, dispatch] = useReducer(letterReducer, initialState)
+
+  // Skip verification for admin view
+  const skipToContent = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/letter/${letterId}?admin=true`)
+      const data = await response.json()
+
+      if (response.ok) {
+        dispatch({ 
+          type: 'PIN_VERIFIED', 
+          payload: { 
+            content: data.content,
+            musicUrl: data.musicUrl,
+            imageUrl: data.imageUrl,
+            letterColor: data.letterColor,
+            letterFont: data.letterFont,
+            senderName: data.senderName,
+            pinHash: data.pinHash,
+            recipientName: data.recipientName,
+          } 
+        })
+      }
+    } catch (error) {
+      console.error('Failed to load letter:', error)
+    }
+  }, [letterId])
+
+  // Auto-load for admin view
+  useEffect(() => {
+    if (isAdminView) {
+      skipToContent()
+    }
+  }, [isAdminView, skipToContent])
 
   const verifyName = useCallback(async (name: string) => {
     dispatch({ type: 'VERIFY_NAME', payload: { name } })

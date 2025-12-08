@@ -78,8 +78,8 @@ function getFontClass(font: string = 'handwriting') {
   return fonts[font] || fonts.handwriting
 }
 
-export default function LetterClientView({ letterId }: { letterId: string }) {
-  const { state, verifyName, openEnvelope, verifyPin } = useLetterReveal(letterId)
+export default function LetterClientView({ letterId, isAdminView = false }: { letterId: string, isAdminView?: boolean }) {
+  const { state, verifyName, openEnvelope, verifyPin } = useLetterReveal(letterId, isAdminView)
   const [nameInput, setNameInput] = useState('')
   const [pinInput, setPinInput] = useState('')
   const [shouldShake, setShouldShake] = useState(false)
@@ -292,13 +292,52 @@ export default function LetterClientView({ letterId }: { letterId: string }) {
             {/* Music Player */}
             {state.musicUrl && <MusicPlayer musicUrl={state.musicUrl} />}
             
+            {/* Admin Info Banner */}
+            {isAdminView && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-[90%]"
+              >
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl shadow-2xl p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                      🔑
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg">Admin View</h3>
+                      <p className="text-xs text-white/80">PIN verification bypassed</p>
+                    </div>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3 space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-white/70">To:</span>
+                      <span className="font-semibold">{state.recipientName || 'Loading...'}</span>
+                    </div>
+                    {state.senderName && (
+                      <div className="flex justify-between">
+                        <span className="text-white/70">From:</span>
+                        <span className="font-semibold">{state.senderName}</span>
+                      </div>
+                    )}
+                    {state.pinHash && (
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Protection:</span>
+                        <span className="font-semibold">🔒 PIN Protected</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            
             <motion.div
               key="reading"
               initial={{ opacity: 0, rotateX: -90 }}
               animate={{ opacity: 1, rotateX: 0 }}
               exit={{ opacity: 0, rotateX: 90 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="max-w-2xl w-full"
+              className="max-w-2xl w-full mt-24 md:mt-0"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <PaperCard className={`shadow-stack-floating bg-gradient-to-br ${themeColors.gradient}`} animate={false}>

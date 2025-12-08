@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [previewLetter, setPreviewLetter] = useState<Letter | null>(null)
   const [editingLetter, setEditingLetter] = useState<Letter | null>(null)
   const [editContent, setEditContent] = useState('')
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const handleLogout = async () => {
     try {
@@ -449,39 +450,87 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="p-6">
+                  {/* Letter Info */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                    <h3 className="font-poppins font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                      ℹ️ Letter Details
+                    </h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Recipient:</span>
+                        <span className="font-medium text-gray-900">{previewLetter.recipientName}</span>
+                      </div>
+                      {previewLetter.senderName && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Sender:</span>
+                          <span className="font-medium text-gray-900">{previewLetter.senderName}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Status:</span>
+                        <span className={`font-medium ${previewLetter.isOpened ? 'text-green-600' : 'text-orange-600'}`}>
+                          {previewLetter.isOpened ? '✓ Opened' : '○ Not Opened'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Protected:</span>
+                        <span className="font-medium text-gray-900">
+                          {previewLetter.pinHash ? '🔒 Yes (PIN required)' : '🔓 No'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Created:</span>
+                        <span className="font-medium text-gray-900">{formatDate(previewLetter.createdAt)}</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 mb-6">
                     <p className="text-gray-800 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
                       {previewLetter.content}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-poppins">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>{formatDate(previewLetter.createdAt)}</span>
-                  </div>
+                  <div className="space-y-3">
+                    {/* Direct view button for admin */}
+                    <button
+                      onClick={() => window.open(`/letter/${previewLetter.id}?admin=true`, '_blank')}
+                      className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all"
+                    >
+                      👁️ View Full Letter (Admin)
+                    </button>
 
-                  <div className="flex gap-3">
-                    {activeTab === 'sent' && (
-                      <>
-                        <button
-                          onClick={() => handleEdit(previewLetter)}
-                          className="flex-1 px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors"
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(previewLetter.id)}
-                          className="flex-1 px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-poppins font-medium transition-colors"
-                        >
-                          🗑️ Delete
-                        </button>
-                      </>
-                    )}
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/letter/${previewLetter.id}`)
+                          alert('Link copied to clipboard!')
+                        }}
+                        className="flex-1 px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors"
+                      >
+                        🔗 Copy Link
+                      </button>
+                      {activeTab === 'sent' && (
+                        <>
+                          <button
+                            onClick={() => handleEdit(previewLetter)}
+                            className="flex-1 px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(previewLetter.id)}
+                            className="flex-1 px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-poppins font-medium transition-colors"
+                          >
+                            🗑️ Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+
                     <button
                       onClick={() => setPreviewLetter(null)}
-                      className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 hover:bg-gray-50 text-gray-700 font-poppins font-medium transition-all"
                     >
                       Close
                     </button>

@@ -14,6 +14,8 @@ export interface LetterStateData {
   imageUrl?: string
   letterColor?: string
   letterFont?: string
+  senderName?: string
+  pinHash?: string
 }
 
 export type LetterAction =
@@ -22,6 +24,6 @@ export type LetterAction =
   | { type: 'NAME_FAILED'; payload: { error: string } }
   | { type: 'OPEN_ENVELOPE' }
   | { type: 'VERIFY_PIN'; payload: { pin: string } }
-  | { type: 'PIN_VERIFIED'; payload: { content: string; musicUrl?: string; imageUrl?: string; letterColor?: string; letterFont?: string } }
+  | { type: 'PIN_VERIFIED'; payload: { content: string; musicUrl?: string; imageUrl?: string; letterColor?: string; letterFont?: string; senderName?: string; pinHash?: string; recipientName?: string } }
   | { type: 'PIN_FAILED'; payload: { error: string } }
   | { type: 'RESET' }
