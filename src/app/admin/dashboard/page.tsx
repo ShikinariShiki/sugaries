@@ -43,6 +43,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchLetters()
+    
+    // Auto-refresh every 5 seconds to catch new letters
+    const interval = setInterval(() => {
+      fetchLetters()
+    }, 5000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const fetchLetters = async () => {
