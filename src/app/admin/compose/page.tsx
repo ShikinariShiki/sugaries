@@ -135,7 +135,7 @@ export default function ComposePage() {
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     placeholder="Recipient's name"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-lg"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
                     disabled={isLoading}
                   />
                 </div>
@@ -151,7 +151,7 @@ export default function ComposePage() {
                     placeholder="Write your heartfelt message..."
                     rows={8}
                     maxLength={10000}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-lg resize-none"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg resize-none"
                     disabled={isLoading}
                   />
                   <p className="text-sm text-gray-500 mt-1 font-poppins">
@@ -201,7 +201,7 @@ export default function ComposePage() {
                         value={musicUrl}
                         onChange={(e) => setMusicUrl(e.target.value)}
                         placeholder="https://youtube.com/watch?v=... or https://music.youtube.com/..."
-                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                         disabled={isLoading}
                       />
                     </>
@@ -215,7 +215,7 @@ export default function ComposePage() {
                         value={musicUrl}
                         onChange={(e) => setMusicUrl(e.target.value)}
                         placeholder="https://example.com/audio.mp3"
-                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                         disabled={isLoading}
                       />
                       <p className="text-xs text-gray-500 mt-2 font-poppins">
@@ -294,7 +294,7 @@ export default function ComposePage() {
                         setImageUrl(e.target.value)
                       }}
                       placeholder="https://photos.app.goo.gl/..."
-                      className="w-full px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
+                      className="w-full px-3 md:px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                       disabled={isLoading || !!imageFile}
                     />
                   </div>
@@ -374,7 +374,7 @@ export default function ComposePage() {
                 <button
                   type="submit"
                   disabled={isLoading || !recipientName.trim() || !content.trim() || !pin}
-                  className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 md:px-6 py-3 md:py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? 'Creating...' : '🎁 Create Letter'}
                 </button>
@@ -407,7 +407,7 @@ export default function ComposePage() {
                   🎉
                 </motion.div>
 
-                <h2 className="text-3xl font-bold text-gray-900 mb-2 font-poppins">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 font-poppins">
                   Letter Created!
                 </h2>
                 <p className="text-gray-600 mb-8 font-poppins">
@@ -438,16 +438,16 @@ export default function ComposePage() {
                   </p>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleReset}
-                    className="flex-1 px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors"
+                    className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors text-sm md:text-base"
                   >
                     ✉️ Create Another Letter
                   </button>
                   <button
                     onClick={() => window.location.href = '/admin/dashboard'}
-                    className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all"
+                    className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all text-sm md:text-base"
                   >
                     📊 Go to Dashboard
                   </button>

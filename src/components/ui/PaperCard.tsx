@@ -21,7 +21,7 @@ export function PaperCard({ children, className, animate = true }: PaperCardProp
   return (
     <Component
       className={cn(
-        'bg-white rounded-lg shadow-stack-floating p-8',
+        'bg-white rounded-lg shadow-stack-floating p-4 md:p-6 lg:p-8',
         'border border-gray-100',
         className
       )}

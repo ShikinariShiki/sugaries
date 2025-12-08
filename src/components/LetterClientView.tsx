@@ -120,7 +120,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   }
 
   return (
-    <div className="min-h-screen bg-rice-paper flex items-center justify-center p-8">
+    <div className="min-h-screen bg-rice-paper flex items-center justify-center p-4 md:p-8">
       <AnimatePresence mode="wait">
         {/* STATE 1: NAME_CHECK */}
         {state.state === 'NAME_CHECK' && (
@@ -337,7 +337,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               animate={{ opacity: 1, rotateX: 0 }}
               exit={{ opacity: 0, rotateX: 90 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="max-w-2xl w-full mt-24 md:mt-0"
+              className="max-w-2xl w-full mt-24 md:mt-0 px-4"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <PaperCard className={`shadow-stack-floating bg-gradient-to-br ${themeColors.gradient}`} animate={false}>
@@ -347,10 +347,10 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                   transition={{ delay: 0.5 }}
                 >
                   <div className="mb-6 flex justify-between items-center">
-                    <h2 className="text-3xl font-bold text-ink">
+                    <h2 className="text-2xl md:text-3xl font-bold text-ink">
                       Dear {state.recipientName},
                     </h2>
-                    <span className="text-4xl">💌</span>
+                    <span className="text-3xl md:text-4xl">💌</span>
                   </div>
 
                   {/* Image if provided */}
