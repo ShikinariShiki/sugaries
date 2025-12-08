@@ -29,20 +29,24 @@ export default function DashboardPage() {
   const [editingLetter, setEditingLetter] = useState<Letter | null>(null)
   const [editContent, setEditContent] = useState('')
   const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedLetters, setSelectedLetters] = useState<Set<string>>(new Set())
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    fetchLetters()
+    fetchLetters(true) // Initial fetch with loading state
     
-    // Auto-refresh every 5 seconds to catch new letters
+    // Auto-refresh every 5 seconds to catch new letters (silent update)
     const interval = setInterval(() => {
-      fetchLetters()
+      fetchLetters(false) // Silent refresh without loading state
     }, 5000)
     
     return () => clearInterval(interval)
   }, [])
 
-  const fetchLetters = async () => {
-    setIsLoading(true)
+  const fetchLetters = async (showLoading = true) => {
+    if (showLoading) {
+      setIsLoading(true)
+    }
     try {
       const response = await fetch('/api/letter/list')
       const data = await response.json()
@@ -54,7 +58,9 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Failed to fetch letters:', error)
     } finally {
-      setIsLoading(false)
+      if (showLoading) {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -110,6 +116,47 @@ export default function DashboardPage() {
     }
   }
 
+  const toggleSelectLetter = (letterId: string) => {
+    const newSelected = new Set(selectedLetters)
+    if (newSelected.has(letterId)) {
+      newSelected.delete(letterId)
+    } else {
+      newSelected.add(letterId)
+    }
+    setSelectedLetters(newSelected)
+  }
+
+  const toggleSelectAll = () => {
+    const currentLetters = activeTab === 'sent' ? sentLetters : receivedLetters
+    if (selectedLetters.size === currentLetters.length) {
+      setSelectedLetters(new Set())
+    } else {
+      setSelectedLetters(new Set(currentLetters.map(l => l.id)))
+    }
+  }
+
+  const handleBatchDelete = async () => {
+    if (selectedLetters.size === 0) return
+    
+    if (!confirm(`Are you sure you want to delete ${selectedLetters.size} letter(s)?`)) return
+
+    setIsDeleting(true)
+    try {
+      const deletePromises = Array.from(selectedLetters).map(letterId =>
+        fetch(`/api/letter/${letterId}`, { method: 'DELETE' })
+      )
+      
+      await Promise.all(deletePromises)
+      await fetchLetters()
+      setSelectedLetters(new Set())
+    } catch (error) {
+      console.error('Failed to delete letters:', error)
+      alert('Some letters could not be deleted')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   const totalSent = sentLetters.length
   const totalReceived = receivedLetters.length
   const openedSent = sentLetters.filter(l => l.isOpened).length
@@ -129,11 +176,24 @@ export default function DashboardPage() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
               <p className="text-gray-600">Manage your letters</p>
             </div>
-            <Link href="/admin/compose">
-              <SquishButton variant="primary" size="lg">
-                ✉️ Compose New
-              </SquishButton>
-            </Link>
+            <div className="flex gap-2">
+              {selectedLetters.size > 0 && (
+                <SquishButton
+                  variant="secondary"
+                  size="lg"
+                  onClick={handleBatchDelete}
+                  disabled={isDeleting}
+                  className="bg-red-50 text-red-600 hover:bg-red-100"
+                >
+                  {isDeleting ? '⏳' : '🗑️'} Delete {selectedLetters.size}
+                </SquishButton>
+              )}
+              <Link href="/admin/compose">
+                <SquishButton variant="primary" size="lg">
+                  ✉️ Compose New
+                </SquishButton>
+              </Link>
+            </div>
           </div>
         </motion.div>
 
@@ -185,7 +245,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white"
+              className="bg-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">✨</span>
@@ -199,12 +259,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 bg-white rounded-xl p-1 shadow-sm overflow-x-auto">
+          <div className="flex gap-2 bg-white rounded-xl p-1 shadow-sm overflow-x-auto mb-4">
             <button
               onClick={() => setActiveTab('sent')}
               className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
                 activeTab === 'sent'
-                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md'
+                  ? 'bg-pink-500 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
@@ -216,7 +276,7 @@ export default function DashboardPage() {
               onClick={() => setActiveTab('received')}
               className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
                 activeTab === 'received'
-                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md'
+                  ? 'bg-pink-500 text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
@@ -225,6 +285,32 @@ export default function DashboardPage() {
               <span className="ml-2 text-xs opacity-75">({totalReceived})</span>
             </button>
           </div>
+
+          {/* Batch Actions Bar */}
+          {(activeTab === 'sent' ? sentLetters : receivedLetters).length > 0 && (
+            <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm mb-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedLetters.size === (activeTab === 'sent' ? sentLetters : receivedLetters).length && selectedLetters.size > 0}
+                  onChange={toggleSelectAll}
+                  className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  {selectedLetters.size > 0 ? `${selectedLetters.size} selected` : 'Select All'}
+                </span>
+              </label>
+              {selectedLetters.size > 0 && (
+                <button
+                  onClick={handleBatchDelete}
+                  disabled={isDeleting}
+                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Selected'}
+                </button>
+              )}
+            </div>
+          )}
 
         {/* Letters List */}
         {isLoading ? (
@@ -278,54 +364,67 @@ export default function DashboardPage() {
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                  <div className="flex items-start gap-3">
+                    {/* Checkbox */}
+                    <input
+                      type="checkbox"
+                      checked={selectedLetters.has(letter.id)}
+                      onChange={() => toggleSelectLetter(letter.id)}
+                      className="mt-2 w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer flex-shrink-0"
+                    />
+                    
+                    {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
-                            {letter.recipientName.charAt(0).toUpperCase()}
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
+                                {letter.recipientName.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="min-w-0">
+                                <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
+                                  {letter.recipientName}
+                                </h3>
+                                <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
+                                  {formatDate(letter.createdAt)}
+                                </p>
+                              </div>
+                            </div>
+                            {letter.isOpened ? (
+                              <span className="px-2 py-1 md:px-3 bg-green-100 text-green-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
+                                ✓ Opened
+                              </span>
+                            ) : (
+                              <span className="px-2 py-1 md:px-3 bg-yellow-100 text-yellow-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
+                                ⏳ Pending
+                              </span>
+                            )}
                           </div>
-                          <div className="min-w-0">
-                            <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
-                              {letter.recipientName}
-                            </h3>
-                            <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
-                              {formatDate(letter.createdAt)}
-                            </p>
-                          </div>
+                          <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
+                            {letter.content.substring(0, 120)}
+                            {letter.content.length > 120 ? '...' : ''}
+                          </p>
+                          {letter.pinHash && (
+                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md">
+                              <span className="text-[10px] md:text-xs text-gray-600 font-poppins">🔑 PIN Protected</span>
+                            </div>
+                          )}
                         </div>
-                        {letter.isOpened ? (
-                          <span className="px-2 py-1 md:px-3 bg-green-100 text-green-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
-                            ✓ Opened
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 md:px-3 bg-yellow-100 text-yellow-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
-                            ⏳ Pending
-                          </span>
-                        )}
+                        <div className="flex gap-2 w-full md:w-auto md:flex-col">
+                          <button 
+                            onClick={() => setPreviewLetter(letter)}
+                            className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
+                          >
+                            👁️ Preview
+                          </button>
+                          <Link href={`/letter/${letter.id}?admin=true`} className="flex-1 md:flex-none">
+                            <button className="w-full px-3 md:px-4 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-poppins text-xs md:text-sm transition-all whitespace-nowrap">
+                              View →
+                            </button>
+                          </Link>
+                        </div>
                       </div>
-                      <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
-                        {letter.content.substring(0, 120)}
-                        {letter.content.length > 120 ? '...' : ''}
-                      </p>
-                      {letter.pinHash && (
-                        <div className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md">
-                          <span className="text-[10px] md:text-xs text-gray-600 font-poppins">🔑 PIN Protected</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2 w-full md:w-auto md:flex-col">
-                      <button 
-                        onClick={() => setPreviewLetter(letter)}
-                        className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
-                      >
-                        👁️ Preview
-                      </button>
-                      <Link href={`/letter/${letter.id}?admin=true`} className="flex-1 md:flex-none">
-                        <button className="w-full px-3 md:px-4 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins text-xs md:text-sm transition-all whitespace-nowrap">
-                          View →
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -340,49 +439,62 @@ export default function DashboardPage() {
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all p-3 md:p-6 group"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                  <div className="flex items-start gap-3">
+                    {/* Checkbox */}
+                    <input
+                      type="checkbox"
+                      checked={selectedLetters.has(letter.id)}
+                      onChange={() => toggleSelectLetter(letter.id)}
+                      className="mt-2 w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer flex-shrink-0"
+                    />
+                    
+                    {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
-                            {(letter.senderName || letter.recipientName).charAt(0).toUpperCase()}
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
+                                {(letter.senderName || letter.recipientName).charAt(0).toUpperCase()}
+                              </div>
+                              <div className="min-w-0">
+                                <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
+                                  {letter.senderName || letter.recipientName}
+                                </h3>
+                                <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
+                                  {formatDate(letter.createdAt)}
+                                </p>
+                              </div>
+                            </div>
+                            {letter.isOpened ? (
+                              <span className="px-2 py-1 md:px-3 bg-blue-100 text-blue-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
+                                ✓ Read
+                              </span>
+                            ) : (
+                              <span className="px-2 py-1 md:px-3 bg-pink-100 text-pink-700 text-[10px] md:text-xs rounded-full font-poppins font-medium animate-pulse whitespace-nowrap">
+                                ✉️ New
+                              </span>
+                            )}
                           </div>
-                          <div className="min-w-0">
-                            <h3 className="text-sm md:text-lg font-bold text-gray-900 font-poppins truncate">
-                              {letter.senderName || letter.recipientName}
-                            </h3>
-                            <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
-                              {formatDate(letter.createdAt)}
-                            </p>
-                          </div>
+                          <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
+                            {letter.content.substring(0, 120)}
+                            {letter.content.length > 120 ? '...' : ''}
+                          </p>
                         </div>
-                        {letter.isOpened ? (
-                          <span className="px-2 py-1 md:px-3 bg-blue-100 text-blue-700 text-[10px] md:text-xs rounded-full font-poppins font-medium whitespace-nowrap">
-                            ✓ Read
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 md:px-3 bg-pink-100 text-pink-700 text-[10px] md:text-xs rounded-full font-poppins font-medium animate-pulse whitespace-nowrap">
-                            ✉️ New
-                          </span>
-                        )}
+                        <div className="flex gap-2 w-full md:w-auto md:flex-col">
+                          <button 
+                            onClick={() => setPreviewLetter(letter)}
+                            className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
+                          >
+                            👁️ Preview
+                          </button>
+                          <Link href={`/letter/${letter.id}?admin=true`} className="flex-1 md:flex-none">
+                            <button className="w-full px-3 md:px-4 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white font-poppins text-xs md:text-sm transition-all whitespace-nowrap">
+                              Open →
+                            </button>
+                          </Link>
+                        </div>
                       </div>
-                      <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
-                        {letter.content.substring(0, 120)}
-                        {letter.content.length > 120 ? '...' : ''}
-                      </p>
-                    </div>
-                    <div className="flex gap-2 w-full md:w-auto md:flex-col">
-                      <button 
-                        onClick={() => setPreviewLetter(letter)}
-                        className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
-                      >
-                        👁️ Preview
-                      </button>
-                      <Link href={`/letter/${letter.id}?admin=true`} className="flex-1 md:flex-none">
-                        <button className="w-full px-3 md:px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-poppins text-xs md:text-sm transition-all whitespace-nowrap">
-                          Open →
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -488,7 +600,7 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 mb-6">
+                  <div className="bg-pink-50 rounded-xl p-6 mb-6">
                     <p className="text-gray-800 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
                       {previewLetter.content}
                     </p>
@@ -498,7 +610,7 @@ export default function DashboardPage() {
                     {/* Direct view button for admin */}
                     <button
                       onClick={() => window.open(`/letter/${previewLetter.id}?admin=true`, '_blank')}
-                      className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-medium transition-all"
                     >
                       👁️ View Full Letter (Admin)
                     </button>
@@ -611,7 +723,7 @@ export default function DashboardPage() {
                     </button>
                     <button
                       onClick={handleUpdate}
-                      className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all"
+                      className="flex-1 px-4 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-medium transition-all"
                     >
                       💾 Save Changes
                     </button>
