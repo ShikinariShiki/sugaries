@@ -22,11 +22,9 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    // Split between sent (original letters) and received (replies to Kevin)
-    const sentLetters = allLetters.filter(letter => !letter.isReply)
-    const receivedLetters = allLetters.filter(letter => 
-      letter.isReply && letter.recipientName.toLowerCase() === 'kevin'
-    )
+    // Split between sent (original letters) and received (replies)
+    const sentLetters = allLetters.filter(letter => !letter.isReply || letter.isReply === null)
+    const receivedLetters = allLetters.filter(letter => letter.isReply === true)
 
     return NextResponse.json({
       sent: sentLetters,

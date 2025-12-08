@@ -6,6 +6,7 @@ import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
 import SugariesIcon from '@/components/SugariesIcon'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface Letter {
   id: string
@@ -19,6 +20,7 @@ interface Letter {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [sentLetters, setSentLetters] = useState<Letter[]>([])
   const [receivedLetters, setReceivedLetters] = useState<Letter[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -26,6 +28,15 @@ export default function DashboardPage() {
   const [previewLetter, setPreviewLetter] = useState<Letter | null>(null)
   const [editingLetter, setEditingLetter] = useState<Letter | null>(null)
   const [editContent, setEditContent] = useState('')
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      router.push('/admin/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   useEffect(() => {
     fetchLetters()
@@ -129,12 +140,20 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-            <Link href="/admin/compose">
-              <SquishButton variant="primary" size="lg">
-                <span className="hidden md:inline">✉️ Compose New</span>
-                <span className="md:hidden">✉️</span>
-              </SquishButton>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/admin/compose">
+                <SquishButton variant="primary" size="lg">
+                  <span className="hidden md:inline">✉️ Compose New</span>
+                  <span className="md:hidden">✉️</span>
+                </SquishButton>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 md:px-6 md:py-3 bg-white text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all border-2 border-gray-200 text-sm md:text-base"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           {/* Statistics Cards */}
