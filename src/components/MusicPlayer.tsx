@@ -112,10 +112,10 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     <>
       {!isYouTube && <audio ref={audioRef} loop src={musicUrl} />}
       
-      {/* YouTube player fixed at bottom, small and out of the way */}
+      {/* YouTube player fixed at bottom right corner */}
       {isYouTube && (
-        <div className="fixed bottom-2 right-2 z-40 w-48 md:w-64">
-          <div className="bg-black/95 backdrop-blur-sm rounded-lg overflow-hidden shadow-2xl border-2 border-white/20">
+        <div className="fixed bottom-4 right-4 z-50 w-48 md:w-56">
+          <div className="bg-black/95 backdrop-blur-sm rounded-lg overflow-hidden shadow-2xl border-2 border-pink-500/30">
             <iframe
               ref={iframeRef}
               className="w-full aspect-video"
