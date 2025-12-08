@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   try {
-    const { recipientName, content, senderName } = await request.json()
+    const { recipientName, content, senderName, rating, imageUrl } = await request.json()
 
     // Validate required fields
     if (!recipientName || !content || !senderName) {
@@ -20,6 +20,8 @@ export async function POST(request: Request) {
         content,
         isReply: true,
         senderName,
+        rating: rating || null,
+        imageUrl: imageUrl || null,
         pinHash: null, // No password for replies
       },
     })

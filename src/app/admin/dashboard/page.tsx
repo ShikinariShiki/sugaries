@@ -167,6 +167,12 @@ export default function DashboardPage() {
   const totalReceived = receivedLetters.length
   const openedSent = sentLetters.filter(l => l.isOpened).length
   const unreadReceived = receivedLetters.filter(l => !l.isOpened).length
+  
+  // Calculate average satisfaction from received letters with ratings
+  const ratingsFromReplies = receivedLetters.filter(l => l.rating).map(l => l.rating!)
+  const averageSatisfaction = ratingsFromReplies.length > 0
+    ? (ratingsFromReplies.reduce((sum, rating) => sum + rating, 0) / ratingsFromReplies.length).toFixed(1)
+    : null
 
   return (
     <AdminLayout>
@@ -204,7 +210,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -261,6 +267,25 @@ export default function DashboardPage() {
                 {totalSent > 0 ? Math.round((openedSent / totalSent) * 100) : 0}%
               </p>
               <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">Success rate</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white col-span-2 md:col-span-1"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xl md:text-2xl">⭐</span>
+                <span className="text-[10px] md:text-sm font-poppins opacity-90">Satisfaction</span>
+              </div>
+              <p className="text-xl md:text-3xl font-bold font-poppins">
+                {averageSatisfaction || 'N/A'}
+                {averageSatisfaction && <span className="text-sm ml-1">/5</span>}
+              </p>
+              <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">
+                {ratingsFromReplies.length > 0 ? `${ratingsFromReplies.length} ratings` : 'No ratings yet'}
+              </p>
             </motion.div>
           </div>
 

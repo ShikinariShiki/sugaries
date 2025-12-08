@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   try {
-    const { rating } = await request.json()
+    const { rating, letterId } = await request.json()
 
     // Validate rating
     if (!rating || rating < 1 || rating > 5) {
@@ -12,9 +13,20 @@ export async function POST(request: Request) {
       )
     }
 
-    // Here you can save the rating to database or analytics
-    // For now, just return success
-    console.log('User rating:', rating)
+    if (!letterId) {
+      return NextResponse.json(
+        { error: 'Letter ID required' },
+        { status: 400 }
+      )
+    }
+
+    // Update the letter with the rating
+    await prisma.letter.update({
+      where: { id: letterId },
+      data: { rating },
+    })
+
+    console.log('User rating saved:', { letterId, rating })
 
     return NextResponse.json({
       success: true,
