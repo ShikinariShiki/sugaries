@@ -225,7 +225,6 @@ export default function DashboardPage() {
               <span className="ml-2 text-xs opacity-75">({totalReceived})</span>
             </button>
           </div>
-        </div>
 
         {/* Letters List */}
         {isLoading ? (
