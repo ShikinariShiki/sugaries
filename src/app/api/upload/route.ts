@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
 
-// Configure route to handle file uploads
+// Configure route for Vercel deployment (no file system access needed)
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -44,34 +41,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Convert to base64 data URL for Vercel deployment (no file system)
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    console.log('File converted to buffer, size:', buffer.length)
+    const base64 = buffer.toString('base64')
+    const dataUrl = `data:${file.type};base64,${base64}`
+    
+    console.log('Image converted to base64, length:', base64.length)
 
-    // Generate unique filename
-    const timestamp = Date.now()
-    const ext = file.name.split('.').pop() || 'jpg'
-    const filename = `${timestamp}-${Math.random().toString(36).substring(7)}.${ext}`
-    
-    // Ensure uploads directory exists
-    const uploadsDir = join(process.cwd(), 'public', 'uploads')
-    if (!existsSync(uploadsDir)) {
-      console.log('Creating uploads directory...')
-      await mkdir(uploadsDir, { recursive: true })
-    }
-    
-    // Save to public/uploads directory
-    const path = join(uploadsDir, filename)
-    console.log('Saving file to:', path)
-    
-    await writeFile(path, buffer)
-    console.log('File saved successfully')
-
-    // Return the public URL
-    const url = `/uploads/${filename}`
-    console.log('Returning URL:', url)
-    
-    return NextResponse.json({ url })
+    // Return the data URL (works on Vercel's read-only filesystem)
+    return NextResponse.json({ url: dataUrl })
   } catch (error) {
     console.error('Upload error:', error)
     return NextResponse.json(
