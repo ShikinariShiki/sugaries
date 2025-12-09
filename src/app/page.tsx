@@ -16,37 +16,7 @@ export default async function HomePage() {
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold text-gray-900 mb-4 font-poppins"
-        >
-          Sugaries
-        </motion.h1>
-        
-        <motion.p
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-2xl text-gray-600 mb-12 font-handwriting px-4"
-        >
-          Send secret, beautiful digital letters with a touch of whimsy ✨
-        </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-16 px-4"
-        >
-          {!session ? (
-            <>
-              <Link href="/auth/signin" className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
-                  🔐 Sign In
-                </button>
-              </Link>
-            </>
-          ) : (
-            <>
               <Link href="/admin/compose" className="flex-1 sm:flex-none">
                 <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
                   ✉️ Compose a Letter

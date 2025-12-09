@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { authOptions } from "@/lib/auth"
-import Sidebar from "@/components/Sidebar"
+import Sidebar from "@/components/admin/Sidebar"
 import MiniMusicPlayer from "@/components/MiniMusicPlayer"
 
 export default async function AdminLayout({
