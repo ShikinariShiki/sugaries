@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Quicksand, Poppins } from 'next/font/google'
+import { Inter, Quicksand, Poppins, Caveat, Pacifico, Dancing_Script, Satisfy, Indie_Flower, Shadows_Into_Light } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({ 
@@ -16,6 +16,40 @@ const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-poppins',
+})
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-handwriting',
+})
+
+const pacifico = Pacifico({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-pacifico',
+})
+
+const dancingScript = Dancing_Script({
+  subsets: ['latin'],
+  variable: '--font-dancing',
+})
+
+const satisfy = Satisfy({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-satisfy',
+})
+
+const indieFlower = Indie_Flower({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-indie',
+})
+
+const shadowsIntoLight = Shadows_Into_Light({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-shadows',
 })
 
 export const metadata: Metadata = {
@@ -36,7 +70,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className={`${inter.variable} ${quicksand.variable} ${poppins.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${quicksand.variable} ${poppins.variable} ${caveat.variable} ${pacifico.variable} ${dancingScript.variable} ${satisfy.variable} ${indieFlower.variable} ${shadowsIntoLight.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

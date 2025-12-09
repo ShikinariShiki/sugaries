@@ -7,10 +7,25 @@ import { SquishButton } from '@/components/ui/SquishButton'
 import { PINInput } from '@/components/ui/PINInput'
 import { ImageEditor } from '@/components/ImageEditor'
 import ColorPicker from '@/components/ColorPicker'
-import FontPicker from '@/components/FontPicker'
+import ImageEditorModal from '@/components/ImageEditorModal'
 import AdminLayout from '@/components/admin/AdminLayout'
 import Link from 'next/link'
 import { songs } from '@/data/songs'
+
+const FONT_OPTIONS = [
+  { value: 'handwriting', label: '✍️ Handwriting (Caveat)' },
+  { value: 'poppins', label: '📝 Modern (Poppins)' },
+  { value: 'quicksand', label: '🌊 Friendly (Quicksand)' },
+  { value: 'serif', label: '📖 Elegant (Serif)' },
+  { value: 'mono', label: '⌨️ Code (Monospace)' },
+  { value: 'cursive', label: '💫 Cursive' },
+  { value: 'fantasy', label: '🎭 Fantasy' },
+  { value: 'pacifico', label: '🌺 Pacifico' },
+  { value: 'dancing', label: '💃 Dancing Script' },
+  { value: 'satisfy', label: '😊 Satisfy' },
+  { value: 'indie', label: '🎸 Indie Flower' },
+  { value: 'shadows', label: '👥 Shadows Into Light' },
+]
 
 export default function ComposePage() {
   const [step, setStep] = useState<'compose' | 'success'>('compose')
@@ -24,6 +39,7 @@ export default function ComposePage() {
   const [musicArtist, setMusicArtist] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
+  const [tempImageSrc, setTempImageSrc] = useState('')
   const [isDragging, setIsDragging] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -113,10 +129,34 @@ export default function ComposePage() {
     setMusicArtist('')
     setImageUrl('')
     setImageFile(null)
+    setTempImageSrc('')
     setLetterUrl('')
     setError('')
     setLetterColor('pink')
     setLetterFont('handwriting')
+  }
+
+  const handleFileSelect = (file: File) => {
+    if (file && file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file)
+      setTempImageSrc(url)
+      setShowEditor(true)
+    }
+  }
+
+  const handleEditorSave = async (croppedBlob: Blob) => {
+    // Convert blob to File
+    const file = new File([croppedBlob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' })
+    setImageFile(file)
+    const url = URL.createObjectURL(croppedBlob)
+    setImageUrl(url)
+    setShowEditor(false)
+    setTempImageSrc('')
+  }
+
+  const handleEditorCancel = () => {
+    setShowEditor(false)
+    setTempImageSrc('')
   }
 
   return (
@@ -322,11 +362,7 @@ export default function ComposePage() {
                       e.preventDefault()
                       setIsDragging(false)
                       const file = e.dataTransfer.files[0]
-                      if (file && file.type.startsWith('image/')) {
-                        setImageFile(file)
-                        const url = URL.createObjectURL(file)
-                        setImageUrl(url)
-                      }
+                      if (file) handleFileSelect(file)
                     }}
                     className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${
                       isDragging
@@ -339,11 +375,7 @@ export default function ComposePage() {
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0]
-                        if (file) {
-                          setImageFile(file)
-                          const url = URL.createObjectURL(file)
-                          setImageUrl(url)
-                        }
+                        if (file) handleFileSelect(file)
                       }}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       disabled={isLoading}
@@ -353,7 +385,7 @@ export default function ComposePage() {
                         📎 Drag & drop image here, or click to browse
                       </p>
                       <p className="text-xs text-gray-400 dark:text-gray-500 font-poppins">
-                        Supports JPG, PNG, GIF
+                        Supports JPG, PNG, GIF - Will open editor for cropping
                       </p>
                     </div>
                   </div>
@@ -418,10 +450,26 @@ export default function ComposePage() {
                 />
 
                 {/* Font Style Picker */}
-                <FontPicker
-                  selectedFont={letterFont}
-                  onChange={setLetterFont}
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
+                    ✒️ Letter Font Style:
+                  </label>
+                  <select
+                    value={letterFont}
+                    onChange={(e) => setLetterFont(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-poppins text-base cursor-pointer"
+                    disabled={isLoading}
+                  >
+                    {FONT_OPTIONS.map(font => (
+                      <option key={font.value} value={font.value}>
+                        {font.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
+                    Choose how your message will appear to the recipient
+                  </p>
+                </div>
 
                 {/* Letter Code Setup */}
                 <div>
@@ -536,14 +584,11 @@ export default function ComposePage() {
 
       {/* Image Editor Modal */}
       <AnimatePresence>
-        {showEditor && imageUrl && (
-          <ImageEditor
-            imageUrl={imageUrl}
-            onSave={(editedUrl) => {
-              setImageUrl(editedUrl)
-              setShowEditor(false)
-            }}
-            onCancel={() => setShowEditor(false)}
+        {showEditor && tempImageSrc && (
+          <ImageEditorModal
+            imageSrc={tempImageSrc}
+            onSave={handleEditorSave}
+            onCancel={handleEditorCancel}
           />
         )}
       </AnimatePresence>

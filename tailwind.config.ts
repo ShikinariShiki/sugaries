@@ -39,10 +39,15 @@ const config: Config = {
         `,
       },
       fontFamily: {
-        'handwriting': ['var(--font-handwriting)', 'cursive'],
+        'handwriting': ['var(--font-handwriting)', 'Caveat', 'cursive'],
         'sans': ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        'quicksand': ['var(--font-quicksand)', 'sans-serif'],
-        'poppins': ['var(--font-poppins)', 'sans-serif'],
+        'quicksand': ['var(--font-quicksand)', 'Quicksand', 'sans-serif'],
+        'poppins': ['var(--font-poppins)', 'Poppins', 'sans-serif'],
+        'pacifico': ['Pacifico', 'cursive'],
+        'dancing': ['Dancing Script', 'cursive'],
+        'satisfy': ['Satisfy', 'cursive'],
+        'indie': ['Indie Flower', 'cursive'],
+        'shadows': ['Shadows Into Light', 'cursive'],
       },
       animation: {
         'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
