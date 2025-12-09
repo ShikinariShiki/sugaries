@@ -154,12 +154,8 @@ export default function ComposePage() {
       const data = await response.json()
 
       if (response.ok) {
-        // Use production domain for short URLs, fallback to current origin
-        const productionDomain = 'https://sugaries.app'
-        const currentOrigin = window.location.origin
-        
-        const fullUrl = `${currentOrigin}${data.url}`
-        const shortLink = data.shortUrl ? `${productionDomain}${data.shortUrl}` : fullUrl
+        const fullUrl = `${window.location.origin}${data.url}`
+        const shortLink = data.shortUrl ? `${window.location.origin}${data.shortUrl}` : fullUrl
         setLetterUrl(fullUrl)
         setShortUrl(shortLink)
         setStep('success')
