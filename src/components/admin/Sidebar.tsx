@@ -6,13 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SugariesIcon from '@/components/SugariesIcon'
 
 interface SidebarProps {
-  onLogout: () => void
   isDark?: boolean
   isMobileOpen?: boolean
   onMobileClose?: () => void
 }
 
-export default function Sidebar({ onLogout, isDark = false, isMobileOpen = false, onMobileClose }: SidebarProps) {
+export default function Sidebar({ isDark = false, isMobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname()
 
   const navItems = [
@@ -56,20 +55,6 @@ export default function Sidebar({ onLogout, isDark = false, isMobileOpen = false
           )
         })}
       </nav>
-
-      {/* Logout */}
-      <div className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-        <motion.button
-          whileHover={{ x: 4 }}
-          onClick={onLogout}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all w-full ${
-            isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-50'
-          }`}
-        >
-          <span className="text-xl">🚪</span>
-          <span className="font-medium">Logout</span>
-        </motion.button>
-      </div>
     </>
   )
 

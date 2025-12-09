@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { signOut } from 'next-auth/react'
 
 interface TopBarProps {
   adminName?: string
@@ -218,10 +219,7 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
                     </a>
                     <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                     <button
-                      onClick={async () => {
-                        await fetch('/api/auth/logout', { method: 'POST' })
-                        window.location.href = '/admin/login'
-                      }}
+                      onClick={() => signOut({ callbackUrl: '/' })}
                       className="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors w-full text-left"
                     >
                       <span className="text-lg">🚪</span>

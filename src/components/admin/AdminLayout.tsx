@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 
@@ -12,9 +13,9 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, onSearchChange }: AdminLayoutProps) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [isDark, setIsDark] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [adminName, setAdminName] = useState('Admin')
 
   // Load dark mode preference from localStorage
   useEffect(() => {
@@ -23,31 +24,7 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
       setIsDark(true)
       document.documentElement.classList.add('dark')
     }
-
-    // Fetch admin profile
-    fetchProfile()
   }, [])
-
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch('/api/profile')
-      if (response.ok) {
-        const data = await response.json()
-        setAdminName(data.name || 'Admin')
-      }
-    } catch (error) {
-      console.error('Failed to fetch profile:', error)
-    }
-  }
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-      router.push('/admin/login')
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
 
   const toggleTheme = () => {
     const newIsDark = !isDark
@@ -62,11 +39,12 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
     }
   }
 
+  const adminName = session?.user?.email?.split('@')[0] || 'Admin'
+
   return (
     <div className={`flex min-h-screen ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
       {/* Sidebar */}
       <Sidebar 
-        onLogout={handleLogout} 
         isDark={isDark}
         isMobileOpen={isMobileMenuOpen}
         onMobileClose={() => setIsMobileMenuOpen(false)}

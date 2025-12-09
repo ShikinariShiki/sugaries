@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { recipientName, pin, content, musicUrl, musicTitle, musicArtist, imageUrl, letterColor, letterFont } = await request.json()
 
     console.log('Creating letter with:', { recipientName, pin, content, musicUrl, musicTitle, musicArtist, imageUrl, letterColor, letterFont })
@@ -18,7 +29,7 @@ export async function POST(request: NextRequest) {
     // Hash the PIN
     const pinHash = await bcrypt.hash(pin, 10)
 
-    // Create the letter
+    // Create the letter linked to the user
     const letter = await prisma.letter.create({
       data: {
         recipientName,
@@ -32,6 +43,7 @@ export async function POST(request: NextRequest) {
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',
         isReply: false,
+        userId: session.user.id, // Link to authenticated user
       },
       select: {
         id: true,

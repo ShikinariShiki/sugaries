@@ -1,15 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
     console.log('=== Fetching letters ===')
-    // TODO: Add authentication to track user's letters
-    // For now, returning all letters (you'll need to add user auth later)
+    
+    const session = await getServerSession(authOptions)
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const isAdmin = session.user.role === 'admin'
+    
+    // Admin sees ALL letters, regular users see only their own
+    const whereClause = isAdmin ? {} : { userId: session.user.id }
     
     const allLetters = await prisma.letter.findMany({
+      where: whereClause,
       orderBy: {
         createdAt: 'desc',
       },
@@ -30,10 +45,11 @@ export async function GET(request: NextRequest) {
         imageUrl: true,
         letterColor: true,
         letterFont: true,
+        userId: true,
       },
     })
 
-    console.log('Total letters found:', allLetters.length)
+    console.log(`Total letters found: ${allLetters.length} (Admin: ${isAdmin}, User: ${session.user.email})`)
 
     // Split between sent (original letters) and received (replies)
     const sentLetters = allLetters.filter(letter => !letter.isReply || letter.isReply === null)

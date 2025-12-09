@@ -6,6 +6,7 @@ import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
 import AdminLayout from '@/components/admin/AdminLayout'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 interface Letter {
   id: string
@@ -27,6 +28,7 @@ interface Letter {
 }
 
 export default function DashboardPage() {
+  const { data: session } = useSession()
   const [sentLetters, setSentLetters] = useState<Letter[]>([])
   const [receivedLetters, setReceivedLetters] = useState<Letter[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -90,17 +92,29 @@ export default function DashboardPage() {
   const handleDelete = async (letterId: string) => {
     if (!confirm('Are you sure you want to delete this letter?')) return
 
+    // Optimistic update - remove immediately from UI
+    setPreviewLetter(null)
+    const prevSent = sentLetters
+    const prevReceived = receivedLetters
+    setSentLetters(prev => prev.filter(l => l.id !== letterId))
+    setReceivedLetters(prev => prev.filter(l => l.id !== letterId))
+
     try {
       const response = await fetch(`/api/letter/${letterId}`, {
         method: 'DELETE',
       })
 
-      if (response.ok) {
-        fetchLetters()
-        setPreviewLetter(null)
+      if (!response.ok) {
+        // Revert on error
+        setSentLetters(prevSent)
+        setReceivedLetters(prevReceived)
+        alert('Failed to delete letter')
       }
     } catch (error) {
       console.error('Failed to delete letter:', error)
+      setSentLetters(prevSent)
+      setReceivedLetters(prevReceived)
+      alert('Failed to delete letter')
     }
   }
 
@@ -153,20 +167,33 @@ export default function DashboardPage() {
     
     if (!confirm(`Are you sure you want to delete ${selectedLetters.size} letter(s)?`)) return
 
-    setIsDeleting(true)
+    // Optimistic update - remove immediately
+    const idsToDelete = Array.from(selectedLetters)
+    const prevSent = sentLetters
+    const prevReceived = receivedLetters
+    setSentLetters(prev => prev.filter(l => !selectedLetters.has(l.id)))
+    setReceivedLetters(prev => prev.filter(l => !selectedLetters.has(l.id)))
+    setSelectedLetters(new Set())
+
     try {
-      const deletePromises = Array.from(selectedLetters).map(letterId =>
+      const deletePromises = idsToDelete.map(letterId =>
         fetch(`/api/letter/${letterId}`, { method: 'DELETE' })
       )
       
-      await Promise.all(deletePromises)
-      await fetchLetters()
-      setSelectedLetters(new Set())
+      const results = await Promise.all(deletePromises)
+      const failed = results.filter(r => !r.ok)
+      
+      if (failed.length > 0) {
+        // Revert on error
+        setSentLetters(prevSent)
+        setReceivedLetters(prevReceived)
+        alert(`Failed to delete ${failed.length} letter(s)`)
+      }
     } catch (error) {
       console.error('Failed to delete letters:', error)
+      setSentLetters(prevSent)
+      setReceivedLetters(prevReceived)
       alert('Some letters could not be deleted')
-    } finally {
-      setIsDeleting(false)
     }
   }
 
