@@ -2,13 +2,13 @@ import { redirect, notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     code: string
-  }
+  }>
 }
 
 export default async function ShortCodeRedirect({ params }: PageProps) {
-  const { code } = params
+  const { code } = await params
 
   // Find letter by short code
   const letter = await prisma.letter.findUnique({

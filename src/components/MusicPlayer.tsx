@@ -136,18 +136,18 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
         {!isYouTube && (
           <motion.div
             animate={{ width: isExpanded ? '280px' : '56px', height: isExpanded ? 'auto' : '56px' }}
-            className="bg-white rounded-2xl shadow-2xl overflow-hidden md:w-auto"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden md:w-auto border border-gray-200 dark:border-gray-700"
           >
           {isExpanded ? (
             // Expanded Player
             <div className="p-3 md:p-4">
               <div className="flex items-center justify-between mb-2 md:mb-3">
-                <h4 className="text-xs md:text-sm font-poppins font-semibold text-ink truncate flex-1">
+                <h4 className="text-xs md:text-sm font-poppins font-semibold text-gray-900 dark:text-white truncate flex-1">
                   🎵 Now Playing
                 </h4>
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="text-gray-400 hover:text-gray-600 ml-2 text-lg"
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 ml-2 text-lg"
                 >
                   ✕
                 </button>
@@ -163,15 +163,15 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
                       max={duration || 0}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                      className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1 font-poppins">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1 font-poppins">
                       <span>{formatTime(currentTime)}</span>
                       <span>{formatTime(duration)}</span>
                     </div>
                   </>
                 ) : (
-                  <div className="text-center text-xs text-gray-500 py-2">
+                  <div className="text-center text-xs text-gray-500 dark:text-gray-400 py-2">
                     🎵 Playing from YouTube
                   </div>
                 )}
@@ -182,7 +182,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
                 {/* Play/Pause */}
                 <button
                   onClick={togglePlay}
-                  className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-pastel-pink hover:bg-pink-300 transition-colors flex items-center justify-center text-xl md:text-2xl"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-pink-400 dark:bg-pink-500 hover:bg-pink-500 dark:hover:bg-pink-600 transition-colors flex items-center justify-center text-xl md:text-2xl"
                 >
                   {isPlaying ? '⏸' : '▶️'}
                 </button>
@@ -198,7 +198,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
                       step="0.1"
                       value={volume}
                       onChange={(e) => setVolume(parseFloat(e.target.value))}
-                      className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                      className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
                     />
                   </div>
                 )}
@@ -208,7 +208,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
             // Minimized Player
             <button
               onClick={() => setIsExpanded(true)}
-              className="w-14 h-14 md:w-16 md:h-16 bg-pastel-pink hover:bg-pink-300 transition-colors flex items-center justify-center text-xl md:text-2xl rounded-2xl"
+              className="w-14 h-14 md:w-16 md:h-16 bg-pink-400 dark:bg-pink-500 hover:bg-pink-500 dark:hover:bg-pink-600 transition-colors flex items-center justify-center text-xl md:text-2xl rounded-2xl"
             >
               {isPlaying ? '🎵' : '🎵'}
             </button>
