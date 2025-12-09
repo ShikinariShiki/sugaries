@@ -620,7 +620,7 @@ export default function ComposePage() {
                 <button
                   type="submit"
                   disabled={isLoading || !recipientName.trim() || !content.trim() || (usePinProtection && !pin)}
-                  className="w-full px-4 md:px-6 py-3 md:py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 md:px-6 py-3 md:py-4 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? 'Creating...' : '🎁 Create Letter'}
                 </button>
@@ -693,7 +693,7 @@ export default function ComposePage() {
                   {isAdmin && (
                     <button
                       onClick={() => window.location.href = '/admin/dashboard'}
-                      className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all text-sm md:text-base"
+                      className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-medium transition-all text-sm md:text-base"
                     >
                       📊 Go to Dashboard
                     </button>

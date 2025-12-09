@@ -41,7 +41,7 @@ export default function MiniMusicPlayer() {
             {/* Play/Pause Button */}
             <button
               onClick={togglePlay}
-              className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 flex items-center justify-center text-white"
+              className="w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 flex items-center justify-center text-white"
             >
               {isPlaying ? "⏸" : "▶"}
             </button>

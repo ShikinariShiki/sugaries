@@ -277,7 +277,7 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
                   <button
                     type="submit"
                     disabled={isLoading || !content.trim()}
-                    className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-6 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? 'Sending...' : '📤 Send Reply'}
                   </button>
@@ -342,7 +342,7 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
                   <button
                     onClick={handleRatingSubmit}
-                    className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+                    className="w-full px-6 py-4 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
                   >
                     {rating > 0 ? 'Submit Rating ⭐' : 'Skip'}
                   </button>

@@ -17,7 +17,7 @@ export default function UserHeader() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="text-2xl">✉️</div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold text-pink-500">
               Sugaries
             </h1>
           </div>

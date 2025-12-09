@@ -44,7 +44,7 @@ export default function ClientHome({ session }: { session: any }) {
           {!session ? (
             <>
               <Link href="/auth/signin" className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
                   🔐 Sign In
                 </button>
               </Link>
@@ -52,7 +52,7 @@ export default function ClientHome({ session }: { session: any }) {
           ) : (
             <>
               <Link href="/admin/compose" className="flex-1 sm:flex-none">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-semibold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
                   ✉️ Compose a Letter
                 </button>
               </Link>

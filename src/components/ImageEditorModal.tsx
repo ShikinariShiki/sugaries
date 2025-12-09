@@ -122,7 +122,7 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
           className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-4 flex items-center justify-between">
+          <div className="bg-pink-500 p-4 flex items-center justify-between">
             <h2 className="text-xl font-bold text-white font-poppins">✂️ Edit Image</h2>
             <button
               onClick={onCancel}
@@ -230,7 +230,7 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
               <button
                 onClick={handleSave}
                 disabled={isProcessing}
-                className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessing ? '⏳ Processing...' : '✓ Save & Upload'}
               </button>

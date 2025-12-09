@@ -189,7 +189,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
             <div className="p-2 flex flex-col items-center gap-2">
               <button
                 onClick={togglePlay}
-                className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center hover:scale-105 transition-transform"
+                className="w-12 h-12 rounded-full bg-pink-500 hover:bg-pink-600 flex items-center justify-center hover:scale-105 transition-transform"
               >
                 {isPlaying ? (
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">

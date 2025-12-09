@@ -24,7 +24,7 @@ export default function SignInPage() {
             <span className="text-5xl">✉️</span>
           </motion.div>
           
-          <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mb-3">
+          <h1 className="text-5xl font-bold text-pink-500 mb-3">
             Sugaries
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 font-handwriting">
