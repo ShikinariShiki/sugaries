@@ -38,19 +38,36 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
       // Upload image file if exists
       if (imageFile) {
+        console.log('=== Reply Image Upload ===')
+        console.log('Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type)
+        
         const formData = new FormData()
         formData.append('file', imageFile)
+        console.log('FormData created:', formData.get('file'))
         
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         })
         
+        console.log('Upload response status:', uploadResponse.status)
+        
         if (uploadResponse.ok) {
           const uploadData = await uploadResponse.json()
+          console.log('Upload response data:', uploadData)
           uploadedImageUrl = uploadData.url
+          console.log('Image uploaded successfully:', uploadedImageUrl)
         } else {
-          setError('Failed to upload image')
+          const errorText = await uploadResponse.text()
+          console.error('Upload failed:', errorText)
+          let errorMessage = 'Failed to upload image'
+          try {
+            const errorData = JSON.parse(errorText)
+            errorMessage = errorData.error || errorMessage
+          } catch {
+            errorMessage = `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`
+          }
+          setError(errorMessage)
           setIsLoading(false)
           return
         }
