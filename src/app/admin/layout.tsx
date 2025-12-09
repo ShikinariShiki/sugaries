@@ -19,7 +19,7 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 ml-0 md:ml-64 p-8">
+      <main className="flex-1 ml-0 md:ml-64 p-4 md:p-6 max-w-[1600px]">
         {children}
       </main>
       <MiniMusicPlayer />

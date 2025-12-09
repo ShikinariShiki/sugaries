@@ -6,13 +6,14 @@ import { signOut } from 'next-auth/react'
 
 interface TopBarProps {
   adminName?: string
+  adminImage?: string | null
   onThemeToggle?: () => void
   isDark?: boolean
   onMobileMenuToggle?: () => void
   onSearchChange?: (query: string) => void
 }
 
-export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange }: TopBarProps) {
+export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -179,9 +180,17 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
               onClick={() => setShowProfileMenu(!showProfileMenu)}
               className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-sm">
-                {adminName.charAt(0).toUpperCase()}
-              </div>
+              {adminImage ? (
+                <img 
+                  src={adminImage} 
+                  alt={adminName}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-sm">
+                  {adminName.charAt(0).toUpperCase()}
+                </div>
+              )}
               <span className="font-medium text-sm text-gray-700 dark:text-gray-300">{adminName}</span>
               <span className="text-gray-400 text-xs">▼</span>
             </motion.button>

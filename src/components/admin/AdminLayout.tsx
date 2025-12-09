@@ -40,7 +40,8 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
     }
   }
 
-  const adminName = session?.user?.email?.split('@')[0] || 'Admin'
+  const adminName = session?.user?.name || 'User'
+  const adminImage = session?.user?.image
 
   return (
     <div className={`flex min-h-screen ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
@@ -55,6 +56,7 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
       <div className="flex-1 lg:ml-[240px] bg-gray-50 dark:bg-gray-900">{/* Top Bar */}
         <TopBar 
           adminName={adminName}
+          adminImage={adminImage}
           isDark={isDark}
           onThemeToggle={toggleTheme}
           onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

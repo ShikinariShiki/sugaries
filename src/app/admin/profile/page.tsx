@@ -2,17 +2,19 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useSession } from 'next-auth/react'
 import AdminLayout from '@/components/admin/AdminLayout'
 import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
 
 export default function ProfilePage() {
+  const { data: session } = useSession()
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
-    name: 'Admin',
-    email: 'admin@sugaries.app',
+    name: '',
+    email: '',
     avatar: '',
     currentPassword: '',
     newPassword: '',
@@ -20,27 +22,16 @@ export default function ProfilePage() {
   })
 
   useEffect(() => {
-    fetchProfile()
-  }, [])
-
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch('/api/profile')
-      if (response.ok) {
-        const data = await response.json()
-        setFormData(prev => ({
-          ...prev,
-          name: data.name || 'Admin',
-          email: data.email || 'admin@sugaries.app',
-          avatar: data.avatar || ''
-        }))
-      }
-    } catch (error) {
-      console.error('Failed to fetch profile:', error)
-    } finally {
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: session.user.name || 'User',
+        email: session.user.email || '',
+        avatar: session.user.image || ''
+      }))
       setIsLoading(false)
     }
-  }
+  }, [session])
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -50,7 +41,6 @@ export default function ProfilePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
-          email: formData.email,
           avatar: formData.avatar
         })
       })
@@ -58,8 +48,6 @@ export default function ProfilePage() {
       if (response.ok) {
         alert('✅ Profile saved successfully!')
         setIsEditing(false)
-        // Reload to update TopBar
-        window.location.reload()
       } else {
         alert('❌ Failed to save profile')
       }

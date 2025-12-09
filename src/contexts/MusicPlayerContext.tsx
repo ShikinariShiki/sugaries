@@ -40,13 +40,12 @@ type MusicPlayerContextType = {
   resetPlaylist: () => void
   crossfadeDuration: number
   setCrossfadeDuration: (duration: number) => void
-  currentPlaylist: string
-  setCurrentPlaylist: (playlist: string) => void
-  availablePlaylists: string[]
+  isMinimized: boolean
+  toggleMinimize: () => void
 }
 
-// Playlist 1: Original songs
-const playlist1: Song[] = [
+// Single playlist with all songs
+const defaultPlaylist: Song[] = [
   {
     id: "song-1",
     title: "ユメの喫茶店 (Yume no Kissaten)",
@@ -95,87 +94,72 @@ const playlist1: Song[] = [
     artist: "Tsundere Twintails",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track8-lgqHwe8ZI67oydia0AY2gtyRJ0YPKp.mp3",
   },
-]
-
-// Playlist 2: Lo-Fi/Study
-const playlist2: Song[] = [
   {
-    id: "lofi-1",
+    id: "song-9",
     title: "Bossa Break!",
     artist: "Frizk",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track9-FZsIlLkOslfPJCNIUMUKveuZldf0xI.mp3",
   },
   {
-    id: "lofi-2",
+    id: "song-10",
     title: "Shower duty",
     artist: "Meaningful Stone",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track10-hsMclXH5riT5VmZKX6tVESSxlYuBf7.mp3",
   },
   {
-    id: "lofi-3",
+    id: "song-11",
     title: "nero",
     artist: "フレネシ",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track11-urtJFDxw2AlfXZVJjV72FqDuIJACiB.mp3",
   },
   {
-    id: "lofi-4",
+    id: "song-12",
     title: "from the start",
     artist: "j1ggs",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track12-gRqfqofQCSoTCjA1pLnLATNijLaSmV.mp3",
   },
   {
-    id: "lofi-5",
+    id: "song-13",
     title: "the cat from ipanema",
     artist: "j1ggs",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track13-MTNQYyHAummXGrHxcQmsfto1LPlCj6.mp3",
   },
-]
-
-// Playlist 3: Nature/Ambient
-const playlist3: Song[] = [
   {
-    id: "nature-1",
+    id: "song-14",
     title: "silliest of them all",
     artist: "xylz",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track14-Fs3Ovlt5l4eiNDAqpJAdf90QPFBM0h.mp3",
   },
   {
-    id: "nature-2",
+    id: "song-15",
     title: "Falling Behind",
     artist: "Laufey",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track15-ZrcnI0c2Vvz4BvlY9fDjke50azgVxp.mp3",
   },
   {
-    id: "nature-3",
+    id: "song-16",
     title: "Patty no Theme",
     artist: "Satoru Kōsaki",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track16-rWNW1CluTgjARgiVI9GEfKe2bgMF5r.mp3",
   },
   {
-    id: "nature-4",
+    id: "song-17",
     title: "2:23 AM",
     artist: "しゃろう",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track17-6v9CiFHs3eLWi0YmGbydgBUFkOCFXV.mp3",
   },
   {
-    id: "nature-5",
+    id: "song-18",
     title: "Treat",
     artist: "Kyatto",
     src: "https://xri1xbwynlfpuw7m.public.blob.vercel-storage.com/track18-kb7vG1Ao3glrs1cZOnCAeKl5j5k88D.mp3",
   },
 ]
 
-const playlists: Record<string, Song[]> = {
-  playlist1,
-  playlist2,
-  playlist3,
-}
-
 const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined)
 
 export function MusicPlayerProvider({ children }: { children: React.ReactNode }) {
-  const [currentPlaylist, setCurrentPlaylist] = useState<string>("playlist1")
-  const [songs, setSongs] = useState<Song[]>([...playlists[currentPlaylist]])
+  const [songs, setSongs] = useState<Song[]>([...defaultPlaylist])
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentSongIndex, setCurrentSongIndex] = useState(0)
   const [volume, setVolume] = useState(0.7)
@@ -191,10 +175,14 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   const [isFirstLoad, setIsFirstLoad] = useState(true)
   const [nextAudioRef, setNextAudioRef] = useState<HTMLAudioElement | null>(null)
   const [crossfadeDuration, setCrossfadeDuration] = useState(3)
-  const availablePlaylists = Object.keys(playlists)
+  const [isMinimized, setIsMinimized] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized)
+  }
 
   const reorderSongs = (fromIndex: number, toIndex: number) => {
     const updatedSongs = [...songs]
@@ -217,30 +205,15 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
 
   const resetPlaylist = () => {
     const currentSong = songs[currentSongIndex]
-    setSongs([...playlists[currentPlaylist]])
+    setSongs([...defaultPlaylist])
 
-    const newIndex = playlists[currentPlaylist].findIndex((song) => song.id === currentSong.id)
+    const newIndex = defaultPlaylist.findIndex((song) => song.id === currentSong.id)
     if (newIndex !== -1) {
       setCurrentSongIndex(newIndex)
     } else {
       setCurrentSongIndex(0)
     }
   }
-
-  useEffect(() => {
-    const wasPlaying = isPlaying
-    setSongs([...playlists[currentPlaylist]])
-    setCurrentSongIndex(0)
-
-    if (audioRef.current && wasPlaying) {
-      audioRef.current.src = playlists[currentPlaylist][0].src
-      audioRef.current.load()
-      audioRef.current.play().catch((err) => {
-        console.error("Failed to play after playlist change:", err)
-        setIsPlaying(false)
-      })
-    }
-  }, [currentPlaylist])
 
   const fadeIn = () => {
     if (!audioRef.current) return
@@ -637,13 +610,12 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
         toggleMute,
         error,
         reorderSongs,
-        originalSongs: playlists[currentPlaylist],
+        originalSongs: defaultPlaylist,
         resetPlaylist,
         crossfadeDuration,
         setCrossfadeDuration,
-        currentPlaylist,
-        setCurrentPlaylist,
-        availablePlaylists,
+        isMinimized,
+        toggleMinimize,
       }}
     >
       {children}
@@ -672,7 +644,7 @@ export function useMusicPlayer() {
       toggleShuffle: () => {},
       nextSong: () => {},
       prevSong: () => {},
-      songs: playlists.playlist1,
+      songs: defaultPlaylist,
       setSongs: () => {},
       audioRef: { current: null },
       showQueue: false,
@@ -681,13 +653,12 @@ export function useMusicPlayer() {
       toggleMute: () => {},
       error: null,
       reorderSongs: () => {},
-      originalSongs: playlists.playlist1,
+      originalSongs: defaultPlaylist,
       resetPlaylist: () => {},
       crossfadeDuration: 3,
       setCrossfadeDuration: () => {},
-      currentPlaylist: "playlist1",
-      setCurrentPlaylist: () => {},
-      availablePlaylists: Object.keys(playlists),
+      isMinimized: false,
+      toggleMinimize: () => {},
     }
   }
 
