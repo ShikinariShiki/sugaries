@@ -84,8 +84,16 @@ export default function ComposePage() {
           uploadedImageUrl = uploadData.url
           console.log('Image uploaded successfully:', uploadedImageUrl)
         } else {
-          console.error('Upload failed:', await uploadResponse.text())
-          setError('Failed to upload image')
+          const errorText = await uploadResponse.text()
+          console.error('Upload failed:', errorText)
+          let errorMessage = 'Failed to upload image'
+          try {
+            const errorData = JSON.parse(errorText)
+            errorMessage = errorData.error || errorMessage
+          } catch {
+            errorMessage = `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`
+          }
+          setError(errorMessage)
           setIsLoading(false)
           return
         }
