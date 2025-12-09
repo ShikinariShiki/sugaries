@@ -7,12 +7,14 @@ import TopBar from './TopBar'
 
 interface AdminLayoutProps {
   children: React.ReactNode
+  onSearchChange?: (query: string) => void
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout({ children, onSearchChange }: AdminLayoutProps) {
   const router = useRouter()
   const [isDark, setIsDark] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [adminName, setAdminName] = useState('Admin')
 
   // Load dark mode preference from localStorage
   useEffect(() => {
@@ -21,7 +23,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       setIsDark(true)
       document.documentElement.classList.add('dark')
     }
+
+    // Fetch admin profile
+    fetchProfile()
   }, [])
+
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch('/api/profile')
+      if (response.ok) {
+        const data = await response.json()
+        setAdminName(data.name || 'Admin')
+      }
+    } catch (error) {
+      console.error('Failed to fetch profile:', error)
+    }
+  }
 
   const handleLogout = async () => {
     try {
@@ -58,10 +75,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:ml-[240px] bg-gray-50 dark:bg-gray-900">{/* Top Bar */}
         <TopBar 
-          adminName="Admin"
+          adminName={adminName}
           isDark={isDark}
           onThemeToggle={toggleTheme}
           onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onSearchChange={onSearchChange}
         />
 
         {/* Page Content */}

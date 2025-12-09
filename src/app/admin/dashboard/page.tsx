@@ -37,6 +37,7 @@ export default function DashboardPage() {
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [selectedLetters, setSelectedLetters] = useState<Set<string>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     fetchLetters(true) // Initial fetch with loading state
@@ -133,8 +134,8 @@ export default function DashboardPage() {
   }
 
   const toggleSelectAll = () => {
-    const currentLetters = activeTab === 'sent' ? sentLetters : receivedLetters
-    if (selectedLetters.size === currentLetters.length) {
+    const currentLetters = activeTab === 'sent' ? filteredSentLetters : filteredReceivedLetters
+    if (selectedLetters.size === currentLetters.length && currentLetters.length > 0) {
       setSelectedLetters(new Set())
     } else {
       setSelectedLetters(new Set(currentLetters.map(l => l.id)))
@@ -174,8 +175,24 @@ export default function DashboardPage() {
     ? (ratingsFromReplies.reduce((sum, rating) => sum + rating, 0) / ratingsFromReplies.length).toFixed(1)
     : null
 
+  // Filter letters based on search query
+  const filterLetters = (letters: Letter[]) => {
+    if (!searchQuery.trim()) return letters
+    
+    const query = searchQuery.toLowerCase()
+    return letters.filter(letter => 
+      letter.recipientName?.toLowerCase().includes(query) ||
+      letter.senderName?.toLowerCase().includes(query) ||
+      letter.content?.toLowerCase().includes(query)
+    )
+  }
+
+  const filteredSentLetters = filterLetters(sentLetters)
+  const filteredReceivedLetters = filterLetters(receivedLetters)
+  const currentLetters = activeTab === 'sent' ? filteredSentLetters : filteredReceivedLetters
+
   return (
-    <AdminLayout>
+    <AdminLayout onSearchChange={setSearchQuery}>
       <div className="max-w-7xl">
         {/* Page Header */}
         <motion.div
@@ -353,41 +370,47 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {activeTab === 'sent' && sentLetters.length === 0 && (
+            {activeTab === 'sent' && filteredSentLetters.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 text-center"
               >
-                <div className="text-6xl mb-4">✉️</div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">No letters sent yet</h3>
+                <div className="text-6xl mb-4">{searchQuery ? '🔍' : '✉️'}</div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">
+                  {searchQuery ? 'No letters found' : 'No letters sent yet'}
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-6 font-poppins">
-                  Start by composing your first letter!
+                  {searchQuery ? 'Try a different search term' : 'Start by composing your first letter!'}
                 </p>
-                <Link href="/admin/compose">
-                  <SquishButton variant="primary" size="lg">
-                    ✉️ Compose First Letter
-                  </SquishButton>
-                </Link>
+                {!searchQuery && (
+                  <Link href="/admin/compose">
+                    <SquishButton variant="primary" size="lg">
+                      ✉️ Compose First Letter
+                    </SquishButton>
+                  </Link>
+                )}
               </motion.div>
             )}
 
-            {activeTab === 'received' && receivedLetters.length === 0 && (
+            {activeTab === 'received' && filteredReceivedLetters.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 md:p-12 text-center"
               >
-                <div className="text-6xl mb-4">📭</div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">No letters received yet</h3>
+                <div className="text-6xl mb-4">{searchQuery ? '🔍' : '📭'}</div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-poppins">
+                  {searchQuery ? 'No letters found' : 'No letters received yet'}
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400 font-poppins">
-                  Letters sent to you will appear here.
+                  {searchQuery ? 'Try a different search term' : 'Letters sent to you will appear here.'}
                 </p>
               </motion.div>
             )}
 
             {activeTab === 'sent' &&
-              sentLetters.map((letter, index) => (
+              filteredSentLetters.map((letter, index) => (
                 <motion.div
                   key={letter.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -462,7 +485,7 @@ export default function DashboardPage() {
               ))}
 
             {activeTab === 'received' &&
-              receivedLetters.map((letter, index) => (
+              filteredReceivedLetters.map((letter, index) => (
                 <motion.div
                   key={letter.id}
                   initial={{ opacity: 0, x: -20 }}
