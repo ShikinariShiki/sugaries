@@ -177,9 +177,40 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
         {/* Player */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden w-80 border border-pink-500/20"
+          animate={{ 
+            opacity: 1, 
+            y: 0,
+            width: isMinimized ? '64px' : '320px'
+          }}
+          className="bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden border border-pink-500/20"
         >
+          {isMinimized ? (
+            // Ultra Minimized - Just play/pause button
+            <div className="p-2 flex flex-col items-center gap-2">
+              <button
+                onClick={togglePlay}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center hover:scale-105 transition-transform"
+              >
+                {isPlaying ? (
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
+              </button>
+              <button
+                onClick={() => setIsMinimized(false)}
+                className="w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/70 text-xs"
+                title="Expand player"
+              >
+                ↑
+              </button>
+            </div>
+          ) : (
+            <>
           {/* Now Playing */}
           <div className="px-4 py-3 border-b border-white/10">
             <div className="flex items-center justify-between mb-1">
