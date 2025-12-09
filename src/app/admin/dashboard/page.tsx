@@ -514,7 +514,11 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex gap-2 w-full md:w-auto md:flex-col">
                           <button 
-                            onClick={() => setPreviewLetter(letter)}
+                            onClick={() => {
+                              console.log('Preview letter data:', letter)
+                              console.log('PIN:', letter.pin, 'Image:', letter.imageUrl)
+                              setPreviewLetter(letter)
+                            }}
                             className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
                           >
                             👁️ Preview
@@ -627,12 +631,19 @@ export default function DashboardPage() {
 
                   {/* Image Preview */}
                   {previewLetter.imageUrl && (
-                    <div className="mb-4 rounded-xl overflow-hidden shadow-lg">
+                    <div className="mb-4 rounded-xl overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-800">
                       <img 
                         src={previewLetter.imageUrl} 
                         alt="Letter attachment" 
                         className="w-full h-auto object-contain"
                         style={{ maxHeight: '300px' }}
+                        onError={(e) => {
+                          console.error('Failed to load image:', previewLetter.imageUrl)
+                          const target = e.target as HTMLImageElement
+                          target.style.display = 'none'
+                          target.parentElement!.innerHTML = '<div class="p-4 text-center text-red-500">❌ Image failed to load</div>'
+                        }}
+                        onLoad={() => console.log('Image loaded:', previewLetter.imageUrl)}
                       />
                     </div>
                   )}
