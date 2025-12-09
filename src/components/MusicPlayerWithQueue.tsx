@@ -25,6 +25,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [showQueue, setShowQueue] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
   const [queue, setQueue] = useState<Song[]>(songs)
 
   const currentSong = queue[currentSongIndex]
@@ -185,20 +186,32 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
               <h3 className="text-sm font-medium text-pink-400 truncate flex-1">
                 {currentSong?.title || 'No Song'}
               </h3>
-              <button
-                onClick={() => setShowQueue(!showQueue)}
-                className="ml-2 text-white/50 hover:text-white/90 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowQueue(!showQueue)}
+                  className="text-white/50 hover:text-white/90 transition-colors"
+                  title="Toggle queue"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setIsMinimized(!isMinimized)}
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white text-sm font-bold transition-colors"
+                  title="Minimize player"
+                >
+                  −
+                </button>
+              </div>
             </div>
             <div className="text-xs text-white/50">
               {currentSong?.artist || 'Unknown Artist'}
             </div>
           </div>
 
+          {!isMinimized && (
+            <>
           {/* Progress Bar */}
           <div className="px-4 py-3">
             <div className="flex items-center justify-between text-xs text-white/50 mb-2">
@@ -285,6 +298,8 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
               </svg>
             </button>
           </div>
+            </>
+          )}
         </motion.div>
       </div>
     </>
