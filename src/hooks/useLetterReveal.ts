@@ -138,9 +138,41 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
     }
   }, [letterId])
 
-  const openEnvelope = useCallback(() => {
-    dispatch({ type: 'OPEN_ENVELOPE' })
-  }, [])
+  const openEnvelope = useCallback(async () => {
+    // First, try to open without PIN (for non-protected letters)
+    try {
+      const response = await fetch(`/api/letter/unlock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ letterId, pin: '' }), // Empty PIN for non-protected letters
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Letter is not PIN protected, go straight to reading
+        dispatch({ 
+          type: 'PIN_VERIFIED', 
+          payload: { 
+            content: data.content,
+            musicUrl: data.musicUrl,
+            imageUrl: data.imageUrl,
+            letterColor: data.letterColor,
+            letterFont: data.letterFont,
+            senderName: data.senderName,
+            pinHash: data.pinHash,
+            recipientName: data.recipientName,
+          } 
+        })
+      } else {
+        // Letter is PIN protected, go to PIN check
+        dispatch({ type: 'OPEN_ENVELOPE' })
+      }
+    } catch (error) {
+      // If there's an error, assume PIN is required
+      dispatch({ type: 'OPEN_ENVELOPE' })
+    }
+  }, [letterId])
 
   const verifyPin = useCallback(async (pin: string) => {
     dispatch({ type: 'VERIFY_PIN', payload: { pin } })
