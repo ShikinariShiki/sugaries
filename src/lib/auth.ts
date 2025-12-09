@@ -17,13 +17,6 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }) {
       return true
     },
-    async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id
-        session.user.role = ADMIN_EMAILS.includes(user.email || "") ? "admin" : "user"
-      }
-      return session
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
@@ -31,12 +24,12 @@ export const authOptions: NextAuthOptions = {
       }
       return token
     },
-    async redirect({ url, baseUrl }) {
-      // After sign in, redirect to dashboard
-      if (url === baseUrl || url.startsWith(baseUrl + '/auth')) {
-        return baseUrl + '/admin/dashboard'
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string
+        session.user.role = token.role as string
       }
-      return url
+      return session
     },
   },
   pages: {
@@ -44,7 +37,7 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error',
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
 }
