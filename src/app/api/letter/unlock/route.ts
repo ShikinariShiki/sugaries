@@ -6,9 +6,9 @@ export async function POST(request: NextRequest) {
   try {
     const { letterId, pin } = await request.json()
 
-    if (!letterId || !pin) {
+    if (!letterId) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Letter ID is required' },
         { status: 400 }
       )
     }
@@ -36,10 +36,49 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if letter has PIN protection
+    // If letter has no PIN protection, allow access without PIN check
     if (!letter.pinHash) {
+      // Mark letter as opened (first time only)
+      if (!letter.isOpened) {
+        await prisma.letter.update({
+          where: { id: letterId },
+          data: { isOpened: true },
+        })
+
+        // Send email notification
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/notify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'opened',
+              letterData: {
+                letterId: letter.id,
+                recipientName: letter.recipientName,
+              },
+            }),
+          })
+        } catch (emailError) {
+          console.error('Failed to send email notification:', emailError)
+        }
+      }
+
+      // Return content immediately for non-protected letters
+      return NextResponse.json({
+        content: letter.content,
+        musicUrl: letter.musicUrl || null,
+        imageUrl: letter.imageUrl || null,
+        letterColor: letter.letterColor || 'mint',
+        letterFont: letter.letterFont || 'handwriting',
+        recipientName: letter.recipientName,
+        pinHash: null,
+      })
+    }
+
+    // For PIN-protected letters, require PIN
+    if (!pin) {
       return NextResponse.json(
-        { error: 'This letter is not PIN protected' },
+        { error: 'PIN is required for this letter' },
         { status: 400 }
       )
     }

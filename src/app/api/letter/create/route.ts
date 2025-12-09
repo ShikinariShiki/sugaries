@@ -30,8 +30,14 @@ export async function POST(request: NextRequest) {
     // Hash the PIN
     const pinHash = await bcrypt.hash(pin, 10)
     
-    // Generate unique short code
-    const shortCode = await generateUniqueShortCode()
+    // Generate unique short code (try-catch to handle if column doesn't exist yet)
+    let shortCode: string | undefined
+    try {
+      shortCode = await generateUniqueShortCode()
+    } catch (error) {
+      console.log('Short code generation failed (column may not exist yet):', error)
+      shortCode = undefined
+    }
 
     // Create the letter linked to the user
     const letter = await prisma.letter.create({
@@ -40,7 +46,7 @@ export async function POST(request: NextRequest) {
         pinHash,
         pin, // Store plain PIN for admin viewing
         content,
-        shortCode, // Add short code
+        ...(shortCode && { shortCode }), // Only add if generation succeeded
         musicUrl: musicUrl || null,
         musicTitle: musicTitle || null,
         musicArtist: musicArtist || null,
@@ -60,12 +66,12 @@ export async function POST(request: NextRequest) {
 
     console.log('Letter created:', letter)
 
-    // Return the letter ID and short code
+    // Return the letter ID and short code (if available)
     return NextResponse.json({
       letterId: letter.id,
-      shortCode: letter.shortCode,
+      shortCode: letter.shortCode || null,
       url: `/letter/${letter.id}`,
-      shortUrl: `/${letter.shortCode}`,
+      shortUrl: letter.shortCode ? `/${letter.shortCode}` : null,
     })
   } catch (error) {
     console.error('Create letter error:', error)
