@@ -145,9 +145,10 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
                 </h4>
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 ml-2 text-lg"
+                  className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold transition-colors"
+                  aria-label="Minimize player"
                 >
-                  ✕
+                  −
                 </button>
               </div>
 
