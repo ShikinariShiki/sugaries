@@ -34,40 +34,27 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
     setIsLoading(true)
 
     try {
-      let uploadedImageUrl = imageUrl
+      let uploadedImageUrl = ''
 
-      // Upload image file if exists
+      // Convert image to base64 if exists
       if (imageFile) {
-        console.log('=== Reply Image Upload ===')
+        console.log('=== Reply Image Processing ===')
         console.log('Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type)
         
-        const formData = new FormData()
-        formData.append('file', imageFile)
-        console.log('FormData created:', formData.get('file'))
-        
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-        
-        console.log('Upload response status:', uploadResponse.status)
-        
-        if (uploadResponse.ok) {
-          const uploadData = await uploadResponse.json()
-          console.log('Upload response data:', uploadData)
-          uploadedImageUrl = uploadData.url
-          console.log('Image uploaded successfully:', uploadedImageUrl)
-        } else {
-          const errorText = await uploadResponse.text()
-          console.error('Upload failed:', errorText)
-          let errorMessage = 'Failed to upload image'
-          try {
-            const errorData = JSON.parse(errorText)
-            errorMessage = errorData.error || errorMessage
-          } catch {
-            errorMessage = `Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`
-          }
-          setError(errorMessage)
+        try {
+          // Convert to base64 directly
+          const reader = new FileReader()
+          const base64Promise = new Promise<string>((resolve, reject) => {
+            reader.onload = () => resolve(reader.result as string)
+            reader.onerror = reject
+            reader.readAsDataURL(imageFile)
+          })
+          
+          uploadedImageUrl = await base64Promise
+          console.log('Image converted to base64, length:', uploadedImageUrl.length)
+        } catch (error) {
+          console.error('Failed to convert image:', error)
+          setError('Failed to process image')
           setIsLoading(false)
           return
         }
