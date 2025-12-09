@@ -327,6 +327,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
               </svg>
             </button>
           </div>
+          </>
           )}
         </motion.div>
       </div>
