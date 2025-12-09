@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('=== Fetching letters ===')
     // TODO: Add authentication to track user's letters
     // For now, returning all letters (you'll need to add user auth later)
     
@@ -30,9 +31,15 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    console.log('Total letters found:', allLetters.length)
+
     // Split between sent (original letters) and received (replies)
     const sentLetters = allLetters.filter(letter => !letter.isReply || letter.isReply === null)
     const receivedLetters = allLetters.filter(letter => letter.isReply === true)
+
+    console.log('Sent letters:', sentLetters.length)
+    console.log('Received letters (replies):', receivedLetters.length)
+    console.log('Reply details:', receivedLetters.map(l => ({ id: l.id, sender: l.senderName, isReply: l.isReply, hasImage: !!l.imageUrl, rating: l.rating })))
 
     return NextResponse.json({
       sent: sentLetters,

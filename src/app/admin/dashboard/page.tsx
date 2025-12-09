@@ -58,9 +58,15 @@ export default function DashboardPage() {
       const response = await fetch('/api/letter/list')
       const data = await response.json()
       
+      console.log('=== Dashboard Fetch ===')
+      console.log('Response OK:', response.ok)
+      console.log('Sent letters:', data.sent?.length || 0)
+      console.log('Received letters:', data.received?.length || 0)
+      
       if (response.ok) {
         setSentLetters(data.sent || [])
         setReceivedLetters(data.received || [])
+        console.log('State updated - Sent:', data.sent?.length, 'Received:', data.received?.length)
       }
     } catch (error) {
       console.error('Failed to fetch letters:', error)
