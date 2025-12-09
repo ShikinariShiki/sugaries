@@ -219,7 +219,15 @@ export default function ProfilePage() {
                       size="md"
                       onClick={() => {
                         setIsEditing(false)
-                        fetchProfile() // Reset form
+                        // Reset form to session data
+                        if (session?.user) {
+                          setFormData(prev => ({
+                            ...prev,
+                            name: session.user.name || 'User',
+                            email: session.user.email || '',
+                            avatar: session.user.image || ''
+                          }))
+                        }
                       }}
                       className="flex-1"
                       disabled={isSaving}
