@@ -12,9 +12,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
   
-  // If not admin, redirect to home
+  // Allow compose page for all authenticated users
+  if (req.nextUrl.pathname === '/admin/compose') {
+    return NextResponse.next()
+  }
+  
+  // All other admin pages require admin role
   if (token.role !== 'admin') {
-    return NextResponse.redirect(new URL('/', req.url))
+    return NextResponse.redirect(new URL('/admin/compose', req.url))
   }
   
   return NextResponse.next()

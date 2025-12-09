@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
@@ -28,6 +29,8 @@ const FONT_OPTIONS = [
 ]
 
 export default function ComposePage() {
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.role === 'admin'
   const [step, setStep] = useState<'compose' | 'success'>('compose')
   const [recipientName, setRecipientName] = useState('')
   const [content, setContent] = useState('')
@@ -196,20 +199,19 @@ export default function ComposePage() {
     setTempImageSrc('')
   }
 
-  return (
-    <AdminLayout>
-      <div className="max-w-4xl mx-auto">
-        <AnimatePresence mode="wait">
-          {step === 'compose' && (
-            <motion.div
-              key="compose"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {/* Page Header */}
-              <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Compose a Letter</h1>
+  const composeContent = (
+    <div className="max-w-4xl mx-auto">
+      <AnimatePresence mode="wait">
+        {step === 'compose' && (
+          <motion.div
+            key="compose"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            {/* Page Header */}
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Compose a Letter</h1>
                 <p className="text-gray-600 dark:text-gray-400">Send a secret, beautiful message ✨</p>
               </div>
 
@@ -606,12 +608,14 @@ export default function ComposePage() {
                   >
                     ✉️ Create Another Letter
                   </button>
-                  <button
-                    onClick={() => window.location.href = '/admin/dashboard'}
-                    className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all text-sm md:text-base"
-                  >
-                    📊 Go to Dashboard
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => window.location.href = '/admin/dashboard'}
+                      className="flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-medium transition-all text-sm md:text-base"
+                    >
+                      📊 Go to Dashboard
+                    </button>
+                  )}
                 </div>
               </motion.div>
             </PaperCard>
@@ -629,7 +633,8 @@ export default function ComposePage() {
           />
         )}
       </AnimatePresence>
-      </div>
-    </AdminLayout>
+    </div>
   )
+
+  return isAdmin ? <AdminLayout>{composeContent}</AdminLayout> : composeContent
 }

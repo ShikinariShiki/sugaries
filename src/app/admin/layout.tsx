@@ -1,8 +1,6 @@
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { authOptions } from "@/lib/auth"
-import Sidebar from "@/components/admin/Sidebar"
-import MiniMusicPlayer from "@/components/MiniMusicPlayer"
 
 export default async function AdminLayout({
   children,
@@ -11,18 +9,11 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession(authOptions)
 
-  // Only allow admins to access admin routes
-  if (!session || session.user.role !== 'admin') {
+  // Require authentication
+  if (!session) {
     redirect('/auth/signin')
   }
 
-  return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 ml-0 md:ml-64 p-4 md:p-6 max-w-[1600px]">
-        {children}
-      </main>
-      <MiniMusicPlayer />
-    </div>
-  )
+  // This layout is handled by individual pages or middleware
+  return <>{children}</>
 }
