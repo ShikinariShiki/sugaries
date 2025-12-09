@@ -6,12 +6,15 @@ import { useSession } from 'next-auth/react'
 import AdminLayout from '@/components/admin/AdminLayout'
 import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
+import ImageCropper from '@/components/ImageCropper'
 
 export default function ProfilePage() {
   const { data: session } = useSession()
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [showCropper, setShowCropper] = useState(false)
+  const [tempImage, setTempImage] = useState('')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -69,24 +72,40 @@ export default function ProfilePage() {
       return
     }
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Image size must be less than 2MB')
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image size must be less than 10MB')
       return
     }
 
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
+    // Read file as data URL for cropper
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setTempImage(reader.result as string)
+      setShowCropper(true)
+    }
+    reader.readAsDataURL(file)
+  }
 
-      const response = await fetch('/api/upload', {
+  const handleCropComplete = async (croppedImage: string) => {
+    try {
+      // Convert base64 to blob
+      const response = await fetch(croppedImage)
+      const blob = await response.blob()
+      
+      const formData = new FormData()
+      formData.append('file', blob, 'avatar.jpg')
+
+      const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         body: formData
       })
 
-      if (response.ok) {
-        const data = await response.json()
+      if (uploadResponse.ok) {
+        const data = await uploadResponse.json()
         setFormData(prev => ({ ...prev, avatar: data.url }))
+        setShowCropper(false)
+        setTempImage('')
         alert('✅ Avatar uploaded!')
       } else {
         alert('❌ Failed to upload avatar')
@@ -302,6 +321,18 @@ export default function ProfilePage() {
           </>
         )}
       </div>
+
+      {/* Image Cropper Modal */}
+      {showCropper && (
+        <ImageCropper
+          imageSrc={tempImage}
+          onCropComplete={handleCropComplete}
+          onCancel={() => {
+            setShowCropper(false)
+            setTempImage('')
+          }}
+        />
+      )}
     </AdminLayout>
   )
 }

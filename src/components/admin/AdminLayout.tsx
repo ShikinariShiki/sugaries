@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import MiniMusicPlayer from '@/components/MiniMusicPlayer'
+import OnboardingFlow from '@/components/OnboardingFlow'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -17,6 +18,33 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
   const { data: session } = useSession()
   const [isDark, setIsDark] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true)
+
+  // Check onboarding status
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      if (!session?.user?.email) {
+        setIsCheckingOnboarding(false)
+        return
+      }
+
+      try {
+        const response = await fetch('/api/check-onboarding')
+        const data = await response.json()
+        
+        if (!data.isOnboarded) {
+          setShowOnboarding(true)
+        }
+      } catch (error) {
+        console.error('Failed to check onboarding:', error)
+      } finally {
+        setIsCheckingOnboarding(false)
+      }
+    }
+
+    checkOnboarding()
+  }, [session])
 
   // Load dark mode preference from localStorage
   useEffect(() => {
@@ -43,8 +71,24 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
   const adminName = session?.user?.name || 'User'
   const adminImage = session?.user?.image
 
+  if (isCheckingOnboarding) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    )
+  }
+
   return (
     <div className={`flex min-h-screen ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Onboarding Modal */}
+      {showOnboarding && (
+        <OnboardingFlow 
+          userName={adminName}
+          userEmail={session?.user?.email || ''}
+        />
+      )}
+
       {/* Sidebar */}
       <Sidebar 
         isDark={isDark}

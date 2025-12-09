@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react'
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Branding */}
@@ -15,7 +15,7 @@ export default function SignInPage() {
         
         <div className="relative z-10 text-center max-w-md">
           <div className="mb-8">
-            <div className="w-32 h-32 mx-auto mb-6 bg-white rounded-3xl flex items-center justify-center shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-300">
+            <div className="w-32 h-32 mx-auto mb-6 bg-white rounded-3xl flex items-center justify-center shadow-2xl transform -rotate-6 hover:rotate-0 transition-transform duration-300">
               <span className="text-6xl">✉️</span>
             </div>
           </div>
@@ -55,7 +55,7 @@ export default function SignInPage() {
         </div>
       </div>
 
-      {/* Right Side - Sign In Form */}
+      {/* Right Side - Sign Up Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-gray-900">
         <div className="w-full max-w-md">
           <div className="text-center mb-8 lg:hidden">
@@ -65,8 +65,8 @@ export default function SignInPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sign In</h2>
-            <p className="text-gray-600 dark:text-gray-400">Enter your email and password to sign in!</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sign Up</h2>
+            <p className="text-gray-600 dark:text-gray-400">Enter your email and password to sign up!</p>
           </div>
 
           <button
@@ -87,6 +87,29 @@ export default function SignInPage() {
           </div>
 
           <form className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="John"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Doe"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email
@@ -109,28 +132,36 @@ export default function SignInPage() {
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded border-gray-300" />
-                <span className="text-gray-700 dark:text-gray-300">Keep me logged in</span>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Confirm Password
               </label>
-              <Link href="/auth/forgot-password" className="text-blue-600 dark:text-blue-400 hover:underline">
-                Forgot Password?
-              </Link>
+              <input
+                type="password"
+                placeholder="Re-enter your password"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="terms" className="rounded border-gray-300" />
+              <label htmlFor="terms" className="text-sm text-gray-700 dark:text-gray-300">
+                Keep me logged in
+              </label>
             </div>
 
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-3.5 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              Sign In
+              Sign Up
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            Not registered yet?{' '}
-            <Link href="/auth/signup" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
-              Create an account
+            Already have an account?{' '}
+            <Link href="/auth/signin" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
+              Sign In
             </Link>
           </p>
 
