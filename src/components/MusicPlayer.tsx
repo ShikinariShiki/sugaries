@@ -35,7 +35,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   const [volume, setVolume] = useState(0.7)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
   
   const processedUrl = processYouTubeUrl(musicUrl)
   const isYouTube = processedUrl.type === 'youtube'
@@ -112,9 +112,8 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     <>
       {!isYouTube && <audio ref={audioRef} loop src={musicUrl} />}
       
-      {/* YouTube player fixed at bottom right corner */}
-      {isYouTube && (
-        <div className="fixed bottom-4 right-4 z-50 w-48 md:w-56">
+      {isYouTube && isExpanded && (
+        <div className="fixed bottom-24 right-4 z-50 w-48 md:w-56">
           <div className="bg-black/95 backdrop-blur-sm rounded-lg overflow-hidden shadow-2xl border-2 border-pink-500/30">
             <iframe
               ref={iframeRef}
@@ -133,11 +132,10 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
         animate={{ y: 0, opacity: 1 }}
         className="fixed bottom-4 right-4 z-50"
       >
-        {!isYouTube && (
-          <motion.div
-            animate={{ width: isExpanded ? '280px' : '56px', height: isExpanded ? 'auto' : '56px' }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden md:w-auto border border-gray-200 dark:border-gray-700"
-          >
+        <motion.div
+          animate={{ width: isExpanded ? '280px' : '56px', height: isExpanded ? 'auto' : '56px' }}
+          className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden md:w-auto border border-gray-200 dark:border-gray-700"
+        >
           {isExpanded ? (
             // Expanded Player
             <div className="p-3 md:p-4">
@@ -212,9 +210,8 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
             >
               {isPlaying ? '🎵' : '🎵'}
             </button>
-          )}
-          </motion.div>
-        )}
+          )}}
+        </motion.div>
       </motion.div>
     </>
   )
