@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Quicksand, Poppins, Kalam, Pacifico, Dancing_Script, Satisfy, Indie_Flower, Shadows_Into_Light } from 'next/font/google'
 import './globals.css'
 import AuthProvider from '@/components/AuthProvider'
+import { MusicPlayerProvider } from '@/contexts/MusicPlayerContext'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -74,7 +75,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${quicksand.variable} ${poppins.variable} ${kalam.variable} ${pacifico.variable} ${dancingScript.variable} ${satisfy.variable} ${indieFlower.variable} ${shadowsIntoLight.variable} font-sans antialiased`}>
         <AuthProvider>
-          {children}
+          <MusicPlayerProvider>
+            {children}
+          </MusicPlayerProvider>
         </AuthProvider>
       </body>
     </html>

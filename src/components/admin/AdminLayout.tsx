@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
+import MiniMusicPlayer from '@/components/MiniMusicPlayer'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -64,6 +65,9 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
         <main className={`p-4 lg:p-6 ${isDark ? 'dark' : ''}`}>
           {children}
         </main>
+
+        {/* Music Player */}
+        <MiniMusicPlayer />
       </div>
     </div>
   )

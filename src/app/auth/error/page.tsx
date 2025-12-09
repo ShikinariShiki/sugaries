@@ -1,11 +1,7 @@
-'use client'
-
-import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import Link from 'next/link'
 
-export default function ErrorPage() {
-  const searchParams = useSearchParams()
-  const error = searchParams.get('error')
+function ErrorContent({ error }: { error: string | null }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 dark:from-gray-900 dark:via-purple-900 dark:to-gray-900">
@@ -30,5 +26,13 @@ export default function ErrorPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ErrorPage({ searchParams }: { searchParams: { error?: string } }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ErrorContent error={searchParams.error || null} />
+    </Suspense>
   )
 }
