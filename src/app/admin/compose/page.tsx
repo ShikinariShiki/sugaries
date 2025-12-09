@@ -33,9 +33,12 @@ export default function ComposePage() {
   const { data: session } = useSession()
   const isAdmin = session?.user?.role === 'admin'
   const [step, setStep] = useState<'compose' | 'success'>('compose')
+  const [senderName, setSenderName] = useState('')
   const [recipientName, setRecipientName] = useState('')
   const [content, setContent] = useState('')
   const [pin, setPin] = useState('')
+  const [usePinProtection, setUsePinProtection] = useState(true)
+  const [customShortCode, setCustomShortCode] = useState('')
   const [musicUrl, setMusicUrl] = useState('')
   const [musicSource, setMusicSource] = useState<'youtube' | 'local' | 'preset'>('preset')
   const [selectedSong, setSelectedSong] = useState('')
@@ -48,6 +51,7 @@ export default function ComposePage() {
   const [showEditor, setShowEditor] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [letterUrl, setLetterUrl] = useState('')
+  const [shortUrl, setShortUrl] = useState('')
   const [error, setError] = useState('')
   const [letterColor, setLetterColor] = useState('pink')
   const [letterFont, setLetterFont] = useState('handwriting')
@@ -56,8 +60,19 @@ export default function ComposePage() {
     e.preventDefault()
     setError('')
 
-    if (!recipientName.trim() || !content.trim() || !pin) {
-      setError('Please fill in all fields')
+    // Validation
+    if (!recipientName.trim() || !content.trim()) {
+      setError('Recipient name and content are required')
+      return
+    }
+
+    if (!isAdmin && !senderName.trim()) {
+      setError('Please enter your name in the "From" field')
+      return
+    }
+
+    if (usePinProtection && !pin) {
+      setError('Please enter a PIN or disable PIN protection')
       return
     }
 
@@ -122,8 +137,11 @@ export default function ComposePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recipientName: recipientName.trim(),
+          senderName: isAdmin ? undefined : senderName.trim(),
           content: content.trim(),
-          pin,
+          pin: usePinProtection ? pin : undefined,
+          usePinProtection,
+          customShortCode: customShortCode.trim() || undefined,
           musicUrl: (musicSource === 'preset' && selectedSong ? songs.find(s => s.id === selectedSong)?.src : musicUrl.trim()) || undefined,
           musicTitle: musicSource === 'local' ? musicTitle.trim() || undefined : undefined,
           musicArtist: musicSource === 'local' ? musicArtist.trim() || undefined : undefined,
@@ -137,7 +155,9 @@ export default function ComposePage() {
 
       if (response.ok) {
         const fullUrl = `${window.location.origin}${data.url}`
+        const shortLink = data.shortUrl ? `${window.location.origin}${data.shortUrl}` : fullUrl
         setLetterUrl(fullUrl)
+        setShortUrl(shortLink)
         setStep('success')
       } else {
         setError(data.error || 'Failed to create letter')
@@ -150,16 +170,20 @@ export default function ComposePage() {
   }
 
   const handleCopyUrl = () => {
-    navigator.clipboard.writeText(letterUrl)
+    navigator.clipboard.writeText(shortUrl || letterUrl)
   }
 
   const handleReset = () => {
     setStep('compose')
+    setSenderName('')
     setRecipientName('')
     setContent('')
     setPin('')
+    setUsePinProtection(true)
+    setCustomShortCode('')
     setMusicUrl('')
-    setMusicSource('youtube')
+    setMusicSource('preset')
+    setSelectedSong('')
     setMusicTitle('')
     setMusicArtist('')
     setImageUrl('')
@@ -218,6 +242,23 @@ export default function ComposePage() {
 
               <PaperCard>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Sender Name (only for non-admin) */}
+                  {!isAdmin && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
+                        From:
+                      </label>
+                      <input
+                        type="text"
+                        value={senderName}
+                        onChange={(e) => setSenderName(e.target.value)}
+                        placeholder="Your name"
+                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
+                        disabled={isLoading}
+                      />
+                    </div>
+                  )}
+
                   {/* Recipient Name */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
@@ -511,20 +552,60 @@ export default function ComposePage() {
                   </p>
                 </div>
 
-                {/* Letter Code Setup */}
+                {/* Custom Short Link */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    Set a Letter Code:
+                    Custom Short Link (Optional):
                   </label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-poppins">
-                    The recipient will need this to open the letter
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
+                    Customize the link ending (4-20 alphanumeric characters)
                   </p>
-                  <PINInput
-                    value={pin}
-                    onChange={setPin}
-                    error={!!error && !pin}
+                  <input
+                    type="text"
+                    value={customShortCode}
+                    onChange={(e) => setCustomShortCode(e.target.value)}
+                    placeholder="e.g., myletter2024"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-poppins focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    maxLength={20}
                   />
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
+                    Preview: sugaries.app/{customShortCode || 'auto-generated'}
+                  </p>
                 </div>
+
+                {/* PIN Protection Toggle */}
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+                  <input
+                    type="checkbox"
+                    id="usePinProtection"
+                    checked={usePinProtection}
+                    onChange={(e) => setUsePinProtection(e.target.checked)}
+                    className="w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer"
+                  />
+                  <label htmlFor="usePinProtection" className="text-sm font-medium text-gray-700 dark:text-gray-300 font-poppins cursor-pointer">
+                    Use PIN Protection
+                  </label>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-poppins ml-auto">
+                    {usePinProtection ? 'Recipient will need a code' : 'Anyone with link can open'}
+                  </p>
+                </div>
+
+                {/* Letter Code Setup */}
+                {usePinProtection && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
+                      Set a Letter Code:
+                    </label>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-poppins">
+                      The recipient will need this to open the letter
+                    </p>
+                    <PINInput
+                      value={pin}
+                      onChange={setPin}
+                      error={!!error && !pin}
+                    />
+                  </div>
+                )}
 
                 {error && (
                   <motion.div
@@ -538,7 +619,7 @@ export default function ComposePage() {
 
                 <button
                   type="submit"
-                  disabled={isLoading || !recipientName.trim() || !content.trim() || !pin}
+                  disabled={isLoading || !recipientName.trim() || !content.trim() || (usePinProtection && !pin)}
                   className="w-full px-4 md:px-6 py-3 md:py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-poppins font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? 'Creating...' : '🎁 Create Letter'}
