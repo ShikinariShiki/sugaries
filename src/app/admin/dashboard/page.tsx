@@ -177,9 +177,17 @@ export default function DashboardPage() {
   
   // Calculate average satisfaction from received letters with ratings
   const ratingsFromReplies = receivedLetters.filter(l => l.rating).map(l => l.rating!)
+  console.log('=== Statistics Calculation ===')
+  console.log('Total sent:', totalSent)
+  console.log('Total received:', totalReceived)
+  console.log('Opened sent:', openedSent)
+  console.log('Ratings from replies:', ratingsFromReplies)
+  
   const averageSatisfaction = ratingsFromReplies.length > 0
     ? (ratingsFromReplies.reduce((sum, rating) => sum + rating, 0) / ratingsFromReplies.length).toFixed(1)
     : null
+  
+  console.log('Average satisfaction:', averageSatisfaction)
 
   // Filter letters based on search query
   const filterLetters = (letters: Letter[]) => {

@@ -21,6 +21,7 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
   const [hoveredRating, setHoveredRating] = useState(0)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imageUrl, setImageUrl] = useState('')
+  const [createdLetterId, setCreatedLetterId] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -91,7 +92,6 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
       console.log('Recipient:', 'Kevin')
       console.log('Sender:', recipientName)
       console.log('Content length:', content.trim().length)
-      console.log('Rating:', rating)
       console.log('Image URL:', uploadedImageUrl ? 'Present' : 'None')
 
       const response = await fetch('/api/letter/reply', {
@@ -101,7 +101,6 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
           recipientName: 'Kevin',
           content: content.trim(),
           senderName: recipientName,
-          rating: rating > 0 ? rating : undefined,
           imageUrl: uploadedImageUrl || undefined,
         }),
       })
@@ -112,6 +111,7 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
       if (response.ok) {
         console.log('Reply sent successfully!')
+        setCreatedLetterId(data.letterId)
         setSuccess(true)
         // Show rating after 1 second
         setTimeout(() => setShowRating(true), 1000)
@@ -128,16 +128,25 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
   }
 
   const handleRatingSubmit = async () => {
-    if (rating > 0) {
+    if (rating > 0 && createdLetterId) {
       try {
-        // You can add API call here to save rating if needed
-        await fetch('/api/letter/rate', {
+        console.log('=== Saving Rating ===')
+        console.log('Letter ID:', createdLetterId)
+        console.log('Rating:', rating)
+        
+        const response = await fetch('/api/letter/rate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rating }),
+          body: JSON.stringify({ letterId: createdLetterId, rating }),
         })
+        
+        if (response.ok) {
+          console.log('Rating saved successfully')
+        } else {
+          console.error('Failed to save rating:', await response.text())
+        }
       } catch (error) {
-        console.error('Failed to save rating')
+        console.error('Failed to save rating:', error)
       }
     }
     onClose()
