@@ -142,6 +142,8 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
         
         if (response.ok) {
           console.log('Rating saved successfully')
+          // Trigger page reload to refresh dashboard
+          setTimeout(() => window.location.reload(), 500)
         } else {
           console.error('Failed to save rating:', await response.text())
         }

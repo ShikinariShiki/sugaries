@@ -42,10 +42,10 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchLetters(true) // Initial fetch with loading state
     
-    // Auto-refresh every 5 seconds to catch new letters (silent update)
+    // Auto-refresh every 2 seconds to catch new letters (silent update)
     const interval = setInterval(() => {
       fetchLetters(false) // Silent refresh without loading state
-    }, 5000)
+    }, 2000)
     
     return () => clearInterval(interval)
   }, [])

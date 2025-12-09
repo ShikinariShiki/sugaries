@@ -144,6 +144,10 @@ export default function TopBar({ adminName = 'Admin', onThemeToggle, isDark = fa
                               setNotifications(notifications.map(n => 
                                 n.id === notif.id ? { ...n, unread: false } : n
                               ))
+                              setShowNotifications(false)
+                              if (notif.letterId) {
+                                window.location.href = `/letter/${notif.letterId}?admin=true`
+                              }
                             }}
                           >
                             <div className="flex items-start gap-3">

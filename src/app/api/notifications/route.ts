@@ -43,6 +43,7 @@ export async function GET() {
       if (letter.isReply) {
         return {
           id: letter.id,
+          letterId: letter.id,
           message: `You received a reply from ${letter.senderName}`,
           time: timeAgo,
           unread: diffHours < 24,
@@ -51,6 +52,7 @@ export async function GET() {
       } else if (letter.isOpened) {
         return {
           id: letter.id,
+          letterId: letter.id,
           message: `Letter to ${letter.recipientName} was opened`,
           time: timeAgo,
           unread: diffHours < 24,
