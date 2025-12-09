@@ -211,8 +211,8 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
             </div>
           ) : (
             <>
-          {/* Now Playing */}
-          <div className="px-4 py-3 border-b border-white/10">
+              {/* Now Playing */}
+              <div className="px-4 py-3 border-b border-white/10">
             <div className="flex items-center justify-between mb-1">
               <h3 className="text-sm font-medium text-pink-400 truncate flex-1">
                 {currentSong?.title || 'No Song'}
