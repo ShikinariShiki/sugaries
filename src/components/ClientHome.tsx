@@ -1,21 +1,25 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { redirect } from 'next/navigation'
-import ClientHome from '@/components/ClientHome'
+'use client'
 
-export default async function HomePage() {
-  const session = await getServerSession(authOptions)
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import SugariesIcon from '@/components/SugariesIcon'
 
-  // If admin is logged in, redirect to dashboard
-  if (session?.user.role === 'admin') {
-    redirect('/admin/dashboard')
-  }
-
-  return <ClientHome session={session} />
-}
-
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
+export default function ClientHome({ session }: { session: any }) {
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-4 md:p-8">
+      <div className="text-center max-w-4xl w-full">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center justify-center gap-4 mb-8"
+        >
+          <SugariesIcon className="w-20 h-20 md:w-24 md:h-24" />
+        </motion.div>
+        
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-5xl md:text-7xl font-bold text-gray-900 mb-4 font-poppins"
         >
@@ -82,9 +86,9 @@ export const dynamic = 'force-dynamic'
             className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-8"
           >
             <div className="text-5xl mb-4">🎨</div>
-            <h3 className="font-bold text-gray-900 mb-3 text-xl font-poppins">Customizable</h3>
+            <h3 className="font-bold text-gray-900 mb-3 text-xl font-poppins">Beautiful</h3>
             <p className="text-gray-600 font-poppins">
-              Choose colors, fonts, music, and images for your letters
+              Aesthetic themes and handwritten fonts for personal touch
             </p>
           </motion.div>
 
@@ -94,13 +98,21 @@ export const dynamic = 'force-dynamic'
             transition={{ duration: 0.6, delay: 0.6 }}
             className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-8"
           >
-            <div className="text-5xl mb-4">💌</div>
-            <h3 className="font-bold text-gray-900 mb-3 text-xl font-poppins">Personal</h3>
+            <div className="text-5xl mb-4">🎵</div>
+            <h3 className="font-bold text-gray-900 mb-3 text-xl font-poppins">Musical</h3>
             <p className="text-gray-600 font-poppins">
-              A unique unfolding experience for each letter
+              Add your favorite songs to make memories even sweeter
             </p>
           </motion.div>
         </div>
+
+        {session && (
+          <div className="mt-8">
+            <p className="text-gray-600">
+              Welcome back, {session.user.email}!
+            </p>
+          </div>
+        )}
       </div>
     </main>
   )

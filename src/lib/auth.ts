@@ -15,13 +15,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      // Allow all users to sign in
       return true
     },
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id
-        // Assign admin role to specific emails
         session.user.role = ADMIN_EMAILS.includes(user.email || "") ? "admin" : "user"
       }
       return session
@@ -32,6 +30,13 @@ export const authOptions: NextAuthOptions = {
         token.role = ADMIN_EMAILS.includes(user.email || "") ? "admin" : "user"
       }
       return token
+    },
+    async redirect({ url, baseUrl }) {
+      // After sign in, redirect to dashboard
+      if (url === baseUrl || url.startsWith(baseUrl + '/auth')) {
+        return baseUrl + '/admin/dashboard'
+      }
+      return url
     },
   },
   pages: {
