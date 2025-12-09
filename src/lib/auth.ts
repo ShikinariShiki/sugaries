@@ -52,7 +52,8 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.id = dbUser.id
           token.email = dbUser.email
-          token.role = dbUser.role
+          // Always check against ADMIN_EMAILS list for role determination
+          token.role = ADMIN_EMAILS.includes(dbUser.email || "") ? "admin" : dbUser.role
         }
       }
       return token
