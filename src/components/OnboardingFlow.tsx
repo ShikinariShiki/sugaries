@@ -129,14 +129,22 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
     setIsCompleting(true)
     try {
       // Mark user as onboarded
-      await fetch('/api/onboarding', {
+      const response = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })
       
+      if (!response.ok) {
+        throw new Error('Failed to mark onboarding as complete')
+      }
+      
+      // Wait a bit then redirect
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
       // Redirect to dashboard
       router.push('/admin/dashboard')
-      router.refresh()
+      // Refresh to get updated session
+      setTimeout(() => router.refresh(), 100)
     } catch (error) {
       console.error('Failed to complete onboarding:', error)
       setIsCompleting(false)
