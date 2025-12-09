@@ -97,10 +97,6 @@ export default function MiniMusicPlayer() {
                 onClick={togglePlay}
                 className="p-3 bg-pink-500 hover:bg-pink-600 rounded-full transition-colors"
               >
-              <button
-                onClick={togglePlay}
-                className="p-3 bg-pink-500 hover:bg-pink-600 rounded-full transition-colors"
-              >
                 <span className="text-2xl">{isPlaying ? "⏸️" : "▶️"}</span>
               </button>
 
