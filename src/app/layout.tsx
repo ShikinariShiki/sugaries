@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Quicksand, Poppins, Caveat, Pacifico, Dancing_Script, Satisfy, Indie_Flower, Shadows_Into_Light } from 'next/font/google'
+import { Inter, Quicksand, Poppins, Kalam, Pacifico, Dancing_Script, Satisfy, Indie_Flower, Shadows_Into_Light } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({ 
@@ -18,7 +18,8 @@ const poppins = Poppins({
   variable: '--font-poppins',
 })
 
-const caveat = Caveat({
+const kalam = Kalam({
+  weight: ['400', '700'],
   subsets: ['latin'],
   variable: '--font-handwriting',
 })
@@ -70,7 +71,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className={`${inter.variable} ${quicksand.variable} ${poppins.variable} ${caveat.variable} ${pacifico.variable} ${dancingScript.variable} ${satisfy.variable} ${indieFlower.variable} ${shadowsIntoLight.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${quicksand.variable} ${poppins.variable} ${kalam.variable} ${pacifico.variable} ${dancingScript.variable} ${satisfy.variable} ${indieFlower.variable} ${shadowsIntoLight.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

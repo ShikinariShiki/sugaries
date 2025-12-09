@@ -236,10 +236,10 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">📤</span>
-                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400 font-poppins">Sent</span>
+                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Sent</span>
               </div>
               <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-1">{openedSent} opened</p>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{openedSent} opened</p>
             </motion.div>
 
             <motion.div
@@ -250,10 +250,10 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">📥</span>
-                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400 font-poppins">Received</span>
+                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Received</span>
               </div>
               <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalReceived}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-1">{unreadReceived} unread</p>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{unreadReceived} unread</p>
             </motion.div>
 
             <motion.div
@@ -264,10 +264,10 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">💌</span>
-                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400 font-poppins">Total</span>
+                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Total</span>
               </div>
               <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent + totalReceived}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-1">All letters</p>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">All letters</p>
             </motion.div>
 
             <motion.div
@@ -440,7 +440,7 @@ export default function DashboardPage() {
                                 <h3 className="text-sm md:text-lg font-bold text-gray-900 dark:text-white font-poppins truncate">
                                   {letter.recipientName}
                                 </h3>
-                                <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
+                                <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins">
                                   {formatDate(letter.createdAt)}
                                 </p>
                               </div>
@@ -455,20 +455,20 @@ export default function DashboardPage() {
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
+                          <p className="text-gray-700 dark:text-gray-200 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
                             {letter.content.substring(0, 120)}
                             {letter.content.length > 120 ? '...' : ''}
                           </p>
                           {letter.pinHash && (
-                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md">
-                              <span className="text-[10px] md:text-xs text-gray-600 font-poppins">🔑 PIN Protected</span>
+                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                              <span className="text-[10px] md:text-xs text-gray-600 dark:text-gray-300 font-poppins">🔑 PIN Protected</span>
                             </div>
                           )}
                         </div>
                         <div className="flex gap-2 w-full md:w-auto md:flex-col">
                           <button 
                             onClick={() => setPreviewLetter(letter)}
-                            className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
+                            className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
                           >
                             👁️ Preview
                           </button>
@@ -515,7 +515,7 @@ export default function DashboardPage() {
                                 <h3 className="text-sm md:text-lg font-bold text-gray-900 dark:text-white font-poppins truncate">
                                   {letter.senderName || letter.recipientName}
                                 </h3>
-                                <p className="text-[10px] md:text-xs text-gray-500 font-poppins">
+                                <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins">
                                   {formatDate(letter.createdAt)}
                                 </p>
                               </div>
@@ -530,19 +530,19 @@ export default function DashboardPage() {
                               </span>
                             )}
                           </div>
-                          <p className="text-gray-600 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
+                          <p className="text-gray-700 dark:text-gray-200 text-xs md:text-sm mb-2 font-poppins line-clamp-2">
                             {letter.content.substring(0, 120)}
                             {letter.content.length > 120 ? '...' : ''}
                           </p>
                         </div>
                         <div className="flex gap-2 w-full md:w-auto md:flex-col">
-                          <button 
+                          <button
                             onClick={() => {
                               console.log('Preview letter data:', letter)
                               console.log('PIN:', letter.pin, 'Image:', letter.imageUrl)
                               setPreviewLetter(letter)
                             }}
-                            className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
+                            className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
                           >
                             👁️ Preview
                           </button>
@@ -692,7 +692,7 @@ export default function DashboardPage() {
                           navigator.clipboard.writeText(`${window.location.origin}/letter/${previewLetter.id}`)
                           alert('Link copied to clipboard!')
                         }}
-                        className="flex-1 px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-poppins font-medium transition-colors"
+                        className="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-poppins font-medium transition-colors"
                       >
                         🔗 Copy Link
                       </button>

@@ -13,7 +13,7 @@ import Link from 'next/link'
 import { songs } from '@/data/songs'
 
 const FONT_OPTIONS = [
-  { value: 'handwriting', label: '✍️ Handwriting (Caveat)' },
+  { value: 'handwriting', label: '✍️ Handwriting (Kalam)' },
   { value: 'poppins', label: '📝 Modern (Poppins)' },
   { value: 'quicksand', label: '🌊 Friendly (Quicksand)' },
   { value: 'serif', label: '📖 Elegant (Serif)' },
@@ -64,18 +64,27 @@ export default function ComposePage() {
 
       // Upload image file if exists
       if (imageFile) {
+        console.log('=== Starting Image Upload ===')
+        console.log('Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type)
+        
         const formData = new FormData()
         formData.append('file', imageFile)
+        console.log('FormData created:', formData.get('file'))
         
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         })
         
+        console.log('Upload response status:', uploadResponse.status)
+        
         if (uploadResponse.ok) {
           const uploadData = await uploadResponse.json()
+          console.log('Upload response data:', uploadData)
           uploadedImageUrl = uploadData.url
+          console.log('Image uploaded successfully:', uploadedImageUrl)
         } else {
+          console.error('Upload failed:', await uploadResponse.text())
           setError('Failed to upload image')
           setIsLoading(false)
           return
@@ -145,10 +154,16 @@ export default function ComposePage() {
   }
 
   const handleEditorSave = async (croppedBlob: Blob) => {
+    console.log('=== Image Editor Save ===')
+    console.log('Cropped blob:', croppedBlob, 'Size:', croppedBlob.size, 'Type:', croppedBlob.type)
+    
     // Convert blob to File
     const file = new File([croppedBlob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' })
+    console.log('File created:', file.name, 'Size:', file.size, 'Type:', file.type)
+    
     setImageFile(file)
     const url = URL.createObjectURL(croppedBlob)
+    console.log('Preview URL created:', url)
     setImageUrl(url)
     setShowEditor(false)
     setTempImageSrc('')

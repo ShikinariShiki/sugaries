@@ -39,7 +39,7 @@ const config: Config = {
         `,
       },
       fontFamily: {
-        'handwriting': ['var(--font-handwriting)', 'Caveat', 'cursive'],
+        'handwriting': ['var(--font-handwriting)', 'Kalam', 'cursive'],
         'sans': ['var(--font-sans)', 'system-ui', 'sans-serif'],
         'quicksand': ['var(--font-quicksand)', 'Quicksand', 'sans-serif'],
         'poppins': ['var(--font-poppins)', 'Poppins', 'sans-serif'],
