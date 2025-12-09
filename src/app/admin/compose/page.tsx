@@ -10,6 +10,7 @@ import { ImageEditor } from '@/components/ImageEditor'
 import ColorPicker from '@/components/ColorPicker'
 import ImageEditorModal from '@/components/ImageEditorModal'
 import AdminLayout from '@/components/admin/AdminLayout'
+import UserHeader from '@/components/UserHeader'
 import Link from 'next/link'
 import { songs } from '@/data/songs'
 
@@ -636,5 +637,13 @@ export default function ComposePage() {
     </div>
   )
 
-  return isAdmin ? <AdminLayout>{composeContent}</AdminLayout> : composeContent
+  // Wrap non-admin users with UserHeader
+  const userContent = (
+    <>
+      <UserHeader />
+      {composeContent}
+    </>
+  )
+
+  return isAdmin ? <AdminLayout>{composeContent}</AdminLayout> : userContent
 }
