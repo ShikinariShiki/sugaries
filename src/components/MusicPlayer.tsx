@@ -210,7 +210,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
             >
               {isPlaying ? '🎵' : '🎵'}
             </button>
-          )}}
+          )}
         </motion.div>
       </motion.div>
     </>
