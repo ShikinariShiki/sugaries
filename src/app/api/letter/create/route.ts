@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { generateUniqueShortCode } from '@/lib/shortcode'
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,6 +29,9 @@ export async function POST(request: NextRequest) {
 
     // Hash the PIN
     const pinHash = await bcrypt.hash(pin, 10)
+    
+    // Generate unique short code
+    const shortCode = await generateUniqueShortCode()
 
     // Create the letter linked to the user
     const letter = await prisma.letter.create({
@@ -36,6 +40,7 @@ export async function POST(request: NextRequest) {
         pinHash,
         pin, // Store plain PIN for admin viewing
         content,
+        shortCode, // Add short code
         musicUrl: musicUrl || null,
         musicTitle: musicTitle || null,
         musicArtist: musicArtist || null,
@@ -47,6 +52,7 @@ export async function POST(request: NextRequest) {
       },
       select: {
         id: true,
+        shortCode: true,
         musicUrl: true,
         imageUrl: true,
       },
@@ -54,10 +60,12 @@ export async function POST(request: NextRequest) {
 
     console.log('Letter created:', letter)
 
-    // Return the letter ID (used as URL slug)
+    // Return the letter ID and short code
     return NextResponse.json({
       letterId: letter.id,
+      shortCode: letter.shortCode,
       url: `/letter/${letter.id}`,
+      shortUrl: `/${letter.shortCode}`,
     })
   } catch (error) {
     console.error('Create letter error:', error)

@@ -12,6 +12,7 @@ datasource db {
 
 model Letter {
   id            String   @id @default(uuid())
+  shortCode     String?  @unique // Short code for URL shortening (e.g., "abc123")
   recipientName String   // Case-insensitive verification
   pinHash       String?  // Encrypted PIN (bcrypt) - optional for replies
   pin           String?  // Plain text PIN for admin viewing only
@@ -32,6 +33,7 @@ model Letter {
   
   @@index([recipientName])
   @@index([userId])
+  @@index([shortCode])
 }
 
 model User {
