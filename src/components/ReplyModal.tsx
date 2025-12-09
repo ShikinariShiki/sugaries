@@ -73,6 +73,13 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
         }
       }
 
+      console.log('=== Sending Reply ===')
+      console.log('Recipient:', 'Kevin')
+      console.log('Sender:', recipientName)
+      console.log('Content length:', content.trim().length)
+      console.log('Rating:', rating)
+      console.log('Image URL:', uploadedImageUrl ? 'Present' : 'None')
+
       const response = await fetch('/api/letter/reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,17 +92,22 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
         }),
       })
 
+      console.log('Reply response status:', response.status)
       const data = await response.json()
+      console.log('Reply response data:', data)
 
       if (response.ok) {
+        console.log('Reply sent successfully!')
         setSuccess(true)
         // Show rating after 1 second
         setTimeout(() => setShowRating(true), 1000)
       } else {
+        console.error('Reply failed:', data)
         setError(data.error || 'Failed to send reply')
       }
     } catch (error) {
-      setError('Failed to send reply')
+      console.error('Reply error:', error)
+      setError(`Failed to send reply: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
