@@ -68,18 +68,45 @@ export default function ComposePage() {
         console.log('Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type)
         
         try {
-          // Convert to base64 directly
-          const reader = new FileReader()
-          const base64Promise = new Promise<string>((resolve, reject) => {
-            reader.onload = () => resolve(reader.result as string)
-            reader.onerror = reject
-            reader.readAsDataURL(imageFile)
+          // Compress image first
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          const img = new Image()
+          
+          const imageLoadPromise = new Promise<string>((resolve, reject) => {
+            img.onload = () => {
+              // Calculate new dimensions (max 1200px width/height)
+              let width = img.width
+              let height = img.height
+              const maxSize = 1200
+              
+              if (width > maxSize || height > maxSize) {
+                if (width > height) {
+                  height = (height / width) * maxSize
+                  width = maxSize
+                } else {
+                  width = (width / height) * maxSize
+                  height = maxSize
+                }
+              }
+              
+              canvas.width = width
+              canvas.height = height
+              ctx?.drawImage(img, 0, 0, width, height)
+              
+              // Convert to base64 with quality compression
+              const base64 = canvas.toDataURL('image/jpeg', 0.8)
+              console.log('Image compressed and converted, original:', imageFile.size, 'new length:', base64.length)
+              resolve(base64)
+            }
+            img.onerror = reject
           })
           
-          uploadedImageUrl = await base64Promise
-          console.log('Image converted to base64, length:', uploadedImageUrl.length)
+          img.src = URL.createObjectURL(imageFile)
+          uploadedImageUrl = await imageLoadPromise
+          console.log('Image ready for upload')
         } catch (error) {
-          console.error('Failed to convert image:', error)
+          console.error('Failed to process image:', error)
           setError('Failed to process image')
           setIsLoading(false)
           return
