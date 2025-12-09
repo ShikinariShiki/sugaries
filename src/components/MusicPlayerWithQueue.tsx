@@ -241,8 +241,6 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
             </div>
           </div>
 
-          {!isMinimized && (
-            <>
           {/* Progress Bar */}
           <div className="px-4 py-3">
             <div className="flex items-center justify-between text-xs text-white/50 mb-2">
@@ -329,7 +327,6 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
               </svg>
             </button>
           </div>
-            </>
           )}
         </motion.div>
       </div>
