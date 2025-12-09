@@ -664,7 +664,7 @@ export default function ComposePage() {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      value={letterUrl}
+                      value={shortUrl || letterUrl}
                       readOnly
                       className="flex-1 px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white text-sm font-mono"
                     />
