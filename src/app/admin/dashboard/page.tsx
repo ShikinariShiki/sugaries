@@ -241,26 +241,28 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
-              <p className="text-gray-600 dark:text-gray-400">Manage your letters</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 md:mb-2">Dashboard</h1>
+              <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">Manage your letters</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {selectedLetters.size > 0 && (
                 <SquishButton
                   variant="secondary"
                   size="lg"
                   onClick={handleBatchDelete}
                   disabled={isDeleting}
-                  className="bg-red-50 text-red-600 hover:bg-red-100"
+                  className="bg-red-50 text-red-600 hover:bg-red-100 flex-1 md:flex-none"
                 >
-                  {isDeleting ? '⏳' : '🗑️'} Delete {selectedLetters.size}
+                  <span className="hidden sm:inline">{isDeleting ? '⏳' : '🗑️'} Delete {selectedLetters.size}</span>
+                  <span className="sm:hidden">🗑️ {selectedLetters.size}</span>
                 </SquishButton>
               )}
-              <Link href="/admin/compose">
-                <SquishButton variant="primary" size="lg">
-                  ✉️ Compose New
+              <Link href="/admin/compose" className="flex-1 md:flex-none">
+                <SquishButton variant="primary" size="lg" className="w-full">
+                  <span className="hidden sm:inline">✉️ Compose New</span>
+                  <span className="sm:inline md:hidden">✉️</span>
                 </SquishButton>
               </Link>
             </div>

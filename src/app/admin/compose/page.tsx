@@ -29,6 +29,23 @@ const FONT_OPTIONS = [
   { value: 'shadows', label: '👥 Shadows Into Light' },
 ]
 
+// Helper function to convert Google Photos share links to direct image URLs
+function convertGooglePhotosUrl(url: string): string {
+  if (!url) return url
+  
+  // If it's already a direct image URL, return as is
+  if (url.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return url
+  
+  // Google Photos share link pattern: https://photos.app.goo.gl/xxxxx
+  // or https://photos.google.com/share/xxxxx
+  if (url.includes('photos.app.goo.gl') || url.includes('photos.google.com')) {
+    console.warn('Google Photos links need to be direct image links. Please use: Right-click image > Copy image address')
+    return url // Return as-is, but log warning
+  }
+  
+  return url
+}
+
 export default function ComposePage() {
   const { data: session } = useSession()
   const isAdmin = session?.user?.role === 'admin'
@@ -111,11 +128,19 @@ export default function ComposePage() {
               
               canvas.width = width
               canvas.height = height
+              
+              // Fill white background for non-transparent images
+              if (imageFile.type !== 'image/png') {
+                ctx?.fillStyle = '#FFFFFF'
+                ctx?.fillRect(0, 0, width, height)
+              }
+              
               ctx?.drawImage(img, 0, 0, width, height)
               
-              // Convert to base64 with quality compression
-              const base64 = canvas.toDataURL('image/jpeg', 0.8)
-              console.log('Image compressed and converted, original:', imageFile.size, 'new length:', base64.length)
+              // Convert to base64 - preserve PNG for transparency, use JPEG for photos
+              const isPNG = imageFile.type === 'image/png'
+              const base64 = isPNG ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.8)
+              console.log('Image compressed and converted, original:', imageFile.size, 'new length:', base64.length, 'format:', isPNG ? 'PNG' : 'JPEG')
               resolve(base64)
             }
             img.onerror = reject
@@ -145,7 +170,7 @@ export default function ComposePage() {
           musicUrl: (musicSource === 'preset' && selectedSong ? songs.find(s => s.id === selectedSong)?.src : musicUrl.trim()) || undefined,
           musicTitle: musicSource === 'local' ? musicTitle.trim() || undefined : undefined,
           musicArtist: musicSource === 'local' ? musicArtist.trim() || undefined : undefined,
-          imageUrl: uploadedImageUrl?.trim() || undefined,
+          imageUrl: uploadedImageUrl?.trim() || convertGooglePhotosUrl(imageUrl.trim()) || undefined,
           letterColor,
           letterFont,
         }),
@@ -471,10 +496,10 @@ export default function ComposePage() {
                     </div>
                   </div>
 
-                  {/* Google Photos Link */}
+                  {/* Image URL Input */}
                   <div className="mt-3">
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
-                      Or paste Google Photos share link:
+                      Or paste direct image URL (for Google Photos: right-click image → Copy image address):
                     </p>
                     <input
                       type="url"
@@ -483,7 +508,7 @@ export default function ComposePage() {
                         setImageFile(null)
                         setImageUrl(e.target.value)
                       }}
-                      placeholder="https://photos.app.goo.gl/..."
+                      placeholder="https://... (direct image link ending in .jpg, .png, etc.)"
                       className="w-full px-3 md:px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                       disabled={isLoading || !!imageFile}
                     />

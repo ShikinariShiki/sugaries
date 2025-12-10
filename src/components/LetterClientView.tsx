@@ -341,7 +341,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.7 }}
-                      className="mb-6 rounded-xl overflow-hidden shadow-lg"
+                      className="mb-6 rounded-xl overflow-hidden shadow-lg bg-gray-100"
                     >
                       <img 
                         src={state.imageUrl} 
@@ -350,7 +350,12 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                         style={{ maxHeight: '400px' }}
                         onError={(e) => {
                           console.error('Image failed to load:', state.imageUrl)
-                          e.currentTarget.style.display = 'none'
+                          const target = e.currentTarget
+                          target.style.display = 'none'
+                          const parent = target.parentElement
+                          if (parent) {
+                            parent.innerHTML = '<div class="p-6 text-center text-gray-500"><p class="mb-2">📷</p><p class="text-sm">Image failed to load</p><p class="text-xs mt-1 text-gray-400">The image link may be broken or private</p></div>'
+                          }
                         }}
                         onLoad={() => console.log('Image loaded successfully:', state.imageUrl)}
                       />
