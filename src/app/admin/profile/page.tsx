@@ -9,7 +9,7 @@ import { SquishButton } from '@/components/ui/SquishButton'
 import ImageCropper from '@/components/ImageCropper'
 
 export default function ProfilePage() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -44,13 +44,27 @@ export default function ProfilePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
-          avatar: formData.avatar
+          image: formData.avatar
         })
       })
 
       if (response.ok) {
+        const updatedUser = await response.json()
+        
+        // Force session update with new data
+        await update({
+          user: {
+            ...session?.user,
+            name: updatedUser.name,
+            image: updatedUser.image,
+          }
+        })
+        
         alert('✅ Profile saved successfully!')
         setIsEditing(false)
+        
+        // Force page refresh to ensure image shows up
+        window.location.reload()
       } else {
         alert('❌ Failed to save profile')
       }

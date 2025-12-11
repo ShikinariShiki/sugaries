@@ -84,7 +84,8 @@ export const authOptions: NextAuthOptions = {
         return false
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
+      // On sign in or when session is updated
       if (user) {
         // On sign in, fetch user from database to get the ID
         const dbUser = await prisma.user.findUnique({
@@ -94,16 +95,34 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.id = dbUser.id
           token.email = dbUser.email
+          token.name = dbUser.name
+          token.image = dbUser.image
           // Always check against ADMIN_EMAILS list for role determination
           token.role = ADMIN_EMAILS.includes(dbUser.email || "") ? "admin" : (dbUser.role as "admin" | "user")
         }
       }
+      
+      // If session update is triggered (e.g., from update() call), refresh user data
+      if (trigger === "update" && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email as string }
+        })
+        
+        if (dbUser) {
+          token.name = dbUser.name
+          token.image = dbUser.image
+          token.role = ADMIN_EMAILS.includes(dbUser.email || "") ? "admin" : (dbUser.role as "admin" | "user")
+        }
+      }
+      
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as "admin" | "user"
+        session.user.name = token.name as string
+        session.user.image = token.image as string
       }
       return session
     },

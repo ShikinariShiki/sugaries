@@ -76,8 +76,19 @@ export default function UserProfile() {
         throw new Error('Failed to update profile')
       }
 
-      // Update session
-      await update()
+      const updatedUser = await updateRes.json()
+
+      // Force session update with new data
+      await update({
+        user: {
+          ...session?.user,
+          image: updatedUser.image,
+        }
+      })
+      
+      // Force page refresh to show updated image
+      window.location.reload()
+      
       setMessage({ type: 'success', text: 'Profile picture updated!' })
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to upload image' })
@@ -106,7 +117,16 @@ export default function UserProfile() {
         throw new Error('Failed to update name')
       }
 
-      await update()
+      const updatedUser = await res.json()
+
+      // Force session update with new name
+      await update({
+        user: {
+          ...session?.user,
+          name: updatedUser.name,
+        }
+      })
+      
       setMessage({ type: 'success', text: 'Name updated successfully!' })
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to update name' })
