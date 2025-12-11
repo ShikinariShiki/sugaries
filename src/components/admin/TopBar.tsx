@@ -14,12 +14,36 @@ interface TopBarProps {
   showSearch?: boolean
 }
 
+const STORAGE_KEY = 'sugaries_read_notifications'
+
 export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange, showSearch = true }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [notifications, setNotifications] = useState<any[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
+  const [readNotificationIds, setReadNotificationIds] = useState<Set<string>>(new Set())
+
+  // Load read notifications from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        setReadNotificationIds(new Set(JSON.parse(stored)))
+      }
+    } catch (error) {
+      console.error('Failed to load read notifications:', error)
+    }
+  }, [])
+
+  // Save read notifications to localStorage
+  const saveReadNotifications = (ids: Set<string>) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(ids)))
+    } catch (error) {
+      console.error('Failed to save read notifications:', error)
+    }
+  }
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
@@ -29,11 +53,18 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
   }
 
   const markAllAsRead = () => {
+    const allIds = new Set(notifications.map(n => n.id))
+    setReadNotificationIds(allIds)
+    saveReadNotifications(allIds)
     setNotifications(notifications.map(n => ({ ...n, unread: false })))
     setUnreadCount(0)
   }
 
   const markAsRead = (notifId: string) => {
+    const newReadIds = new Set(readNotificationIds)
+    newReadIds.add(notifId)
+    setReadNotificationIds(newReadIds)
+    saveReadNotifications(newReadIds)
     setNotifications(notifications.map(n => 
       n.id === notifId ? { ...n, unread: false } : n
     ))
@@ -47,8 +78,13 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
         const response = await fetch('/api/notifications')
         const data = await response.json()
         if (response.ok) {
-          setNotifications(data.notifications || [])
-          setUnreadCount(data.unreadCount || 0)
+          // Apply read state from localStorage
+          const notificationsWithReadState = (data.notifications || []).map((n: any) => ({
+            ...n,
+            unread: !readNotificationIds.has(n.id) && n.unread
+          }))
+          setNotifications(notificationsWithReadState)
+          setUnreadCount(notificationsWithReadState.filter((n: any) => n.unread).length)
         }
       } catch (error) {
         console.error('Failed to fetch notifications:', error)
@@ -59,7 +95,7 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
     // Refresh every 30 seconds
     const interval = setInterval(fetchNotifications, 30000)
     return () => clearInterval(interval)
-  }, [])
+  }, [readNotificationIds])
 
   return (
     <div className="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 lg:px-6 py-4">
