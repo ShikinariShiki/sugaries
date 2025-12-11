@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, createContext, useContext, useRef } from "react"
+import { usePathname } from "next/navigation"
 
 type Song = {
   title: string
@@ -159,6 +160,7 @@ const defaultPlaylist: Song[] = [
 const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined)
 
 export function MusicPlayerProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
   const [songs, setSongs] = useState<Song[]>([...defaultPlaylist])
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentSongIndex, setCurrentSongIndex] = useState(0)
@@ -177,12 +179,25 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   const [crossfadeDuration, setCrossfadeDuration] = useState(3)
   const [isMinimized, setIsMinimized] = useState(false)
 
+  // Check if current page is auth page
+  const isAuthPage = pathname?.startsWith('/auth/') || pathname === '/auth'
+
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized)
   }
+
+  // Stop music when navigating to auth pages
+  useEffect(() => {
+    if (isAuthPage && isPlaying) {
+      setIsPlaying(false)
+      if (audioRef.current) {
+        audioRef.current.pause()
+      }
+    }
+  }, [isAuthPage, isPlaying])
 
   const reorderSongs = (fromIndex: number, toIndex: number) => {
     const updatedSongs = [...songs]

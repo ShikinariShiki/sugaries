@@ -63,3 +63,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 })
   }
 }
+
+// Alias PUT to POST for profile updates
+export async function PUT(req: NextRequest) {
+  return POST(req)
+}

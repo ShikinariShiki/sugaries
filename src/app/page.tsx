@@ -13,7 +13,8 @@ export default async function HomePage() {
   if (session?.user?.email) {
     // Fetch fresh user data from database to get latest role
     const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
+      select: { isOnboarded: true }
     })
     
     // Check if user is admin based on email list
@@ -22,8 +23,8 @@ export default async function HomePage() {
     if (isAdmin) {
       redirect('/admin/dashboard')
     } else {
-      // Regular users go to compose letter
-      redirect('/admin/compose')
+      // Regular users go to user dashboard
+      redirect('/user/dashboard')
     }
   }
 

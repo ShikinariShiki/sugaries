@@ -141,8 +141,8 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
       // Wait a bit then redirect
       await new Promise(resolve => setTimeout(resolve, 500))
       
-      // Redirect to dashboard
-      router.push('/admin/dashboard')
+      // Redirect to user dashboard (main page will handle admin vs user routing)
+      router.push('/')
       // Refresh to get updated session
       setTimeout(() => router.refresh(), 100)
     } catch (error) {
