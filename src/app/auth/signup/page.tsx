@@ -1,27 +1,56 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import SugariesIcon from '@/components/SugariesIcon'
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const router = useRouter()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const handleEmailSignIn = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    // Validation
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
     setIsLoading(true)
 
     try {
+      // Create account
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create account')
+      }
+
+      // Auto sign in after successful registration
       const result = await signIn('credentials', {
         email,
         password,
@@ -29,17 +58,18 @@ export default function SignInPage() {
       })
 
       if (result?.error) {
-        setError('Invalid email or password')
+        setError('Account created but sign-in failed. Please sign in manually.')
+        router.push('/auth/signin')
       } else {
         router.push('/')
-        router.refresh()
       }
-    } catch (error) {
-      setError('An error occurred. Please try again.')
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong')
     } finally {
       setIsLoading(false)
     }
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-purple-900 dark:to-gray-900 flex items-center justify-center p-4">
       <motion.div
@@ -62,23 +92,38 @@ export default function SignInPage() {
             Sugaries
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 font-handwriting">
-            Send secret, beautiful digital letters with a touch of whimsy ✨
+            Join the world of secret, beautiful letters ✨
           </p>
         </div>
 
-        {/* Sign In Card */}
+        {/* Sign Up Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8"
         >
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">Welcome Back!</h2>
-          <p className="text-gray-600 dark:text-gray-400 text-center mb-8">Sign in to continue your journey</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">Create Account</h2>
+          <p className="text-gray-600 dark:text-gray-400 text-center mb-8">Start your journey today</p>
 
           {/* Email/Password Form */}
-          <form onSubmit={handleEmailSignIn} className="mb-6">
+          <form onSubmit={handleSignUp} className="mb-6">
             <div className="space-y-4 mb-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="John Doe"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors"
+                  required
+                />
+              </div>
+              
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email
@@ -93,6 +138,7 @@ export default function SignInPage() {
                   required
                 />
               </div>
+              
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Password
@@ -115,6 +161,31 @@ export default function SignInPage() {
                     {showPassword ? '👁️' : '👁️‍🗨️'}
                   </button>
                 </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 8 characters</p>
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -129,7 +200,7 @@ export default function SignInPage() {
               disabled={isLoading}
               className="w-full bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? 'Creating account...' : 'Sign Up'}
             </button>
           </form>
 
@@ -143,7 +214,7 @@ export default function SignInPage() {
             </div>
           </div>
 
-          {/* Google Sign In */}
+          {/* Google Sign Up */}
           <button
             onClick={() => signIn('google', { callbackUrl: '/' })}
             className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 dark:border-gray-600 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02]"
@@ -154,50 +225,26 @@ export default function SignInPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
-              <Link href="/auth/signup" className="text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-semibold">
-                Sign up
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-semibold">
+                Sign in
               </Link>
             </p>
           </div>
 
           <div className="mt-8 text-center space-y-4">
-            <div className="flex items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-              <Link href="/legal/terms" className="hover:text-pink-600 dark:hover:text-pink-400 transition-colors">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              By signing up, you agree to our{' '}
+              <Link href="/legal/terms" className="text-pink-600 dark:text-pink-400 hover:underline">
                 Terms of Service
               </Link>
-              <span>•</span>
-              <Link href="/legal/privacy" className="hover:text-pink-600 dark:hover:text-pink-400 transition-colors">
+              {' '}and{' '}
+              <Link href="/legal/privacy" className="text-pink-600 dark:text-pink-400 hover:underline">
                 Privacy Policy
               </Link>
-            </div>
+            </p>
           </div>
         </motion.div>
-
-        {/* Features */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mt-8 grid grid-cols-3 gap-4 text-center"
-        >
-          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-4">
-            <div className="text-3xl mb-2">🔒</div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">PIN Protected</p>
-          </div>
-          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-4">
-            <div className="text-3xl mb-2">🎨</div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Beautiful Design</p>
-          </div>
-          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-4">
-            <div className="text-3xl mb-2">🎵</div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Add Music</p>
-          </div>
-        </motion.div>
-
-        <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          © 2024 Sugaries. Made with love 💖
-        </p>
       </motion.div>
     </div>
   )
