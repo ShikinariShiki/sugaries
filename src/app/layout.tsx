@@ -4,6 +4,7 @@ import './globals.css'
 import AuthProvider from '@/components/AuthProvider'
 import { MusicPlayerProvider } from '@/contexts/MusicPlayerContext'
 import Footer from '@/components/Footer'
+import { Analytics } from '@vercel/analytics/react'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -81,6 +82,7 @@ export default function RootLayout({
             <Footer />
           </MusicPlayerProvider>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   )
