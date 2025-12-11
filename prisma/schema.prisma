@@ -28,6 +28,7 @@ model Letter {
   imageUrl      String?  // URL to image file for letter
   letterColor   String   @default("pink") // Letter theme color
   letterFont    String   @default("handwriting") // Letter font style
+  envelopeColor String   @default("pink") // Envelope color chosen by sender (pink, blue, yellow, lavender)
   userId        String?  // Link to user who created this letter
   user          User?    @relation(fields: [userId], references: [id])
   inboxCode     String?  // If set, this letter is part of an inbox (multiple messages to 1 recipient)

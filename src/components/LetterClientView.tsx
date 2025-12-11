@@ -88,8 +88,6 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [showReplyModal, setShowReplyModal] = useState(false)
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
   const [showImagePreview, setShowImagePreview] = useState(false)
-  const [envelopeColor, setEnvelopeColor] = useState<'pink' | 'blue' | 'yellow' | 'lavender'>('pink')
-  const [showColorPicker, setShowColorPicker] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
   
@@ -209,39 +207,6 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               A letter for you, {state.recipientName}
             </motion.h2>
 
-            {/* Envelope Color Picker */}
-            {!isEnvelopeOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mb-6 bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border-2 border-gray-200"
-              >
-                <p className="text-sm text-gray-600 text-center mb-3 font-medium">
-                  🎨 Choose your envelope color:
-                </p>
-                <div className="flex gap-3 justify-center">
-                  {[
-                    { color: 'pink' as const, bg: 'bg-pink-300', label: '💖' },
-                    { color: 'blue' as const, bg: 'bg-blue-300', label: '💙' },
-                    { color: 'yellow' as const, bg: 'bg-yellow-300', label: '💛' },
-                    { color: 'lavender' as const, bg: 'bg-purple-300', label: '💜' },
-                  ].map((option) => (
-                    <button
-                      key={option.color}
-                      onClick={() => setEnvelopeColor(option.color)}
-                      className={`w-12 h-12 rounded-full ${option.bg} shadow-md hover:scale-110 transition-transform flex items-center justify-center text-xl ${
-                        envelopeColor === option.color ? 'ring-4 ring-gray-800' : ''
-                      }`}
-                      title={option.color}
-                    >
-                      {envelopeColor === option.color ? '✓' : option.label}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
             <Envelope
               recipientName={state.recipientName || ''}
               isOpen={isEnvelopeOpen}
@@ -249,7 +214,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                 setIsEnvelopeOpen(true)
                 setTimeout(() => openEnvelope(), 1000)
               }}
-              color={envelopeColor}
+              color={(state.envelopeColor as 'pink' | 'blue' | 'yellow' | 'lavender') || 'pink'}
             />
 
             <motion.p

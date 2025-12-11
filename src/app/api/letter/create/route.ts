@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       imageUrl, 
       letterColor, 
       letterFont,
+      envelopeColor,
       isInboxMode,
       inboxCode
     } = await request.json()
@@ -134,6 +135,7 @@ export async function POST(request: NextRequest) {
         imageUrl: imageUrl || null,
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',
+        envelopeColor: envelopeColor || 'pink',
         isReply: false,
         userId: session.user.id,
         ...(finalInboxCode && { inboxCode: finalInboxCode }),

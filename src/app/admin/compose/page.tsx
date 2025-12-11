@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PaperCard } from '@/components/ui/PaperCard'
 import { SquishButton } from '@/components/ui/SquishButton'
 import { PINInput } from '@/components/ui/PINInput'
+import { CustomAlert } from '@/components/ui/CustomModals'
 import { ImageEditor } from '@/components/ImageEditor'
 import ColorPicker from '@/components/ColorPicker'
 import ImageEditorModal from '@/components/ImageEditorModal'
@@ -72,9 +73,11 @@ export default function ComposePage() {
   const [error, setError] = useState('')
   const [letterColor, setLetterColor] = useState('pink')
   const [letterFont, setLetterFont] = useState('handwriting')
+  const [envelopeColor, setEnvelopeColor] = useState<'pink' | 'blue' | 'yellow' | 'lavender'>('pink')
   const [isInboxMode, setIsInboxMode] = useState(false)
   const [inboxCode, setInboxCode] = useState('')
   const [existingInboxMessages, setExistingInboxMessages] = useState(0)
+  const [showCopyAlert, setShowCopyAlert] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -176,6 +179,7 @@ export default function ComposePage() {
           imageUrl: uploadedImageUrl?.trim() || convertGooglePhotosUrl(imageUrl.trim()) || undefined,
           letterColor,
           letterFont,
+          envelopeColor,
           isInboxMode,
           inboxCode: isInboxMode && inboxCode ? inboxCode.trim() : undefined,
         }),
@@ -201,6 +205,7 @@ export default function ComposePage() {
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(shortUrl || letterUrl)
+    setShowCopyAlert(true)
   }
 
   const handleReset = () => {
@@ -223,6 +228,10 @@ export default function ComposePage() {
     setError('')
     setLetterColor('pink')
     setLetterFont('handwriting')
+    setEnvelopeColor('pink')
+    setIsInboxMode(false)
+    setInboxCode('')
+    setExistingInboxMessages(0)
   }
 
   const handleFileSelect = (file: File) => {
@@ -311,7 +320,13 @@ export default function ComposePage() {
                         type="checkbox"
                         id="inboxMode"
                         checked={isInboxMode}
-                        onChange={(e) => setIsInboxMode(e.target.checked)}
+                        onChange={(e) => {
+                          setIsInboxMode(e.target.checked)
+                          // Auto-set customShortCode when enabling inbox mode
+                          if (e.target.checked && inboxCode) {
+                            setCustomShortCode(inboxCode)
+                          }
+                        }}
                         className="mt-1 w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
                         disabled={isLoading}
                       />
@@ -333,7 +348,14 @@ export default function ComposePage() {
                         <input
                           type="text"
                           value={inboxCode}
-                          onChange={(e) => setInboxCode(e.target.value.trim())}
+                          onChange={(e) => {
+                            const code = e.target.value.trim()
+                            setInboxCode(code)
+                            // Auto-sync with customShortCode
+                            if (isInboxMode) {
+                              setCustomShortCode(code)
+                            }
+                          }}
                           placeholder="e.g., birthday2024 (or leave empty)"
                           className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:border-pink-500 focus:outline-none"
                           disabled={isLoading}
@@ -618,6 +640,36 @@ export default function ComposePage() {
                   )}
                 </div>
 
+                {/* Envelope Color Picker */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
+                    💌 Envelope Color:
+                  </label>
+                  <div className="flex gap-3">
+                    {[
+                      { color: 'pink' as const, bg: 'bg-pink-300', label: '💖 Pink' },
+                      { color: 'blue' as const, bg: 'bg-blue-300', label: '💙 Blue' },
+                      { color: 'yellow' as const, bg: 'bg-yellow-300', label: '💛 Yellow' },
+                      { color: 'lavender' as const, bg: 'bg-purple-300', label: '💜 Lavender' },
+                    ].map((option) => (
+                      <button
+                        key={option.color}
+                        type="button"
+                        onClick={() => setEnvelopeColor(option.color)}
+                        className={`flex-1 py-3 px-4 rounded-xl ${option.bg} hover:scale-105 transition-transform font-poppins font-medium ${
+                          envelopeColor === option.color ? 'ring-4 ring-gray-800 shadow-lg' : 'shadow'
+                        }`}
+                        disabled={isLoading}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
+                    Choose the envelope color your recipient will see
+                  </p>
+                </div>
+
                 {/* Color Theme Picker */}
                 <ColorPicker
                   selectedColor={letterColor}
@@ -809,6 +861,15 @@ export default function ComposePage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Copy Success Alert */}
+      <CustomAlert
+        isOpen={showCopyAlert}
+        onClose={() => setShowCopyAlert(false)}
+        type="success"
+        title="Copied!"
+        message="Letter link has been copied to clipboard"
+      />
     </div>
   )
 

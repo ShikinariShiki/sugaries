@@ -30,6 +30,7 @@ export async function GET(
         imageUrl: true,
         letterColor: true,
         letterFont: true,
+        envelopeColor: true,
         recipientName: true,
         senderName: true,
         pinHash: true,
