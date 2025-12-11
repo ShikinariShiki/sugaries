@@ -12,6 +12,7 @@ import { ReplyModal } from '@/components/ReplyModal'
 import { MusicPlayer } from '@/components/MusicPlayer'
 import Confetti from 'react-confetti'
 import { useWindowSize } from '@/hooks/useWindowSize'
+import { useSession } from 'next-auth/react'
 
 // Helper function to convert YouTube URL to embed URL
 function getYouTubeEmbedUrl(url: string): string | null {
@@ -79,6 +80,7 @@ function getFontClass(font: string = 'handwriting') {
 }
 
 export default function LetterClientView({ letterId, isAdminView = false }: { letterId: string, isAdminView?: boolean }) {
+  const { data: session } = useSession()
   const { state, verifyName, openEnvelope, verifyPin } = useLetterReveal(letterId, isAdminView)
   const [nameInput, setNameInput] = useState('')
   const [pinInput, setPinInput] = useState('')
@@ -86,12 +88,23 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [showReplyModal, setShowReplyModal] = useState(false)
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
   const [showImagePreview, setShowImagePreview] = useState(false)
+  const [envelopeColor, setEnvelopeColor] = useState<'pink' | 'blue' | 'yellow' | 'lavender'>('pink')
+  const [showColorPicker, setShowColorPicker] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
   
   // Get theme colors and font
   const themeColors = getThemeColors(state.letterColor)
   const fontClass = getFontClass(state.letterFont)
+
+  // Auto-fill admin name when in admin view
+  useEffect(() => {
+    if (isAdminView && session?.user?.name && !nameInput) {
+      setNameInput(session.user.name)
+      // Automatically submit the name for admin
+      verifyName(session.user.name)
+    }
+  }, [isAdminView, session, nameInput])
 
   // Auto-play audio when letter is opened
   useEffect(() => {
@@ -191,10 +204,43 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-2xl font-bold text-ink mb-8 text-center"
+              className="text-2xl font-bold text-ink mb-4 text-center"
             >
               A letter for you, {state.recipientName}
             </motion.h2>
+
+            {/* Envelope Color Picker */}
+            {!isEnvelopeOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mb-6 bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border-2 border-gray-200"
+              >
+                <p className="text-sm text-gray-600 text-center mb-3 font-medium">
+                  🎨 Choose your envelope color:
+                </p>
+                <div className="flex gap-3 justify-center">
+                  {[
+                    { color: 'pink' as const, bg: 'bg-pink-300', label: '💖' },
+                    { color: 'blue' as const, bg: 'bg-blue-300', label: '💙' },
+                    { color: 'yellow' as const, bg: 'bg-yellow-300', label: '💛' },
+                    { color: 'lavender' as const, bg: 'bg-purple-300', label: '💜' },
+                  ].map((option) => (
+                    <button
+                      key={option.color}
+                      onClick={() => setEnvelopeColor(option.color)}
+                      className={`w-12 h-12 rounded-full ${option.bg} shadow-md hover:scale-110 transition-transform flex items-center justify-center text-xl ${
+                        envelopeColor === option.color ? 'ring-4 ring-gray-800' : ''
+                      }`}
+                      title={option.color}
+                    >
+                      {envelopeColor === option.color ? '✓' : option.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             <Envelope
               recipientName={state.recipientName || ''}
@@ -203,7 +249,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                 setIsEnvelopeOpen(true)
                 setTimeout(() => openEnvelope(), 1000)
               }}
-              color="pink"
+              color={envelopeColor}
             />
 
             <motion.p
@@ -466,3 +512,4 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
     </div>
   )
 }
+

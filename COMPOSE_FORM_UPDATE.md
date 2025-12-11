@@ -5,7 +5,7 @@
 ### 1. **Custom Short Code Feature** ✅
 - Added optional input field for users to customize their letter link
 - Validates 4-20 alphanumeric characters
-- Shows live preview: `sugaries.app/{customShortCode || 'auto-generated'}`
+- Shows live preview: `Gulalies.app/{customShortCode || 'auto-generated'}`
 - Backend checks for uniqueness and returns helpful error if code is taken
 - Falls back to auto-generation if field is left empty
 
@@ -87,14 +87,14 @@ const [shortUrl, setShortUrl] = useState('')
 2. Enter custom short code: "myletter2024"
 3. Keep PIN protection enabled (default)
 4. Enter 6-digit PIN
-5. Submit → Letter created at sugaries.app/myletter2024 (requires PIN)
+5. Submit → Letter created at Gulalies.app/myletter2024 (requires PIN)
 
 ### Guest User Creating Open Letter
 1. Fill in sender name (From field - required)
 2. Fill in recipient name and content
 3. Disable PIN protection toggle
 4. Leave custom short code empty (auto-generated)
-5. Submit → Letter created at sugaries.app/abc123 (no PIN required)
+5. Submit → Letter created at Gulalies.app/abc123 (no PIN required)
 
 ### Admin Creating Quick Non-Protected Letter
 1. Fill in recipient name and content

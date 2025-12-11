@@ -123,3 +123,4 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
     </div>
   )
 }
+

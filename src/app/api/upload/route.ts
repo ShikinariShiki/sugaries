@@ -32,11 +32,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
+    // Validate file size (20MB max)
+    if (file.size > 20 * 1024 * 1024) {
       console.error('File too large:', file.size)
       return NextResponse.json(
-        { error: 'Image size must be less than 10MB' },
+        { error: 'Image size must be less than 20MB' },
         { status: 400 }
       )
     }
@@ -59,3 +59,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

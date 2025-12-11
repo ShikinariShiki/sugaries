@@ -23,14 +23,14 @@
 
 1. Go to https://vercel.com
 2. Click "Add New Project"
-3. Import your GitHub repository: `ShikinariShiki/sugaries`
+3. Import your GitHub repository: `ShikinariShiki/Gulalies`
 4. Add Environment Variable:
    - Name: `DATABASE_URL`
    - Value: Your PostgreSQL connection string from step 1
 5. Click "Deploy"
 
 ### 3. After Deployment:
-Your app will be live at: `https://sugaries.vercel.app` (or custom domain)
+Your app will be live at: `https://Gulalies.vercel.app` (or custom domain)
 
 ## Configuration Files Created:
 - ✅ `vercel.json` - Vercel configuration

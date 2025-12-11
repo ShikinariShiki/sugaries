@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import SugariesIcon from '@/components/SugariesIcon'
+import GulaliesIcon from '@/components/GulaliesIcon'
 
 interface SidebarProps {
   isDark?: boolean
@@ -27,9 +27,9 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
       {/* Logo */}
       <div className={`p-6 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
         <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onMobileClose}>
-          <SugariesIcon className="w-8 h-8" />
+          <GulaliesIcon className="w-8 h-8" />
           <span className={`text-xl font-bold ${isDark ? 'text-pink-400' : 'text-pink-500'}`}>
-            Sugaries
+            Gulalies
           </span>
         </Link>
       </div>
@@ -102,3 +102,4 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
     </>
   )
 }
+

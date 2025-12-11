@@ -1,8 +1,8 @@
-# ✅ Sugaries - Project Complete! 🎉
+# ✅ Gulalies - Project Complete! 🎉
 
 ## 🎨 What Was Built
 
-**Sugaries** is a fully functional, production-ready digital stationery app for sending encrypted, aesthetic letters with a whimsical "soft paper" design system.
+**Gulalies** is a fully functional, production-ready digital stationery app for sending encrypted, aesthetic letters with a whimsical "soft paper" design system.
 
 ---
 

@@ -27,3 +27,4 @@ export type LetterAction =
   | { type: 'PIN_VERIFIED'; payload: { content: string; musicUrl?: string; imageUrl?: string; letterColor?: string; letterFont?: string; senderName?: string; pinHash?: string; recipientName?: string } }
   | { type: 'PIN_FAILED'; payload: { error: string } }
   | { type: 'RESET' }
+

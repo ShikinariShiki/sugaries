@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
             <p><strong>Letter ID:</strong> ${letterData.letterId}</p>
             <p><strong>Opened at:</strong> ${new Date().toLocaleString()}</p>
           </div>
-          <p style="color: #6b7280;">View the letter at: <a href="https://sugaries.vercel.app/letter/${letterData.letterId}?admin=true">Letter Link</a></p>
+          <p style="color: #6b7280;">View the letter at: <a href="https://Gulalies.vercel.app/letter/${letterData.letterId}?admin=true">Letter Link</a></p>
         </div>
       `
     } else if (type === 'replied') {
@@ -41,13 +41,13 @@ export async function POST(request: NextRequest) {
             <p style="color: #6b7280; font-style: italic;">${letterData.preview || 'View the full reply...'}</p>
             <p><strong>Replied at:</strong> ${new Date().toLocaleString()}</p>
           </div>
-          <p style="color: #6b7280;">View the reply at: <a href="https://sugaries.vercel.app/letter/${letterData.letterId}?admin=true">Reply Link</a></p>
+          <p style="color: #6b7280;">View the reply at: <a href="https://Gulalies.vercel.app/letter/${letterData.letterId}?admin=true">Reply Link</a></p>
         </div>
       `
     }
 
     await resend.emails.send({
-      from: 'Sugaries <onboarding@resend.dev>',
+      from: 'Gulalies <onboarding@resend.dev>',
       to: adminEmail,
       subject,
       html,
@@ -62,3 +62,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

@@ -14,7 +14,7 @@ interface TopBarProps {
   showSearch?: boolean
 }
 
-const STORAGE_KEY = 'sugaries_read_notifications'
+const STORAGE_KEY = 'Gulalies_read_notifications'
 
 export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange, showSearch = true }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
@@ -299,3 +299,4 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
     </div>
   )
 }
+

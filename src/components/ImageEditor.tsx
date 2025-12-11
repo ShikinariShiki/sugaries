@@ -197,3 +197,4 @@ export function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorProps) {
     </motion.div>
   )
 }
+

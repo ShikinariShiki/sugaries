@@ -45,3 +45,4 @@ export const SquishButton = forwardRef<HTMLButtonElement, SquishButtonProps>(
 )
 
 SquishButton.displayName = 'SquishButton'
+

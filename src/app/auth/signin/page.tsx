@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import SugariesIcon from '@/components/SugariesIcon'
+import GulaliesIcon from '@/components/GulaliesIcon'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -55,11 +55,11 @@ export default function SignInPage() {
             transition={{ type: "spring", duration: 0.6 }}
             className="w-24 h-24 mx-auto mb-6 bg-white dark:bg-gray-800 rounded-3xl shadow-xl flex items-center justify-center"
           >
-            <SugariesIcon className="w-16 h-16" />
+            <GulaliesIcon className="w-16 h-16" />
           </motion.div>
           
           <h1 className="text-5xl font-bold text-pink-500 mb-3">
-            Sugaries
+            Gulalies
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 font-handwriting">
             Send secret, beautiful digital letters with a touch of whimsy ✨
@@ -196,9 +196,10 @@ export default function SignInPage() {
         </motion.div>
 
         <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          © 2024 Sugaries. Made with love 💖
+          © 2024 Gulalies. Made with love 💖
         </p>
       </motion.div>
     </div>
   )
 }
+

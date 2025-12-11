@@ -17,3 +17,4 @@ export default async function AdminLayout({
   // This layout is handled by individual pages or middleware
   return <>{children}</>
 }
+

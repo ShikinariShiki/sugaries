@@ -33,3 +33,4 @@ export async function generateUniqueShortCode(): Promise<string> {
   // If all attempts fail, use longer code
   return generateRandomCode(8)
 }
+

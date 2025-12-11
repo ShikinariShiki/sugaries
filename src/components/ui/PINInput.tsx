@@ -34,3 +34,4 @@ export function PINInput({ value, onChange, maxLength, error }: PINInputProps) {
     </div>
   )
 }
+

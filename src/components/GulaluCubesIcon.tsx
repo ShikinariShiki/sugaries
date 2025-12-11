@@ -1,13 +1,14 @@
 import Image from 'next/image'
 import iconImage from './icon.png'
 
-export default function SugarCubesIcon({ className = "w-8 h-8" }: { className?: string }) {
+export default function GulaluCubesIcon({ className = "w-8 h-8" }: { className?: string }) {
   return (
     <Image
       src={iconImage}
-      alt="Sugaries Logo"
+      alt="Gulalies Logo"
       className={className}
       priority
     />
   )
 }
+

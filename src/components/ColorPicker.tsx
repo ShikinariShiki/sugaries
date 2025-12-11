@@ -59,3 +59,4 @@ export default function ColorPicker({ selectedColor, onChange }: ColorPickerProp
     </div>
   )
 }
+

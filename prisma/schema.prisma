@@ -30,10 +30,13 @@ model Letter {
   letterFont    String   @default("handwriting") // Letter font style
   userId        String?  // Link to user who created this letter
   user          User?    @relation(fields: [userId], references: [id])
+  inboxCode     String?  // If set, this letter is part of an inbox (multiple messages to 1 recipient)
+  messageIndex  Int      @default(0) // Order of message in inbox (0 for standalone letters)
   
   @@index([recipientName])
   @@index([userId])
   @@index([shortCode])
+  @@index([inboxCode])
 }
 
 model User {

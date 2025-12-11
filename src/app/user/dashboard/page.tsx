@@ -116,7 +116,7 @@ export default function UserDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-3xl">✉️</span>
-              <h1 className="text-2xl font-bold text-pink-500">Sugaries</h1>
+              <h1 className="text-2xl font-bold text-pink-500">Gulalies</h1>
             </div>
             
             <div className="flex items-center gap-4">
@@ -346,3 +346,4 @@ export default function UserDashboard() {
     </div>
   )
 }
+

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // For now, simple password check - you should use bcrypt in production
-    const isValid = password === process.env.ADMIN_PASSWORD || password === 'sugaries2024'
+    const isValid = password === process.env.ADMIN_PASSWORD || password === 'Gulalies2024'
 
     if (!isValid) {
       return NextResponse.json(
@@ -46,3 +46,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

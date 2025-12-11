@@ -1,4 +1,4 @@
-# 🎨 Sugaries - Component & Architecture Reference
+# 🎨 Gulalies - Component & Architecture Reference
 
 ## 📋 Table of Contents
 

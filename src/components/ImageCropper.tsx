@@ -160,3 +160,4 @@ export default function ImageCropper({ imageSrc, onCropComplete, onCancel }: Ima
     </AnimatePresence>
   )
 }
+

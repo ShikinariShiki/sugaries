@@ -32,3 +32,4 @@ export function PaperCard({ children, className, animate = true }: PaperCardProp
     </Component>
   )
 }
+

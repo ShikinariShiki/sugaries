@@ -1,4 +1,4 @@
-# 🚀 Setup Guide for Sugaries
+# 🚀 Setup Guide for Gulalies
 
 ## Step-by-Step Setup
 

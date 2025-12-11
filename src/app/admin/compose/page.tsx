@@ -72,6 +72,9 @@ export default function ComposePage() {
   const [error, setError] = useState('')
   const [letterColor, setLetterColor] = useState('pink')
   const [letterFont, setLetterFont] = useState('handwriting')
+  const [isInboxMode, setIsInboxMode] = useState(false)
+  const [inboxCode, setInboxCode] = useState('')
+  const [existingInboxMessages, setExistingInboxMessages] = useState(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -173,6 +176,8 @@ export default function ComposePage() {
           imageUrl: uploadedImageUrl?.trim() || convertGooglePhotosUrl(imageUrl.trim()) || undefined,
           letterColor,
           letterFont,
+          isInboxMode,
+          inboxCode: isInboxMode && inboxCode ? inboxCode.trim() : undefined,
         }),
       })
 
@@ -295,9 +300,55 @@ export default function ComposePage() {
                       onChange={(e) => setRecipientName(e.target.value)}
                       placeholder="Recipient's name"
                       className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
-                    disabled={isLoading}
-                  />
-                </div>
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  {/* Inbox Mode Toggle */}
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4 border-2 border-purple-200 dark:border-purple-800">
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        id="inboxMode"
+                        checked={isInboxMode}
+                        onChange={(e) => setIsInboxMode(e.target.checked)}
+                        className="mt-1 w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
+                        disabled={isLoading}
+                      />
+                      <div className="flex-1">
+                        <label htmlFor="inboxMode" className="block text-sm font-semibold text-gray-900 dark:text-white cursor-pointer">
+                          📬 Inbox Mode (Multiple Messages)
+                        </label>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                          Send multiple messages to the same person using one link. Each message needs its own PIN.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {isInboxMode && (
+                      <div className="mt-3 pt-3 border-t border-purple-200 dark:border-purple-700">
+                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Inbox Code (optional - leave empty to create new inbox):
+                        </label>
+                        <input
+                          type="text"
+                          value={inboxCode}
+                          onChange={(e) => setInboxCode(e.target.value.trim())}
+                          placeholder="e.g., birthday2024 (or leave empty)"
+                          className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:border-pink-500 focus:outline-none"
+                          disabled={isLoading}
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Use the same inbox code to add more messages to an existing inbox.
+                        </p>
+                        {existingInboxMessages > 0 && (
+                          <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">
+                            ✓ Found {existingInboxMessages} existing message{existingInboxMessages > 1 ? 's' : ''} in this inbox
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                 {/* Message Content */}
                 <div>
@@ -499,16 +550,34 @@ export default function ComposePage() {
                   {/* Image URL Input */}
                   <div className="mt-3">
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
-                      Or paste direct image URL (for Google Photos: right-click image → Copy image address):
+                      Or paste direct image URL:
                     </p>
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-2">
+                      <p className="text-xs text-yellow-800 dark:text-yellow-200 font-medium mb-1">
+                        ℹ️ For Google Photos images:
+                      </p>
+                      <ol className="text-xs text-yellow-700 dark:text-yellow-300 list-decimal list-inside space-y-1">
+                        <li>Open the photo in Google Photos</li>
+                        <li>Right-click the image → "Copy image address" (NOT the share link!)</li>
+                        <li>Paste the URL here (should end with .jpg, .png, etc.)</li>
+                      </ol>
+                      <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-2 italic">
+                        ⚠️ Share links (photos.app.goo.gl) won't work - you need the direct image URL
+                      </p>
+                    </div>
                     <input
                       type="url"
                       value={!imageFile ? imageUrl : ''}
                       onChange={(e) => {
                         setImageFile(null)
-                        setImageUrl(e.target.value)
+                        const url = e.target.value.trim()
+                        setImageUrl(url)
+                        // Validate if it looks like a direct image URL
+                        if (url && !url.match(/\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i)) {
+                          console.warn('⚠️ This might not be a direct image URL. It should end with .jpg, .png, etc.')
+                        }
                       }}
-                      placeholder="https://... (direct image link ending in .jpg, .png, etc.)"
+                      placeholder="https://example.com/image.jpg (must be direct image link)"
                       className="w-full px-3 md:px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
                       disabled={isLoading || !!imageFile}
                     />
@@ -594,7 +663,7 @@ export default function ComposePage() {
                     maxLength={20}
                   />
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
-                    Preview: sugaries.app/{customShortCode || 'auto-generated'}
+                    Preview: Gulalies.app/{customShortCode || 'auto-generated'}
                   </p>
                 </div>
 
@@ -753,3 +822,4 @@ export default function ComposePage() {
 
   return isAdmin ? <AdminLayout>{composeContent}</AdminLayout> : userContent
 }
+

@@ -33,3 +33,4 @@ export default async function HomePage() {
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
+

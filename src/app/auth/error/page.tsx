@@ -36,3 +36,4 @@ export default function ErrorPage({ searchParams }: { searchParams: { error?: st
     </Suspense>
   )
 }
+

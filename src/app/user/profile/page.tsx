@@ -35,9 +35,9 @@ export default function UserProfile() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage({ type: 'error', text: 'Image must be less than 5MB' })
+    // Validate file size (max 20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Image must be less than 20MB' })
       return
     }
 
@@ -143,7 +143,7 @@ export default function UserProfile() {
           <div className="flex items-center justify-between">
             <Link href="/user/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <span className="text-3xl">✉️</span>
-              <h1 className="text-2xl font-bold text-pink-500">Sugaries</h1>
+              <h1 className="text-2xl font-bold text-pink-500">Gulalies</h1>
             </Link>
             
             <Link 
@@ -224,7 +224,7 @@ export default function UserProfile() {
                   {isUploading ? 'Uploading...' : 'Change Picture'}
                 </button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  JPG, PNG or GIF. Max 5MB.
+                  JPG, PNG or GIF. Max 20MB.
                 </p>
               </div>
             </div>
@@ -287,3 +287,4 @@ export default function UserProfile() {
     </div>
   )
 }
+

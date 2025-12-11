@@ -31,19 +31,35 @@ function processYouTubeUrl(url: string): { type: 'youtube' | 'audio', url: strin
 export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const playerRef = useRef<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(0.7)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isExpanded, setIsExpanded] = useState(true)
+  const [isYTReady, setIsYTReady] = useState(false)
   
   const processedUrl = processYouTubeUrl(musicUrl)
   const isYouTube = processedUrl.type === 'youtube'
 
   useEffect(() => {
     if (isYouTube) {
-      // For YouTube, we'll use iframe API
-      setIsPlaying(true)
+      // Load YouTube IFrame API
+      if (!(window as any).YT) {
+        const tag = document.createElement('script')
+        tag.src = 'https://www.youtube.com/iframe_api'
+        const firstScriptTag = document.getElementsByTagName('script')[0]
+        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+      }
+      
+      ;(window as any).onYouTubeIframeAPIReady = () => {
+        setIsYTReady(true)
+      }
+      
+      if ((window as any).YT && (window as any).YT.Player) {
+        setIsYTReady(true)
+      }
+      
       return
     }
 
@@ -67,6 +83,31 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
       audio.removeEventListener('ended', handleEnded)
     }
   }, [isYouTube])
+  
+  useEffect(() => {
+    if (isYouTube && isYTReady && iframeRef.current && !playerRef.current) {
+      playerRef.current = new (window as any).YT.Player(iframeRef.current, {
+        videoId: processedUrl.url,
+        playerVars: {
+          autoplay: 1,
+          loop: 1,
+          playlist: processedUrl.url,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (event: any) => {
+            event.target.playVideo()
+            setIsPlaying(true)
+          },
+          onStateChange: (event: any) => {
+            setIsPlaying(event.data === 1)
+          }
+        }
+      })
+    }
+  }, [isYouTube, isYTReady, processedUrl.url])
 
   useEffect(() => {
     if (audioRef.current && !isYouTube) {
@@ -75,9 +116,12 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   }, [volume, isYouTube])
 
   const togglePlay = () => {
-    if (isYouTube) {
-      // For YouTube, just toggle visual state
-      setIsPlaying(!isPlaying)
+    if (isYouTube && playerRef.current) {
+      if (isPlaying) {
+        playerRef.current.pauseVideo()
+      } else {
+        playerRef.current.playVideo()
+      }
       return
     }
 
@@ -112,16 +156,22 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     <>
       {!isYouTube && <audio ref={audioRef} loop src={musicUrl} />}
       
-      {isYouTube && isExpanded && (
-        <div className="fixed bottom-24 right-4 z-50 w-48 md:w-56">
+      {isYouTube && (
+        <div 
+          className="fixed right-6 z-[100] transition-all duration-300"
+          style={{
+            bottom: isExpanded ? '100px' : '72px',
+            width: isExpanded ? '224px' : '1px',
+            height: isExpanded ? 'auto' : '1px',
+            opacity: isExpanded ? 1 : 0,
+            pointerEvents: isExpanded ? 'auto' : 'none'
+          }}
+        >
           <div className="bg-black/95 backdrop-blur-sm rounded-lg overflow-hidden shadow-2xl border-2 border-pink-500/30">
-            <iframe
+            <div 
               ref={iframeRef}
               className="w-full aspect-video"
-              src={`https://www.youtube.com/embed/${processedUrl.url}?autoplay=1&mute=0&loop=1&playlist=${processedUrl.url}&controls=1&modestbranding=1&rel=0`}
-              allow="autoplay; encrypted-media; clipboard-write"
-              allowFullScreen
-              title="Music Player"
+              id="youtube-player"
             />
           </div>
         </div>
@@ -130,7 +180,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="fixed bottom-4 right-4 z-50"
+        className="fixed bottom-4 right-4 z-[100]"
       >
         <motion.div
           animate={{ width: isExpanded ? '280px' : '56px', height: isExpanded ? 'auto' : '56px' }}
@@ -217,3 +267,4 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     </>
   )
 }
+

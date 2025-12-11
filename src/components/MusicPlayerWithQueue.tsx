@@ -334,3 +334,4 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
     </>
   )
 }
+

@@ -35,3 +35,4 @@ export function ShakeWrapper({ children, shouldShake, onShakeComplete }: ShakeWr
     </motion.div>
   )
 }
+
