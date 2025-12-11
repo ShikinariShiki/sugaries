@@ -130,9 +130,9 @@ export default function ComposePage() {
               canvas.height = height
               
               // Fill white background for non-transparent images
-              if (imageFile.type !== 'image/png') {
-                ctx?.fillStyle = '#FFFFFF'
-                ctx?.fillRect(0, 0, width, height)
+              if (ctx && imageFile.type !== 'image/png') {
+                ctx.fillStyle = '#FFFFFF'
+                ctx.fillRect(0, 0, width, height)
               }
               
               ctx?.drawImage(img, 0, 0, width, height)
