@@ -85,6 +85,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [shouldShake, setShouldShake] = useState(false)
   const [showReplyModal, setShowReplyModal] = useState(false)
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
+  const [showImagePreview, setShowImagePreview] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
   
@@ -341,12 +342,13 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.7 }}
-                      className="mb-6 rounded-xl overflow-hidden shadow-lg bg-gray-100"
+                      className="mb-6 rounded-xl overflow-hidden shadow-lg bg-gray-100 cursor-pointer group relative"
+                      onClick={() => setShowImagePreview(true)}
                     >
                       <img 
                         src={state.imageUrl} 
                         alt="Letter attachment" 
-                        className="w-full h-auto object-contain"
+                        className="w-full h-auto object-contain transition-transform group-hover:scale-105"
                         style={{ maxHeight: '400px' }}
                         onError={(e) => {
                           console.error('Image failed to load:', state.imageUrl)
@@ -359,6 +361,11 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                         }}
                         onLoad={() => console.log('Image loaded successfully:', state.imageUrl)}
                       />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 px-4 py-2 rounded-lg text-sm font-medium">
+                          🔍 Click to preview
+                        </div>
+                      </div>
                     </motion.div>
                   )}
 
@@ -382,14 +389,17 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                         day: 'numeric'
                       })}
                     </p>
-                    <SquishButton
-                      onClick={() => setShowReplyModal(true)}
-                      variant="secondary"
-                      size="md"
-                      className="w-full"
-                    >
-                      ✉️ Send a Letter Back
-                    </SquishButton>
+                    {/* Only show reply button if it's not admin view and the letter has a senderName (meaning it's a reply from a recipient) */}
+                    {!isAdminView && !state.senderName && (
+                      <SquishButton
+                        onClick={() => setShowReplyModal(true)}
+                        variant="secondary"
+                        size="md"
+                        className="w-full"
+                      >
+                        ✉️ Send a Letter Back
+                      </SquishButton>
+                    )}
                   </motion.div>
                 </motion.div>
               </PaperCard>
@@ -404,6 +414,53 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
             recipientName={state.recipientName || ''}
             onClose={() => setShowReplyModal(false)}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Image Preview Modal */}
+      <AnimatePresence>
+        {showImagePreview && state.imageUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setShowImagePreview(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-6xl w-full"
+            >
+              <button
+                onClick={() => setShowImagePreview(false)}
+                className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xl transition-colors"
+              >
+                ✕
+              </button>
+              
+              <div className="bg-white rounded-xl overflow-hidden shadow-2xl">
+                <img
+                  src={state.imageUrl}
+                  alt="Letter attachment preview"
+                  className="w-full h-auto max-h-[80vh] object-contain"
+                />
+                
+                <div className="p-4 bg-gray-50 flex justify-between items-center">
+                  <p className="text-sm text-gray-600">Image from letter</p>
+                  <a
+                    href={state.imageUrl}
+                    download="letter-image"
+                    className="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                  >
+                    📥 Download
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

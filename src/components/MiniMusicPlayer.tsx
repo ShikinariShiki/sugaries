@@ -25,7 +25,7 @@ export default function MiniMusicPlayer() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`fixed bottom-4 right-4 z-40 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 ${
+      className={`fixed bottom-6 right-6 z-40 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 ${
         isMinimized ? "p-2 w-16" : "p-4 w-80"
       } transition-all duration-300`}
     >
@@ -41,7 +41,8 @@ export default function MiniMusicPlayer() {
             {/* Play/Pause Button */}
             <button
               onClick={togglePlay}
-              className="w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 flex items-center justify-center text-white"
+              aria-label={isPlaying ? "Pause music" : "Play music"}
+              className="w-10 h-10 rounded-full bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 flex items-center justify-center text-white shadow-md transition-all"
             >
               {isPlaying ? "⏸" : "▶"}
             </button>
@@ -49,7 +50,8 @@ export default function MiniMusicPlayer() {
             {/* Expand Button */}
             <button
               onClick={toggleMinimize}
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+              aria-label="Expand music player"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-sm"
             >
               ⬆
             </button>
@@ -65,7 +67,8 @@ export default function MiniMusicPlayer() {
             <div className="flex justify-end mb-2">
               <button
                 onClick={toggleMinimize}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xs"
+                aria-label="Minimize music player"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xs font-medium"
               >
                 ⬇ Minimize
               </button>
@@ -88,21 +91,24 @@ export default function MiniMusicPlayer() {
             <div className="flex items-center justify-between mb-3">
               <button
                 onClick={prevSong}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                aria-label="Previous song"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
               >
                 <span className="text-xl">⏮️</span>
               </button>
 
               <button
                 onClick={togglePlay}
-                className="p-3 bg-pink-500 hover:bg-pink-600 rounded-full transition-colors"
+                aria-label={isPlaying ? "Pause" : "Play"}
+                className="p-3 bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 rounded-full transition-all shadow-md"
               >
                 <span className="text-2xl">{isPlaying ? "⏸️" : "▶️"}</span>
               </button>
 
               <button
                 onClick={nextSong}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                aria-label="Next song"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
               >
                 <span className="text-xl">⏭️</span>
               </button>
@@ -112,7 +118,8 @@ export default function MiniMusicPlayer() {
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleMute}
-                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                aria-label={isMuted ? "Unmute" : "Mute"}
+                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
               >
                 <span className="text-sm">{isMuted ? "🔇" : "🔊"}</span>
               </button>
@@ -123,7 +130,8 @@ export default function MiniMusicPlayer() {
                 step="0.01"
                 value={isMuted ? 0 : volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                aria-label="Volume control"
+                className="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500 dark:accent-pink-600"
               />
               <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right">
                 {Math.round((isMuted ? 0 : volume) * 100)}%

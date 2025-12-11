@@ -13,6 +13,9 @@ interface ReplyModalProps {
 
 export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModalProps) {
   const [content, setContent] = useState('')
+  const [senderName, setSenderName] = useState(recipientName) // Default to recipient's name
+  const [letterColor, setLetterColor] = useState('pink')
+  const [letterFont, setLetterFont] = useState('handwriting')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -90,9 +93,10 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
       console.log('=== Sending Reply ===')
       console.log('Recipient:', 'Kevin')
-      console.log('Sender:', recipientName)
+      console.log('Sender:', senderName)
       console.log('Content length:', content.trim().length)
       console.log('Image URL:', uploadedImageUrl ? 'Present' : 'None')
+      console.log('Color:', letterColor, 'Font:', letterFont)
 
       const response = await fetch('/api/letter/reply', {
         method: 'POST',
@@ -100,8 +104,10 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
         body: JSON.stringify({
           recipientName: 'Kevin',
           content: content.trim(),
-          senderName: recipientName,
+          senderName: senderName.trim() || recipientName,
           imageUrl: uploadedImageUrl || undefined,
+          letterColor,
+          letterFont,
         }),
       })
 
@@ -192,6 +198,72 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Sender Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                    Your Name (optional):
+                  </label>
+                  <input
+                    type="text"
+                    value={senderName}
+                    onChange={(e) => setSenderName(e.target.value)}
+                    placeholder={recipientName}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-poppins"
+                    disabled={isLoading}
+                  />
+                  <p className="text-xs text-gray-500 mt-1 font-poppins">
+                    Leave as is to use "{recipientName}"
+                  </p>
+                </div>
+
+                {/* Letter Color */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                    Letter Color:
+                  </label>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {[
+                      { value: 'pink', label: '💗 Pink', color: 'bg-pink-100 border-pink-300' },
+                      { value: 'lavender', label: '💜 Lavender', color: 'bg-purple-100 border-purple-300' },
+                      { value: 'mint', label: '💚 Mint', color: 'bg-green-100 border-green-300' },
+                      { value: 'peach', label: '🧡 Peach', color: 'bg-orange-100 border-orange-300' },
+                      { value: 'sky', label: '💙 Sky', color: 'bg-blue-100 border-blue-300' },
+                      { value: 'cream', label: '💛 Cream', color: 'bg-yellow-100 border-yellow-300' },
+                    ].map((colorOption) => (
+                      <button
+                        key={colorOption.value}
+                        type="button"
+                        onClick={() => setLetterColor(colorOption.value)}
+                        className={`p-3 rounded-lg border-2 transition-all ${colorOption.color} ${
+                          letterColor === colorOption.value ? 'ring-2 ring-pink-500 ring-offset-2' : ''
+                        }`}
+                      >
+                        <p className="text-xs font-medium">{colorOption.label}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Letter Font */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                    Letter Font:
+                  </label>
+                  <select
+                    value={letterFont}
+                    onChange={(e) => setLetterFont(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-poppins"
+                    disabled={isLoading}
+                  >
+                    <option value="handwriting">✍️ Handwriting (Kalam)</option>
+                    <option value="poppins">📝 Modern (Poppins)</option>
+                    <option value="quicksand">🌊 Friendly (Quicksand)</option>
+                    <option value="serif">📖 Elegant (Serif)</option>
+                    <option value="pacifico">🌺 Pacifico</option>
+                    <option value="dancing">💃 Dancing Script</option>
+                  </select>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
                     Your Message:

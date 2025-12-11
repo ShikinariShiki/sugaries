@@ -11,9 +11,10 @@ interface TopBarProps {
   isDark?: boolean
   onMobileMenuToggle?: () => void
   onSearchChange?: (query: string) => void
+  showSearch?: boolean
 }
 
-export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange }: TopBarProps) {
+export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange, showSearch = true }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -25,6 +26,18 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
     if (onSearchChange) {
       onSearchChange(value)
     }
+  }
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, unread: false })))
+    setUnreadCount(0)
+  }
+
+  const markAsRead = (notifId: string) => {
+    setNotifications(notifications.map(n => 
+      n.id === notifId ? { ...n, unread: false } : n
+    ))
+    setUnreadCount(prev => Math.max(0, prev - 1))
   }
 
   // Fetch notifications from API
@@ -61,19 +74,23 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
           </svg>
         </button>
 
-        {/* Search Bar */}
-        <div className="flex-1 max-w-xl">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search letters..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm"
-            />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+        {/* Search Bar - Only on Dashboard */}
+        {showSearch && (
+          <div className="flex-1 max-w-xl">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search letters..."
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {!showSearch && <div className="flex-1" />}
 
         {/* Right Side - Actions */}
         <div className="flex items-center gap-3">
@@ -116,17 +133,19 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                    className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
                   >
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-between">
                         <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
-                        <button 
-                          onClick={() => setNotifications(notifications.map(n => ({ ...n, unread: false })))}
-                          className="text-xs text-pink-500 hover:text-pink-600"
-                        >
-                          Mark all read
-                        </button>
+                        {unreadCount > 0 && (
+                          <button 
+                            onClick={markAllAsRead}
+                            className="text-xs text-pink-500 hover:text-pink-600 font-medium"
+                          >
+                            Mark all read
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="max-h-96 overflow-y-auto">
@@ -139,13 +158,13 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                         notifications.map((notif) => (
                           <div
                             key={notif.id}
-                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${
+                            className={`p-4 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${
                               notif.unread ? 'bg-pink-50 dark:bg-pink-900/10' : ''
                             }`}
                             onClick={() => {
-                              setNotifications(notifications.map(n => 
-                                n.id === notif.id ? { ...n, unread: false } : n
-                              ))
+                              if (notif.unread) {
+                                markAsRead(notif.id)
+                              }
                               setShowNotifications(false)
                               if (notif.letterId) {
                                 window.location.href = `/letter/${notif.letterId}?admin=true`
@@ -154,12 +173,12 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                           >
                             <div className="flex items-start gap-3">
                               <div className="text-2xl">📬</div>
-                              <div className="flex-1">
-                                <p className="text-sm text-gray-900 dark:text-white font-medium">{notif.message}</p>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-gray-900 dark:text-white font-medium break-words">{notif.message}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notif.time}</p>
                               </div>
                               {notif.unread && (
-                                <div className="w-2 h-2 bg-pink-500 rounded-full mt-1"></div>
+                                <div className="w-2 h-2 bg-pink-500 rounded-full mt-1 flex-shrink-0"></div>
                               )}
                             </div>
                           </div>

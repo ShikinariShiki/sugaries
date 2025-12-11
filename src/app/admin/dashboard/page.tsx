@@ -40,6 +40,8 @@ export default function DashboardPage() {
   const [selectedLetters, setSelectedLetters] = useState<Set<string>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showRatingsModal, setShowRatingsModal] = useState(false)
+  const [showOpenRateModal, setShowOpenRateModal] = useState(false)
 
   useEffect(() => {
     fetchLetters(true) // Initial fetch with loading state
@@ -313,11 +315,12 @@ export default function DashboardPage() {
               <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">All letters</p>
             </motion.div>
 
-            <motion.div
+            <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white"
+              onClick={() => setShowOpenRateModal(true)}
+              className="bg-pink-500 hover:bg-pink-600 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-all text-white cursor-pointer"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">✨</span>
@@ -326,14 +329,15 @@ export default function DashboardPage() {
               <p className="text-xl md:text-3xl font-bold font-poppins">
                 {totalSent > 0 ? Math.round((openedSent / totalSent) * 100) : 0}%
               </p>
-              <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">Success rate</p>
-            </motion.div>
+              <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">Click for details</p>
+            </motion.button>
 
-            <motion.div
+            <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white col-span-2 md:col-span-1"
+              onClick={() => setShowRatingsModal(true)}
+              className="bg-purple-500 hover:bg-purple-600 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-all text-white col-span-2 md:col-span-1 cursor-pointer"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">⭐</span>
@@ -344,9 +348,9 @@ export default function DashboardPage() {
                 {averageSatisfaction && <span className="text-sm ml-1">/5</span>}
               </p>
               <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">
-                {ratingsFromReplies.length > 0 ? `${ratingsFromReplies.length} ratings` : 'No ratings yet'}
+                {ratingsFromReplies.length > 0 ? `Click to see ${ratingsFromReplies.length} ratings` : 'No ratings yet'}
               </p>
-            </motion.div>
+            </motion.button>
           </div>
 
           {/* Tabs */}
@@ -714,8 +718,8 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  <div className="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-6 mb-6">
-                    <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
+                  <div className="bg-pink-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                    <p className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap font-handwriting text-lg leading-relaxed">
                       {previewLetter.content}
                     </p>
                   </div>
@@ -842,6 +846,152 @@ export default function DashboardPage() {
                       💾 Save Changes
                     </button>
                   </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Ratings Modal */}
+        <AnimatePresence>
+          {showRatingsModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              onClick={() => setShowRatingsModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+              >
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">⭐ Satisfaction Ratings</h3>
+                      <p className="text-white/90 text-sm">Feedback from recipients</p>
+                    </div>
+                    <button
+                      onClick={() => setShowRatingsModal(false)}
+                      className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 overflow-y-auto max-h-96">
+                  {receivedLetters.filter(l => l.rating).length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="text-6xl mb-4">⭐</div>
+                      <p className="text-gray-500 dark:text-gray-400">No ratings yet</p>
+                      <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Ratings will appear when recipients rate their replies</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {receivedLetters.filter(l => l.rating).map((letter) => (
+                        <div key={letter.id} className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <p className="font-medium text-gray-900 dark:text-white">From: {letter.senderName || letter.recipientName}</p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">{formatDate(letter.createdAt)}</p>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i} className={`text-xl ${i < (letter.rating || 0) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}>
+                                  ⭐
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{letter.content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Open Rate Modal */}
+        <AnimatePresence>
+          {showOpenRateModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              onClick={() => setShowOpenRateModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+              >
+                <div className="bg-gradient-to-r from-pink-500 to-purple-500 p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">✨ Open Rate Details</h3>
+                      <p className="text-white/90 text-sm">Which letters have been opened</p>
+                    </div>
+                    <button
+                      onClick={() => setShowOpenRateModal(false)}
+                      className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 overflow-y-auto max-h-96">
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center">
+                      <p className="text-3xl font-bold text-green-600 dark:text-green-400">{openedSent}</p>
+                      <p className="text-sm text-green-700 dark:text-green-300">Opened</p>
+                    </div>
+                    <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 text-center">
+                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">{totalSent - openedSent}</p>
+                      <p className="text-sm text-orange-700 dark:text-orange-300">Not Opened</p>
+                    </div>
+                  </div>
+
+                  {sentLetters.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="text-6xl mb-4">📭</div>
+                      <p className="text-gray-500 dark:text-gray-400">No letters sent yet</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">All Letters:</h4>
+                      {sentLetters.map((letter) => (
+                        <div key={letter.id} className={`flex items-center justify-between p-3 rounded-lg ${
+                          letter.isOpened 
+                            ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' 
+                            : 'bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800'
+                        }`}>
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-900 dark:text-white">To: {letter.recipientName}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(letter.createdAt)}</p>
+                          </div>
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            letter.isOpened 
+                              ? 'bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200' 
+                              : 'bg-orange-100 dark:bg-orange-800 text-orange-700 dark:text-orange-200'
+                          }`}>
+                            {letter.isOpened ? '✓ Opened' : '✕ Not Opened'}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </motion.div>

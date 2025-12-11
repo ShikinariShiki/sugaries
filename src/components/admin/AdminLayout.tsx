@@ -1,13 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
-import { MusicPlayerWithQueue } from '@/components/MusicPlayerWithQueue'
+import MiniMusicPlayer from '@/components/MiniMusicPlayer'
 import OnboardingFlow from '@/components/OnboardingFlow'
-import { songs as songsData } from '@/data/songs'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -16,11 +15,15 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, onSearchChange }: AdminLayoutProps) {
   const router = useRouter()
-  const { data: session } = useSession()
+  const pathname = usePathname()
+  const { data: session, update } = useSession()
   const [isDark, setIsDark] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [isCheckingOnboarding, setIsCheckingOnboarding] = useState(true)
+
+  // Determine if we should show search (only on dashboard)
+  const showSearch = pathname === '/admin/dashboard'
 
   // Check onboarding status
   useEffect(() => {
@@ -106,6 +109,7 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
           onThemeToggle={toggleTheme}
           onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           onSearchChange={onSearchChange}
+          showSearch={showSearch}
         />
 
         {/* Page Content */}
@@ -113,16 +117,8 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
           {children}
         </main>
 
-        {/* Music Player with Queue */}
-        <MusicPlayerWithQueue 
-          songs={songsData.map(song => ({
-            id: song.id,
-            title: song.title,
-            artist: song.artist,
-            url: song.src
-          }))}
-          autoPlay={true}
-        />
+        {/* Music Player */}
+        <MiniMusicPlayer />
       </div>
     </div>
   )
