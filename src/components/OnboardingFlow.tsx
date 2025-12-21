@@ -133,22 +133,20 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (!response.ok) {
-        throw new Error('Failed to mark onboarding as complete')
+        console.error('Onboarding API failed:', response.status)
+        // Continue anyway - don't block user
       }
-      
-      // Wait a bit then redirect
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Redirect to dashboard
-      router.push('/admin/dashboard')
-      // Refresh to get updated session
-      setTimeout(() => router.refresh(), 100)
     } catch (error) {
       console.error('Failed to complete onboarding:', error)
-      setIsCompleting(false)
+      // Continue anyway - don't block user
     }
+
+    // Always redirect regardless of API success
+    // This prevents users from being stuck in the modal
+    router.push('/admin/compose')
+    setTimeout(() => router.refresh(), 100)
   }
 
   return (
