@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "Sugaries",
+    "slug": "sugaries-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fdfbf7"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sugaries.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Sugaries needs access to your camera to add photos to your letters.",
+        "NSPhotoLibraryUsageDescription": "Sugaries needs access to your photo library to add photos to your letters.",
+        "NSMicrophoneUsageDescription": "Sugaries needs access to your microphone to add audio to your letters."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#fdfbf7"
+      },
+      "package": "com.sugaries.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "sugaries",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#ffc1e3"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      },
+      "apiUrl": "https://your-api-url.com"
+    }
+  }
+}

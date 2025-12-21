@@ -6,6 +6,22 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=flat-square&logo=tailwind-css)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-10-ff69b4?style=flat-square)
+![React Native](https://img.shields.io/badge/React_Native-0.73-61DAFB?style=flat-square&logo=react)
+![Expo](https://img.shields.io/badge/Expo-50-000020?style=flat-square&logo=expo)
+
+## 📱 Now Available on Mobile!
+
+**NEW**: Sugaries is now available as a native mobile app for iOS and Android! 
+
+- 🚀 **Quick Start**: See [MOBILE_QUICKSTART.md](MOBILE_QUICKSTART.md)
+- 📚 **Full Guide**: See [MOBILE_IMPLEMENTATION.md](MOBILE_IMPLEMENTATION.md)
+- 🔄 **Comparison**: See [WEB_VS_MOBILE.md](WEB_VS_MOBILE.md)
+
+The mobile app includes all web features plus:
+- ✨ Native animations and haptic feedback
+- 🔐 Encrypted secure storage
+- 📴 Offline-first architecture
+- 🔔 Push notification support (ready to configure)
 
 ## ✨ Features
 

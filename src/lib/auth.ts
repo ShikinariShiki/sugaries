@@ -14,8 +14,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (!user.email) return false
-      
+      if (!user.email) {
+        console.error('Sign in rejected: No email provided')
+        return false
+      }
+
       try {
         // Create or update user in database
         const dbUser = await prisma.user.upsert({
@@ -32,28 +35,53 @@ export const authOptions: NextAuthOptions = {
             isOnboarded: false,
           }
         })
-        
+
         // Store the database user ID
         user.id = dbUser.id
-        
+
         return true
       } catch (error) {
-        console.error('Sign in error:', error)
-        return false
+        // Log the error with details for debugging
+        console.error('Database error during sign in:', error)
+        console.error('User email:', user.email)
+
+        // Still allow sign in even if database fails
+        // The jwt callback will handle creating/fetching user data
+        // This prevents "AccessDenied" errors from temporary DB issues
+        return true
       }
     },
     async jwt({ token, user, account }) {
-      if (user) {
-        // On sign in, fetch user from database to get the ID
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email! }
-        })
-        
-        if (dbUser) {
+      if (user && user.email) {
+        // On sign in, fetch or create user in database
+        try {
+          let dbUser = await prisma.user.findUnique({
+            where: { email: user.email }
+          })
+
+          // If user doesn't exist (signIn had a DB error), create them now
+          if (!dbUser) {
+            console.log('Creating user in jwt callback (fallback):', user.email)
+            dbUser = await prisma.user.create({
+              data: {
+                email: user.email,
+                name: user.name,
+                image: user.image,
+                role: ADMIN_EMAILS.includes(user.email) ? "admin" : "user",
+                isOnboarded: false,
+              }
+            })
+          }
+
           token.id = dbUser.id
           token.email = dbUser.email
           // Always check against ADMIN_EMAILS list for role determination
           token.role = ADMIN_EMAILS.includes(dbUser.email || "") ? "admin" : (dbUser.role as "admin" | "user")
+        } catch (error) {
+          console.error('JWT callback database error:', error)
+          // Set minimal token data from Google profile
+          token.email = user.email
+          token.role = ADMIN_EMAILS.includes(user.email) ? "admin" : "user"
         }
       }
       return token

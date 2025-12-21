@@ -32,17 +32,17 @@ const FONT_OPTIONS = [
 // Helper function to convert Google Photos share links to direct image URLs
 function convertGooglePhotosUrl(url: string): string {
   if (!url) return url
-  
+
   // If it's already a direct image URL, return as is
   if (url.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i)) return url
-  
+
   // Google Photos share link pattern: https://photos.app.goo.gl/xxxxx
   // or https://photos.google.com/share/xxxxx
   if (url.includes('photos.app.goo.gl') || url.includes('photos.google.com')) {
     console.warn('Google Photos links need to be direct image links. Please use: Right-click image > Copy image address')
     return url // Return as-is, but log warning
   }
-  
+
   return url
 }
 
@@ -102,20 +102,20 @@ export default function ComposePage() {
       if (imageFile) {
         console.log('=== Processing Image ===')
         console.log('Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type)
-        
+
         try {
           // Compress image first
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
           const img = new Image()
-          
+
           const imageLoadPromise = new Promise<string>((resolve, reject) => {
             img.onload = () => {
               // Calculate new dimensions (max 1200px width/height)
               let width = img.width
               let height = img.height
               const maxSize = 1200
-              
+
               if (width > maxSize || height > maxSize) {
                 if (width > height) {
                   height = (height / width) * maxSize
@@ -125,18 +125,18 @@ export default function ComposePage() {
                   height = maxSize
                 }
               }
-              
+
               canvas.width = width
               canvas.height = height
-              
+
               // Fill white background for non-transparent images
-              if (imageFile.type !== 'image/png') {
-                ctx?.fillStyle = '#FFFFFF'
-                ctx?.fillRect(0, 0, width, height)
+              if (imageFile.type !== 'image/png' && ctx) {
+                ctx.fillStyle = '#FFFFFF'
+                ctx.fillRect(0, 0, width, height)
               }
-              
+
               ctx?.drawImage(img, 0, 0, width, height)
-              
+
               // Convert to base64 - preserve PNG for transparency, use JPEG for photos
               const isPNG = imageFile.type === 'image/png'
               const base64 = isPNG ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.8)
@@ -145,7 +145,7 @@ export default function ComposePage() {
             }
             img.onerror = reject
           })
-          
+
           img.src = URL.createObjectURL(imageFile)
           uploadedImageUrl = await imageLoadPromise
           console.log('Image ready for upload')
@@ -231,11 +231,11 @@ export default function ComposePage() {
   const handleEditorSave = async (croppedBlob: Blob) => {
     console.log('=== Image Editor Save ===')
     console.log('Cropped blob:', croppedBlob, 'Size:', croppedBlob.size, 'Type:', croppedBlob.type)
-    
+
     // Convert blob to File
     const file = new File([croppedBlob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' })
     console.log('File created:', file.name, 'Size:', file.size, 'Type:', file.type)
-    
+
     setImageFile(file)
     const url = URL.createObjectURL(croppedBlob)
     console.log('Preview URL created:', url)
@@ -262,39 +262,39 @@ export default function ComposePage() {
             {/* Page Header */}
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Compose a Letter</h1>
-                <p className="text-gray-600 dark:text-gray-400">Send a secret, beautiful message ✨</p>
-              </div>
+              <p className="text-gray-600 dark:text-gray-400">Send a secret, beautiful message ✨</p>
+            </div>
 
-              <PaperCard>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Sender Name (only for non-admin) */}
-                  {!isAdmin && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                        From:
-                      </label>
-                      <input
-                        type="text"
-                        value={senderName}
-                        onChange={(e) => setSenderName(e.target.value)}
-                        placeholder="Your name"
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
-                        disabled={isLoading}
-                      />
-                    </div>
-                  )}
-
-                  {/* Recipient Name */}
+            <PaperCard>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Sender Name (only for non-admin) */}
+                {!isAdmin && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                      To:
+                      From:
                     </label>
                     <input
                       type="text"
-                      value={recipientName}
-                      onChange={(e) => setRecipientName(e.target.value)}
-                      placeholder="Recipient's name"
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      placeholder="Your name"
                       className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
+                      disabled={isLoading}
+                    />
+                  </div>
+                )}
+
+                {/* Recipient Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
+                    To:
+                  </label>
+                  <input
+                    type="text"
+                    value={recipientName}
+                    onChange={(e) => setRecipientName(e.target.value)}
+                    placeholder="Recipient's name"
+                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
                     disabled={isLoading}
                   />
                 </div>
@@ -323,7 +323,7 @@ export default function ComposePage() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
                     🎵 Music (optional):
                   </label>
-                  
+
                   {/* Source Selection */}
                   <div className="flex gap-3 mb-3">
                     <button
@@ -332,11 +332,10 @@ export default function ComposePage() {
                         setMusicSource('preset')
                         setMusicUrl('')
                       }}
-                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
-                        musicSource === 'preset'
+                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'preset'
                           ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
                           : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
-                      }`}
+                        }`}
                     >
                       🎼 Preset
                     </button>
@@ -346,11 +345,10 @@ export default function ComposePage() {
                         setMusicSource('youtube')
                         setSelectedSong('')
                       }}
-                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
-                        musicSource === 'youtube'
+                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'youtube'
                           ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
                           : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
-                      }`}
+                        }`}
                     >
                       📺 YouTube
                     </button>
@@ -360,11 +358,10 @@ export default function ComposePage() {
                         setMusicSource('local')
                         setSelectedSong('')
                       }}
-                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${
-                        musicSource === 'local'
+                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'local'
                           ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
                           : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
-                      }`}
+                        }`}
                     >
                       💿 Local
                     </button>
@@ -456,7 +453,7 @@ export default function ComposePage() {
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-poppins">
                     Drag & drop an image, or paste Google Photos link
                   </p>
-                  
+
                   {/* Drag and Drop Area */}
                   <div
                     onDragOver={(e) => {
@@ -470,11 +467,10 @@ export default function ComposePage() {
                       const file = e.dataTransfer.files[0]
                       if (file) handleFileSelect(file)
                     }}
-                    className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-                      isDragging
+                    className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${isDragging
                         ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
                         : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/50'
-                    }`}
+                      }`}
                   >
                     <input
                       type="file"
@@ -518,13 +514,13 @@ export default function ComposePage() {
                   {imageUrl && (
                     <div className="mt-4 space-y-2">
                       <div className="relative rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                        <img 
-                          src={imageUrl} 
-                          alt="Preview" 
-                          className="w-full max-h-64 object-cover" 
+                        <img
+                          src={imageUrl}
+                          alt="Preview"
+                          className="w-full max-h-64 object-cover"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none'
-                          }} 
+                          }}
                         />
                         <button
                           type="button"
@@ -650,28 +646,28 @@ export default function ComposePage() {
                   {isLoading ? 'Creating...' : '🎁 Create Letter'}
                 </button>
               </form>
-              </PaperCard>
-            </motion.div>
-          )}
+            </PaperCard>
+          </motion.div>
+        )}
 
-          {step === 'success' && (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-            >
-              <PaperCard>
+        {step === 'success' && (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+          >
+            <PaperCard>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-center"
+              >
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-center"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
                   className="text-6xl mb-4"
                 >
                   🎉
