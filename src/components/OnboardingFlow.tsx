@@ -125,28 +125,15 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
     }
   }
 
-  const handleComplete = async () => {
-    setIsCompleting(true)
-    try {
-      // Mark user as onboarded
-      const response = await fetch('/api/onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      })
+  const handleComplete = () => {
+    // Fire and forget - don't wait for API response
+    fetch('/api/onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    }).catch(() => { })
 
-      if (!response.ok) {
-        console.error('Onboarding API failed:', response.status)
-        // Continue anyway - don't block user
-      }
-    } catch (error) {
-      console.error('Failed to complete onboarding:', error)
-      // Continue anyway - don't block user
-    }
-
-    // Always redirect regardless of API success
-    // This prevents users from being stuck in the modal
-    router.push('/admin/compose')
-    setTimeout(() => router.refresh(), 100)
+    // Immediately redirect - don't block on anything
+    window.location.href = '/admin/compose'
   }
 
   return (
