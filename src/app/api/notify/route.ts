@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     await resend.emails.send({
-      from: 'Sugaries <onboarding@resend.dev>',
+      from: 'Gulalies <onboarding@resend.dev>',
       to: adminEmail,
       subject,
       html,

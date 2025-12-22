@@ -43,12 +43,12 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchLetters(true) // Initial fetch with loading state
-    
+
     // Auto-refresh every 2 seconds to catch new letters (silent update)
     const interval = setInterval(() => {
       fetchLetters(false) // Silent refresh without loading state
     }, 2000)
-    
+
     return () => clearInterval(interval)
   }, [])
 
@@ -59,12 +59,12 @@ export default function DashboardPage() {
     try {
       const response = await fetch('/api/letter/list')
       const data = await response.json()
-      
+
       console.log('=== Dashboard Fetch ===')
       console.log('Response OK:', response.ok)
       console.log('Sent letters:', data.sent?.length || 0)
       console.log('Received letters:', data.received?.length || 0)
-      
+
       if (response.ok) {
         setSentLetters(data.sent || [])
         setReceivedLetters(data.received || [])
@@ -164,7 +164,7 @@ export default function DashboardPage() {
 
   const handleBatchDelete = async () => {
     if (selectedLetters.size === 0) return
-    
+
     if (!confirm(`Are you sure you want to delete ${selectedLetters.size} letter(s)?`)) return
 
     // Optimistic update - remove immediately
@@ -179,10 +179,10 @@ export default function DashboardPage() {
       const deletePromises = idsToDelete.map(letterId =>
         fetch(`/api/letter/${letterId}`, { method: 'DELETE' })
       )
-      
+
       const results = await Promise.all(deletePromises)
       const failed = results.filter(r => !r.ok)
-      
+
       if (failed.length > 0) {
         // Revert on error
         setSentLetters(prevSent)
@@ -201,7 +201,7 @@ export default function DashboardPage() {
   const totalReceived = receivedLetters.length
   const openedSent = sentLetters.filter(l => l.isOpened).length
   const unreadReceived = receivedLetters.filter(l => !l.isOpened).length
-  
+
   // Calculate average satisfaction from received letters with ratings
   const ratingsFromReplies = receivedLetters.filter(l => l.rating).map(l => l.rating!)
   console.log('=== Statistics Calculation ===')
@@ -209,19 +209,19 @@ export default function DashboardPage() {
   console.log('Total received:', totalReceived)
   console.log('Opened sent:', openedSent)
   console.log('Ratings from replies:', ratingsFromReplies)
-  
+
   const averageSatisfaction = ratingsFromReplies.length > 0
     ? (ratingsFromReplies.reduce((sum, rating) => sum + rating, 0) / ratingsFromReplies.length).toFixed(1)
     : null
-  
+
   console.log('Average satisfaction:', averageSatisfaction)
 
   // Filter letters based on search query
   const filterLetters = (letters: Letter[]) => {
     if (!searchQuery.trim()) return letters
-    
+
     const query = searchQuery.toLowerCase()
-    return letters.filter(letter => 
+    return letters.filter(letter =>
       letter.recipientName?.toLowerCase().includes(query) ||
       letter.senderName?.toLowerCase().includes(query) ||
       letter.content?.toLowerCase().includes(query)
@@ -271,53 +271,54 @@ export default function DashboardPage() {
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl">📤</span>
-                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Sent</span>
-              </div>
-              <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{openedSent} opened</p>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xl md:text-2xl">📤</span>
+              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Sent</span>
+            </div>
+            <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent}</p>
+            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{openedSent} opened</p>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl">📥</span>
-                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Received</span>
-              </div>
-              <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalReceived}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{unreadReceived} unread</p>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xl md:text-2xl">📥</span>
+              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Received</span>
+            </div>
+            <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalReceived}</p>
+            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{unreadReceived} unread</p>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl">💌</span>
-                <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Total</span>
-              </div>
-              <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent + totalReceived}</p>
-              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">All letters</p>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xl md:text-2xl">💌</span>
+              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Total</span>
+            </div>
+            <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent + totalReceived}</p>
+            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">All letters</p>
+          </motion.div>
 
+          <Link href="/admin/statistics">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white"
+              className="bg-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer text-white"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">✨</span>
@@ -328,12 +329,14 @@ export default function DashboardPage() {
               </p>
               <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">Success rate</p>
             </motion.div>
+          </Link>
 
+          <Link href="/admin/statistics">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow text-white col-span-2 md:col-span-1"
+              className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer text-white col-span-2 md:col-span-1"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl md:text-2xl">⭐</span>
@@ -347,61 +350,60 @@ export default function DashboardPage() {
                 {ratingsFromReplies.length > 0 ? `${ratingsFromReplies.length} ratings` : 'No ratings yet'}
               </p>
             </motion.div>
-          </div>
+          </Link>
+        </div>
 
-          {/* Tabs */}
-          <div className="flex gap-2 bg-white dark:bg-gray-800 rounded-xl p-1 shadow-sm overflow-x-auto mb-4">
-            <button
-              onClick={() => setActiveTab('sent')}
-              className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
-                activeTab === 'sent'
-                  ? 'bg-pink-500 text-white shadow-md'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+        {/* Tabs */}
+        <div className="flex gap-2 bg-white dark:bg-gray-800 rounded-xl p-1 shadow-sm overflow-x-auto mb-4">
+          <button
+            onClick={() => setActiveTab('sent')}
+            className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${activeTab === 'sent'
+                ? 'bg-pink-500 text-white shadow-md'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
-            >
-              <span className="hidden md:inline">📤 Sent Letters</span>
-              <span className="md:hidden">📤 Sent</span>
-              <span className="ml-2 text-xs opacity-75">({totalSent})</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('received')}
-              className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${
-                activeTab === 'received'
-                  ? 'bg-pink-500 text-white shadow-md'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+          >
+            <span className="hidden md:inline">📤 Sent Letters</span>
+            <span className="md:hidden">📤 Sent</span>
+            <span className="ml-2 text-xs opacity-75">({totalSent})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('received')}
+            className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${activeTab === 'received'
+                ? 'bg-pink-500 text-white shadow-md'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
-            >
-              <span className="hidden md:inline">📥 Received</span>
-              <span className="md:hidden">📥 Received</span>
-              <span className="ml-2 text-xs opacity-75">({totalReceived})</span>
-            </button>
-          </div>
+          >
+            <span className="hidden md:inline">📥 Received</span>
+            <span className="md:hidden">📥 Received</span>
+            <span className="ml-2 text-xs opacity-75">({totalReceived})</span>
+          </button>
+        </div>
 
-          {/* Batch Actions Bar */}
-          {(activeTab === 'sent' ? sentLetters : receivedLetters).length > 0 && (
-            <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm mb-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedLetters.size === (activeTab === 'sent' ? sentLetters : receivedLetters).length && selectedLetters.size > 0}
-                  onChange={toggleSelectAll}
-                  className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer"
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {selectedLetters.size > 0 ? `${selectedLetters.size} selected` : 'Select All'}
-                </span>
-              </label>
-              {selectedLetters.size > 0 && (
-                <button
-                  onClick={handleBatchDelete}
-                  disabled={isDeleting}
-                  className="text-sm text-red-600 hover:text-red-700 font-medium"
-                >
-                  {isDeleting ? 'Deleting...' : 'Delete Selected'}
-                </button>
-              )}
-            </div>
-          )}
+        {/* Batch Actions Bar */}
+        {(activeTab === 'sent' ? sentLetters : receivedLetters).length > 0 && (
+          <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm mb-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedLetters.size === (activeTab === 'sent' ? sentLetters : receivedLetters).length && selectedLetters.size > 0}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer"
+              />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {selectedLetters.size > 0 ? `${selectedLetters.size} selected` : 'Select All'}
+              </span>
+            </label>
+            {selectedLetters.size > 0 && (
+              <button
+                onClick={handleBatchDelete}
+                disabled={isDeleting}
+                className="text-sm text-red-600 hover:text-red-700 font-medium"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Selected'}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Letters List */}
         {isLoading ? (
@@ -469,7 +471,7 @@ export default function DashboardPage() {
                       onChange={() => toggleSelectLetter(letter.id)}
                       className="mt-2 w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer flex-shrink-0"
                     />
-                    
+
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
@@ -509,7 +511,7 @@ export default function DashboardPage() {
                           )}
                         </div>
                         <div className="flex gap-2 w-full md:w-auto md:flex-col">
-                          <button 
+                          <button
                             onClick={() => setPreviewLetter(letter)}
                             className="flex-1 md:flex-none px-3 md:px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-poppins text-xs md:text-sm transition-colors whitespace-nowrap"
                           >
@@ -544,7 +546,7 @@ export default function DashboardPage() {
                       onChange={() => toggleSelectLetter(letter.id)}
                       className="mt-2 w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer flex-shrink-0"
                     />
-                    
+
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
@@ -698,9 +700,9 @@ export default function DashboardPage() {
                   {/* Image Preview */}
                   {previewLetter.imageUrl && (
                     <div className="mb-4 rounded-xl overflow-hidden shadow-lg bg-gray-100 dark:bg-gray-800">
-                      <img 
-                        src={previewLetter.imageUrl} 
-                        alt="Letter attachment" 
+                      <img
+                        src={previewLetter.imageUrl}
+                        alt="Letter attachment"
                         className="w-full h-auto object-contain"
                         style={{ maxHeight: '300px' }}
                         onError={(e) => {

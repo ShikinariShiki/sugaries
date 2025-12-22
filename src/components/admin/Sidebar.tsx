@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import SugariesIcon from '@/components/SugariesIcon'
+import GulaliesIcon from '@/components/GulaliesIcon'
 
 interface SidebarProps {
   isDark?: boolean
@@ -27,9 +27,9 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
       {/* Logo */}
       <div className={`p-6 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
         <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onMobileClose}>
-          <SugariesIcon className="w-8 h-8" />
+          <GulaliesIcon className="w-8 h-8" />
           <span className={`text-xl font-bold ${isDark ? 'text-pink-400' : 'text-pink-500'}`}>
-            Sugaries
+            Gulalies
           </span>
         </Link>
       </div>
@@ -42,11 +42,10 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
             <Link key={item.href} href={item.href} onClick={onMobileClose}>
               <motion.div
                 whileHover={{ x: 4 }}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${
-                  isActive
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${isActive
                     ? `${isDark ? 'bg-pink-600' : 'bg-pink-500'} text-white shadow-md`
                     : `${isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
-                }`}
+                  }`}
               >
                 <span className="text-xl">{item.icon}</span>
                 <span className="font-medium">{item.label}</span>
@@ -64,9 +63,8 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
       <motion.aside
         initial={{ x: -280 }}
         animate={{ x: 0 }}
-        className={`hidden lg:flex fixed left-0 top-0 h-screen w-[240px] ${
-          isDark ? 'bg-gray-800' : 'bg-white'
-        } border-r ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-col z-40`}
+        className={`hidden lg:flex fixed left-0 top-0 h-screen w-[240px] ${isDark ? 'bg-gray-800' : 'bg-white'
+          } border-r ${isDark ? 'border-gray-700' : 'border-gray-200'} flex-col z-40`}
       >
         {sidebarContent}
       </motion.aside>
@@ -83,16 +81,15 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
               onClick={onMobileClose}
               className="lg:hidden fixed inset-0 bg-black/50 z-40"
             />
-            
+
             {/* Sidebar */}
             <motion.aside
               initial={{ x: -280 }}
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ type: 'tween' }}
-              className={`lg:hidden fixed left-0 top-0 h-screen w-[240px] ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              } border-r ${isDark ? 'border-gray-700' : 'border-gray-200'} flex flex-col z-50`}
+              className={`lg:hidden fixed left-0 top-0 h-screen w-[240px] ${isDark ? 'bg-gray-800' : 'bg-white'
+                } border-r ${isDark ? 'border-gray-700' : 'border-gray-200'} flex flex-col z-50`}
             >
               {sidebarContent}
             </motion.aside>

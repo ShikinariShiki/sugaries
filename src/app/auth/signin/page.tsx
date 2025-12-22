@@ -23,9 +23,9 @@ export default function SignInPage() {
           >
             <span className="text-5xl">✉️</span>
           </motion.div>
-          
+
           <h1 className="text-5xl font-bold text-pink-500 mb-3">
-            Sugaries
+            Gulalies
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 font-handwriting">
             Send secret, beautiful digital letters with a touch of whimsy ✨
@@ -85,7 +85,7 @@ export default function SignInPage() {
         </motion.div>
 
         <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          © 2024 Sugaries. Made with love 💖
+          © 2024 Gulalies. Made with love 💖
         </p>
       </motion.div>
     </div>

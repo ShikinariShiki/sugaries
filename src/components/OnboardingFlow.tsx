@@ -16,7 +16,7 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
 
   const steps = [
     {
-      title: 'Welcome to Sugaries! 🎉',
+      title: 'Welcome to Gulalies! 🎉',
       description: `Hi ${userName || 'there'}! We are thrilled to have you here.`,
       content: (
         <div className="text-center space-y-4">
@@ -24,7 +24,7 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
             ✉️
           </div>
           <p className="text-lg text-gray-700 dark:text-gray-300">
-            Sugaries lets you send beautiful, personalized digital letters to your loved ones with a touch of magic.
+            Gulalies lets you send beautiful, personalized digital letters to your loved ones with a touch of magic.
           </p>
         </div>
       )
@@ -66,7 +66,7 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
     },
     {
       title: 'Features You Will Love ✨',
-      description: 'Discover what makes Sugaries special',
+      description: 'Discover what makes Gulalies special',
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">

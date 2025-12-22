@@ -4,7 +4,7 @@ import './globals.css'
 import AuthProvider from '@/components/AuthProvider'
 import { MusicPlayerProvider } from '@/contexts/MusicPlayerContext'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
 })
@@ -56,7 +56,7 @@ const shadowsIntoLight = Shadows_Into_Light({
 })
 
 export const metadata: Metadata = {
-  title: 'Sugaries | Digital Love Letters',
+  title: 'Gulalies | Digital Love Letters',
   description: 'Send encrypted, aesthetic digital letters with music and memories',
   icons: {
     icon: '/favicon.svg',

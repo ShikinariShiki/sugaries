@@ -27,7 +27,7 @@ export default function LetterPage({ params, searchParams }: PageProps) {
 // Optional: Generate metadata
 export async function generateMetadata({ params }: PageProps) {
   return {
-    title: 'You have a letter! | Sugaries',
+    title: 'You have a letter! | Gulalies',
     description: 'Someone sent you an encrypted digital letter',
   }
 }

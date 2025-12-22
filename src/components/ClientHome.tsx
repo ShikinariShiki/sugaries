@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import SugariesIcon from '@/components/SugariesIcon'
+import GulaliesIcon from '@/components/GulaliesIcon'
 
 export default function ClientHome({ session }: { session: any }) {
   return (
@@ -14,18 +14,18 @@ export default function ClientHome({ session }: { session: any }) {
           transition={{ duration: 0.6 }}
           className="flex items-center justify-center gap-4 mb-8"
         >
-          <SugariesIcon className="w-20 h-20 md:w-24 md:h-24" />
+          <GulaliesIcon className="w-20 h-20 md:w-24 md:h-24" />
         </motion.div>
-        
+
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-5xl md:text-7xl font-bold text-gray-900 mb-4 font-poppins"
         >
-          Sugaries
+          Gulalies
         </motion.h1>
-        
+
         <motion.p
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

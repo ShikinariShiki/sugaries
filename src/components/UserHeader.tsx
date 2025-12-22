@@ -18,7 +18,7 @@ export default function UserHeader() {
           <div className="flex items-center gap-3">
             <div className="text-2xl">✉️</div>
             <h1 className="text-xl font-bold text-pink-500">
-              Sugaries
+              Gulalies
             </h1>
           </div>
 
