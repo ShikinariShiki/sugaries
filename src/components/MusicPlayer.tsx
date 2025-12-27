@@ -14,7 +14,7 @@ function processYouTubeUrl(url: string): { type: 'youtube' | 'audio', url: strin
     /youtube\.com\/watch\?.*v=([^&\n?#]+)/,
     /music\.youtube\.com\/watch\?v=([^&\n?#]+)/
   ]
-  
+
   for (const pattern of youtubePatterns) {
     const match = url.match(pattern)
     if (match && match[1]) {
@@ -24,7 +24,7 @@ function processYouTubeUrl(url: string): { type: 'youtube' | 'audio', url: strin
       }
     }
   }
-  
+
   return { type: 'audio', url }
 }
 
@@ -36,7 +36,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isExpanded, setIsExpanded] = useState(true)
-  
+
   const processedUrl = processYouTubeUrl(musicUrl)
   const isYouTube = processedUrl.type === 'youtube'
 
@@ -82,7 +82,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     }
 
     if (!audioRef.current) return
-    
+
     if (isPlaying) {
       audioRef.current.pause()
     } else {
@@ -93,7 +93,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isYouTube) return // Can't seek YouTube iframe easily
-    
+
     const time = parseFloat(e.target.value)
     if (audioRef.current) {
       audioRef.current.currentTime = time
@@ -111,7 +111,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   return (
     <>
       {!isYouTube && <audio ref={audioRef} loop src={musicUrl} />}
-      
+
       {isYouTube && isExpanded && (
         <div className="fixed bottom-24 right-4 z-50 w-48 md:w-56">
           <div className="bg-black/95 backdrop-blur-sm rounded-lg overflow-hidden shadow-2xl border-2 border-pink-500/30">
@@ -126,7 +126,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
           </div>
         </div>
       )}
-      
+
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -134,18 +134,18 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
       >
         <motion.div
           animate={{ width: isExpanded ? '280px' : '56px', height: isExpanded ? 'auto' : '56px' }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden md:w-auto border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden md:w-auto border border-gray-200 dark:border-pink-500/20"
         >
           {isExpanded ? (
             // Expanded Player
             <div className="p-3 md:p-4">
               <div className="flex items-center justify-between mb-2 md:mb-3">
-                <h4 className="text-xs md:text-sm font-poppins font-semibold text-gray-900 dark:text-white truncate flex-1">
+                <h4 className="text-xs md:text-sm font-poppins font-semibold text-gray-900 dark:text-white/90 truncate flex-1">
                   🎵 Now Playing
                 </h4>
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold transition-colors"
+                  className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-500 dark:text-white/70 text-sm font-bold transition-colors"
                   aria-label="Minimize player"
                 >
                   −
@@ -162,9 +162,9 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
                       max={duration || 0}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                      className="w-full h-1 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1 font-poppins">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-white/50 mt-1 font-poppins">
                       <span>{formatTime(currentTime)}</span>
                       <span>{formatTime(duration)}</span>
                     </div>
@@ -197,7 +197,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
                       step="0.1"
                       value={volume}
                       onChange={(e) => setVolume(parseFloat(e.target.value))}
-                      className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                      className="w-full h-1 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
                     />
                   </div>
                 )}

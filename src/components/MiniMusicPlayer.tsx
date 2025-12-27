@@ -25,9 +25,8 @@ export default function MiniMusicPlayer() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`fixed bottom-4 right-4 z-40 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 ${
-        isMinimized ? "p-2 w-16" : "p-4 w-80"
-      } transition-all duration-300`}
+      className={`fixed bottom-4 right-4 z-40 bg-white dark:bg-[#1e1b2e] rounded-xl shadow-2xl border border-gray-200 dark:border-pink-500/20 ${isMinimized ? "p-2 w-16" : "p-4 w-80"
+        } transition-all duration-300`}
     >
       <AnimatePresence mode="wait">
         {isMinimized ? (
@@ -49,7 +48,7 @@ export default function MiniMusicPlayer() {
             {/* Expand Button */}
             <button
               onClick={toggleMinimize}
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+              className="text-gray-600 dark:text-white/50 hover:text-gray-800 dark:hover:text-white/90"
             >
               ⬆
             </button>
@@ -123,9 +122,9 @@ export default function MiniMusicPlayer() {
                 step="0.01"
                 value={isMuted ? 0 : volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                className="flex-1 h-1 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
               />
-              <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right">
+              <span className="text-xs text-gray-500 dark:text-white/50 w-10 text-right">
                 {Math.round((isMuted ? 0 : volume) * 100)}%
               </span>
             </div>
