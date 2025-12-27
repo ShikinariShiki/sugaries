@@ -1,4 +1,4 @@
-export type LetterState = 
+export type LetterState =
   | 'NAME_CHECK'
   | 'LOCKED_ENVELOPE'
   | 'PIN_CHECK'
@@ -20,7 +20,7 @@ export interface LetterStateData {
 
 export type LetterAction =
   | { type: 'VERIFY_NAME'; payload: { name: string } }
-  | { type: 'NAME_VERIFIED'; payload: { recipientName: string } }
+  | { type: 'NAME_VERIFIED'; payload: { recipientName: string; letterColor?: string; letterFont?: string } }
   | { type: 'NAME_FAILED'; payload: { error: string } }
   | { type: 'OPEN_ENVELOPE' }
   | { type: 'VERIFY_PIN'; payload: { pin: string } }

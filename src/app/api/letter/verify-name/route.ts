@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
       where: { id: letterId },
       select: {
         recipientName: true,
+        letterColor: true,
+        letterFont: true,
         // Explicitly exclude sensitive fields
       },
     })
@@ -38,9 +40,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Return the correct name (properly formatted) but NO content
+    // Return the correct name and non-sensitive options
     return NextResponse.json({
       correctName: letter.recipientName,
+      letterColor: letter.letterColor,
+      letterFont: letter.letterFont,
     })
   } catch (error) {
     console.error('Verify name error:', error)

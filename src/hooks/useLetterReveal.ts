@@ -12,16 +12,17 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
   switch (action.type) {
     case 'VERIFY_NAME':
       return { ...state, isLoading: true, error: undefined }
-    
+
     case 'NAME_VERIFIED':
       return {
         ...state,
-        state: 'LOCKED_ENVELOPE',
         recipientName: action.payload.recipientName,
+        letterColor: action.payload.letterColor,
+        letterFont: action.payload.letterFont,
         isLoading: false,
         error: undefined,
       }
-    
+
     case 'NAME_FAILED':
       return {
         ...state,
@@ -29,16 +30,16 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         isLoading: false,
         error: action.payload.error,
       }
-    
+
     case 'OPEN_ENVELOPE':
       return {
         ...state,
         state: 'PIN_CHECK',
       }
-    
+
     case 'VERIFY_PIN':
       return { ...state, isLoading: true, error: undefined }
-    
+
     case 'PIN_VERIFIED':
       return {
         ...state,
@@ -54,7 +55,7 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         isLoading: false,
         error: undefined,
       }
-    
+
     case 'PIN_FAILED':
       return {
         ...state,
@@ -62,10 +63,10 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         isLoading: false,
         error: action.payload.error,
       }
-    
+
     case 'RESET':
       return initialState
-    
+
     default:
       return state
   }
@@ -81,9 +82,9 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
       const data = await response.json()
 
       if (response.ok) {
-        dispatch({ 
-          type: 'PIN_VERIFIED', 
-          payload: { 
+        dispatch({
+          type: 'PIN_VERIFIED',
+          payload: {
             content: data.content,
             musicUrl: data.musicUrl,
             imageUrl: data.imageUrl,
@@ -92,7 +93,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             senderName: data.senderName,
             pinHash: data.pinHash,
             recipientName: data.recipientName,
-          } 
+          }
         })
       }
     } catch (error) {
@@ -120,20 +121,24 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
       const data = await response.json()
 
       if (response.ok) {
-        dispatch({ 
-          type: 'NAME_VERIFIED', 
-          payload: { recipientName: data.correctName } 
+        dispatch({
+          type: 'NAME_VERIFIED',
+          payload: {
+            recipientName: data.correctName,
+            letterColor: data.letterColor,
+            letterFont: data.letterFont
+          }
         })
       } else {
-        dispatch({ 
-          type: 'NAME_FAILED', 
-          payload: { error: data.error || 'Name does not match' } 
+        dispatch({
+          type: 'NAME_FAILED',
+          payload: { error: data.error || 'Name does not match' }
         })
       }
     } catch (error) {
-      dispatch({ 
-        type: 'NAME_FAILED', 
-        payload: { error: 'Failed to verify name' } 
+      dispatch({
+        type: 'NAME_FAILED',
+        payload: { error: 'Failed to verify name' }
       })
     }
   }, [letterId])
@@ -151,9 +156,9 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
 
       if (response.ok) {
         // Letter is not PIN protected, go straight to reading
-        dispatch({ 
-          type: 'PIN_VERIFIED', 
-          payload: { 
+        dispatch({
+          type: 'PIN_VERIFIED',
+          payload: {
             content: data.content,
             musicUrl: data.musicUrl,
             imageUrl: data.imageUrl,
@@ -162,7 +167,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             senderName: data.senderName,
             pinHash: data.pinHash,
             recipientName: data.recipientName,
-          } 
+          }
         })
       } else {
         // Letter is PIN protected, go to PIN check
@@ -187,26 +192,26 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
       const data = await response.json()
 
       if (response.ok) {
-        dispatch({ 
-          type: 'PIN_VERIFIED', 
-          payload: { 
+        dispatch({
+          type: 'PIN_VERIFIED',
+          payload: {
             content: data.content,
             musicUrl: data.musicUrl,
             imageUrl: data.imageUrl,
             letterColor: data.letterColor,
             letterFont: data.letterFont,
-          } 
+          }
         })
       } else {
-        dispatch({ 
-          type: 'PIN_FAILED', 
-          payload: { error: data.error || 'Incorrect PIN' } 
+        dispatch({
+          type: 'PIN_FAILED',
+          payload: { error: data.error || 'Incorrect PIN' }
         })
       }
     } catch (error) {
-      dispatch({ 
-        type: 'PIN_FAILED', 
-        payload: { error: 'Failed to verify PIN' } 
+      dispatch({
+        type: 'PIN_FAILED',
+        payload: { error: 'Failed to verify PIN' }
       })
     }
   }, [letterId])
