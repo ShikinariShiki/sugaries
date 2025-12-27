@@ -11,6 +11,8 @@ interface PageProps {
 export default async function ShortCodeRedirect({ params }: PageProps) {
   const { code } = await params
 
+  let letterId: string | null = null
+
   try {
     // Find letter by short code
     const letter = await prisma.letter.findUnique({
@@ -18,23 +20,11 @@ export default async function ShortCodeRedirect({ params }: PageProps) {
       select: { id: true }
     })
 
-    if (!letter) {
-      notFound()
+    if (letter) {
+      letterId = letter.id
     }
-
-    // Redirect to full letter URL
-    redirect(`/letter/${letter.id}`)
-  } catch (error: unknown) {
-    // CRITICAL: Re-throw NEXT_REDIRECT and NEXT_NOT_FOUND errors
-    // These are how Next.js handles redirect() and notFound() calls internally
-    if (error && typeof error === 'object' && 'digest' in error) {
-      const digest = (error as { digest: string }).digest
-      if (digest.startsWith('NEXT_REDIRECT') || digest.startsWith('NEXT_NOT_FOUND')) {
-        throw error
-      }
-    }
-
-    console.error('ShortCode redirect error:', error)
+  } catch (error) {
+    console.error('ShortCode database error:', error)
 
     // Return error UI for actual errors (like database issues)
     return (
@@ -57,4 +47,12 @@ export default async function ShortCodeRedirect({ params }: PageProps) {
       </div>
     )
   }
+
+  // Handle routing outside try/catch to ensure Next.js errors propagate correctly
+  if (!letterId) {
+    notFound()
+  }
+
+  // Redirect to full letter URL
+  redirect(`/letter/${letterId}`)
 }
