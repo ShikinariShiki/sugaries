@@ -333,8 +333,8 @@ export default function ComposePage() {
                         setMusicUrl('')
                       }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'preset'
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
-                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
+                        ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
+                        : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                         }`}
                     >
                       🎼 Preset
@@ -346,8 +346,8 @@ export default function ComposePage() {
                         setSelectedSong('')
                       }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'youtube'
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
-                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
+                        ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
+                        : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                         }`}
                     >
                       📺 YouTube
@@ -359,8 +359,8 @@ export default function ComposePage() {
                         setSelectedSong('')
                       }}
                       className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'local'
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
-                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
+                        ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
+                        : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
                         }`}
                     >
                       💿 Local
@@ -468,8 +468,8 @@ export default function ComposePage() {
                       if (file) handleFileSelect(file)
                     }}
                     className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${isDragging
-                        ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/50'
+                      ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/50'
                       }`}
                   >
                     <input
@@ -590,7 +590,7 @@ export default function ComposePage() {
                     maxLength={20}
                   />
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
-                    Preview: sugaries.app/{customShortCode || 'auto-generated'}
+                    Preview: gulalies.app/{customShortCode || 'auto-generated'}
                   </p>
                 </div>
 
