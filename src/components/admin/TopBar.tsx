@@ -116,12 +116,12 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                    className="fixed left-4 right-4 top-[72px] md:absolute md:left-auto md:right-0 md:top-full md:mt-2 md:w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
                   >
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-between">
                         <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
-                        <button 
+                        <button
                           onClick={() => setNotifications(notifications.map(n => ({ ...n, unread: false })))}
                           className="text-xs text-pink-500 hover:text-pink-600"
                         >
@@ -139,11 +139,10 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                         notifications.map((notif) => (
                           <div
                             key={notif.id}
-                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${
-                              notif.unread ? 'bg-pink-50 dark:bg-pink-900/10' : ''
-                            }`}
+                            className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${notif.unread ? 'bg-pink-50 dark:bg-pink-900/10' : ''
+                              }`}
                             onClick={() => {
-                              setNotifications(notifications.map(n => 
+                              setNotifications(notifications.map(n =>
                                 n.id === notif.id ? { ...n, unread: false } : n
                               ))
                               setShowNotifications(false)
@@ -181,8 +180,8 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
               className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               {adminImage ? (
-                <img 
-                  src={adminImage} 
+                <img
+                  src={adminImage}
                   alt={adminName}
                   className="w-8 h-8 rounded-full object-cover"
                 />
