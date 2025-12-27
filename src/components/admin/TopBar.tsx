@@ -10,22 +10,13 @@ interface TopBarProps {
   onThemeToggle?: () => void
   isDark?: boolean
   onMobileMenuToggle?: () => void
-  onSearchChange?: (query: string) => void
 }
 
-export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle, onSearchChange }: TopBarProps) {
+export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle, isDark = false, onMobileMenuToggle }: TopBarProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [notifications, setNotifications] = useState<any[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
-
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value)
-    if (onSearchChange) {
-      onSearchChange(value)
-    }
-  }
 
   // Fetch notifications from API
   useEffect(() => {
@@ -61,19 +52,8 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
           </svg>
         </button>
 
-        {/* Search Bar */}
-        <div className="flex-1 max-w-xl">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search letters..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm"
-            />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-          </div>
-        </div>
+        {/* Spacer */}
+        <div className="flex-1" />
 
         {/* Right Side - Actions */}
         <div className="flex items-center gap-3">

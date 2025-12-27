@@ -11,10 +11,9 @@ import { songs as songsData } from '@/data/songs'
 
 interface AdminLayoutProps {
   children: React.ReactNode
-  onSearchChange?: (query: string) => void
 }
 
-export default function AdminLayout({ children, onSearchChange }: AdminLayoutProps) {
+export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter()
   const { data: session } = useSession()
   const [isDark, setIsDark] = useState(false)
@@ -33,7 +32,7 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
       try {
         const response = await fetch('/api/check-onboarding')
         const data = await response.json()
-        
+
         if (!data.isOnboarded) {
           setShowOnboarding(true)
         }
@@ -59,7 +58,7 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
   const toggleTheme = () => {
     const newIsDark = !isDark
     setIsDark(newIsDark)
-    
+
     if (newIsDark) {
       document.documentElement.classList.add('dark')
       localStorage.setItem('theme', 'dark')
@@ -84,14 +83,14 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
     <div className={`flex min-h-screen ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
       {/* Onboarding Modal */}
       {showOnboarding && (
-        <OnboardingFlow 
+        <OnboardingFlow
           userName={adminName}
           userEmail={session?.user?.email || ''}
         />
       )}
 
       {/* Sidebar */}
-      <Sidebar 
+      <Sidebar
         isDark={isDark}
         isMobileOpen={isMobileMenuOpen}
         onMobileClose={() => setIsMobileMenuOpen(false)}
@@ -99,13 +98,12 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-[240px] bg-gray-50 dark:bg-gray-900">{/* Top Bar */}
-        <TopBar 
+        <TopBar
           adminName={adminName}
           adminImage={adminImage}
           isDark={isDark}
           onThemeToggle={toggleTheme}
           onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          onSearchChange={onSearchChange}
         />
 
         {/* Page Content */}
@@ -114,7 +112,7 @@ export default function AdminLayout({ children, onSearchChange }: AdminLayoutPro
         </main>
 
         {/* Music Player with Queue */}
-        <MusicPlayerWithQueue 
+        <MusicPlayerWithQueue
           songs={songsData.map(song => ({
             id: song.id,
             title: song.title,

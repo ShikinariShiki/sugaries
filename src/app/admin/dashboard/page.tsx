@@ -233,7 +233,7 @@ export default function DashboardPage() {
   const currentLetters = activeTab === 'sent' ? filteredSentLetters : filteredReceivedLetters
 
   return (
-    <AdminLayout onSearchChange={setSearchQuery}>
+    <AdminLayout>
       <div className="max-w-7xl">
         {/* Page Header */}
         <motion.div
@@ -268,6 +268,20 @@ export default function DashboardPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Search and Filters */}
+        <div className="mb-6">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search letters by name or content..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-pink-500 focus:ring-1 focus:ring-pink-500 focus:outline-none transition-colors shadow-sm font-poppins"
+            />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+          </div>
+        </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-8">
@@ -358,8 +372,8 @@ export default function DashboardPage() {
           <button
             onClick={() => setActiveTab('sent')}
             className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${activeTab === 'sent'
-                ? 'bg-pink-500 text-white shadow-md'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'bg-pink-500 text-white shadow-md'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
           >
             <span className="hidden md:inline">📤 Sent Letters</span>
@@ -369,8 +383,8 @@ export default function DashboardPage() {
           <button
             onClick={() => setActiveTab('received')}
             className={`flex-1 min-w-[120px] px-3 md:px-6 py-2 md:py-3 rounded-lg font-medium transition-all font-poppins text-xs md:text-base whitespace-nowrap ${activeTab === 'received'
-                ? 'bg-pink-500 text-white shadow-md'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'bg-pink-500 text-white shadow-md'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
           >
             <span className="hidden md:inline">📥 Received</span>
