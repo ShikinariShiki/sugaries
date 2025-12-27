@@ -120,7 +120,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
                 <div className="flex items-center gap-2">
                   <button
                     onClick={resetQueue}
-                    className="text-xs text-pink-400 hover:text-pink-300 transition-colors"
+                    className="text-xs text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 transition-colors"
                   >
                     Reset
                   </button>
@@ -142,8 +142,8 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
                     key={song.id}
                     onClick={() => setCurrentSongIndex(index)}
                     className={`w-full px-4 py-3 text-left transition-colors border-l-2 ${index === currentSongIndex
-                        ? 'bg-pink-500/10 border-pink-500'
-                        : 'border-transparent hover:bg-gray-50 dark:hover:bg-white/5'
+                      ? 'bg-pink-500/10 border-pink-500'
+                      : 'border-transparent hover:bg-gray-50 dark:hover:bg-white/5'
                       }`}
                   >
                     <div className="flex items-start gap-3">
@@ -212,7 +212,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
               {/* Now Playing */}
               <div className="px-4 py-3 border-b border-gray-100 dark:border-white/10">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-sm font-medium text-pink-400 truncate flex-1">
+                  <h3 className="text-sm font-medium text-pink-500 dark:text-pink-400 truncate flex-1">
                     {currentSong?.title || 'No Song'}
                   </h3>
                   <div className="flex items-center gap-2">
