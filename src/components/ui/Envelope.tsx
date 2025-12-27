@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { Heart } from 'lucide-react'
 
 interface EnvelopeProps {
   recipientName: string
@@ -52,11 +53,28 @@ export function Envelope({
     galaxy: 'bg-indigo-300',
   }
 
+  const paperGradients: Record<string, string> = {
+    pink: 'from-pink-50 to-white',
+    blue: 'from-blue-50 to-white',
+    yellow: 'from-yellow-50 to-white',
+    lavender: 'from-purple-50 to-white',
+    mint: 'from-emerald-50 to-white',
+    peach: 'from-orange-50 to-white',
+    sky: 'from-sky-50 to-white',
+    cream: 'from-amber-50 to-white',
+    'rose-gold': 'from-rose-50 to-white',
+    ocean: 'from-cyan-50 to-white',
+    sunset: 'from-orange-50 to-white',
+    forest: 'from-emerald-50 to-white',
+    cherry: 'from-red-50 to-white',
+    galaxy: 'from-indigo-50 to-white',
+  }
+
   return (
     <motion.div
       onClick={onClick}
       className={cn(
-        'relative w-96 h-56 cursor-pointer mx-auto perspective-1000',
+        'relative w-80 h-48 md:w-96 md:h-56 cursor-pointer mx-auto perspective-1000',
         className
       )}
       whileHover={!isOpen ? { scale: 1.05, y: -5 } : {}}
@@ -66,7 +84,7 @@ export function Envelope({
       {/* Main Envelope Body */}
       <motion.div
         className={cn(
-          'absolute inset-0 rounded-2xl shadow-2xl',
+          'absolute inset-0 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]',
           colors[color]
         )}
         animate={isOpen ? { y: 10 } : { y: 0 }}
@@ -79,16 +97,23 @@ export function Envelope({
         )}>
           {/* Left triangle */}
           <div
-            className="absolute inset-0 bg-pink-400/30"
+            className="absolute inset-0 bg-black/10"
             style={{
               clipPath: 'polygon(0 0, 0 100%, 50% 50%)'
             }}
           />
           {/* Right triangle */}
           <div
-            className="absolute inset-0 bg-pink-400/30"
+            className="absolute inset-0 bg-black/10"
             style={{
               clipPath: 'polygon(100% 0, 100% 100%, 50% 50%)'
+            }}
+          />
+          {/* Bottom triangle */}
+          <div
+            className="absolute inset-0 bg-black/5"
+            style={{
+              clipPath: 'polygon(0 100%, 100% 100%, 50% 50%)'
             }}
           />
         </div>
@@ -98,17 +123,22 @@ export function Envelope({
       {isOpen && (
         <motion.div
           initial={{ y: 0, opacity: 0 }}
-          animate={{ y: -80, opacity: 1 }}
+          animate={{ y: -100, opacity: 1 }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
-          className="absolute inset-x-8 top-8 h-56 bg-white rounded-lg shadow-2xl z-10 border-2 border-gray-100"
+          className={cn(
+            "absolute inset-x-6 top-6 h-56 rounded-lg shadow-2xl z-10 border border-white/50 bg-gradient-to-b",
+            paperGradients[color] || 'from-white to-gray-50'
+          )}
         >
-          <div className="absolute inset-0 flex items-center justify-center p-6">
+          <div className="absolute inset-0 flex items-center justify-center p-6 bg-white/20 backdrop-blur-[2px] rounded-lg">
             <div className="text-center">
-              <p className="text-sm text-gray-500 mb-2 font-quicksand">To:</p>
-              <p className="font-quicksand text-3xl text-ink font-semibold">
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">To my dearest:</p>
+              <h3 className="font-handwriting text-3xl md:text-4xl text-ink font-bold drop-shadow-sm">
                 {recipientName}
-              </p>
-              <div className="mt-4 text-2xl">💌</div>
+              </h3>
+              <div className="mt-4 flex justify-center">
+                <Heart size={24} className="text-pink-500 fill-pink-500 animate-pulse" />
+              </div>
             </div>
           </div>
         </motion.div>
@@ -117,7 +147,7 @@ export function Envelope({
       {/* Top Flap */}
       <motion.div
         className={cn(
-          'absolute top-0 left-0 right-0 h-32 rounded-t-2xl shadow-lg',
+          'absolute top-0 left-0 right-0 h-32 rounded-t-2xl shadow-md',
           flapColors[color]
         )}
         style={{
@@ -125,22 +155,23 @@ export function Envelope({
           transformOrigin: 'top center',
           zIndex: 20,
         }}
-        animate={isOpen ? { rotateX: -180, y: -20 } : { rotateX: 0, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        animate={isOpen ? { rotateX: -180, y: -15, z: 50 } : { rotateX: 0, y: 0, z: 0 }}
+        transition={{ duration: 0.7, ease: "anticipate" }}
       />
 
-      {/* Heart Seal - Fixed position */}
+      {/* Heart Seal */}
       {!isOpen && (
         <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+          className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30"
         >
           <motion.div
-            whileHover={{ scale: 1.1 }}
-            transition={{ type: 'spring', stiffness: 400 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            whileHover={{ scale: 1.15, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+            className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full shadow-xl flex items-center justify-center border-4 border-pink-100 group"
           >
-            <div className="w-16 h-16 bg-pink-500 rounded-full shadow-xl flex items-center justify-center">
-              <span className="text-white text-3xl">❤️</span>
-            </div>
+            <Heart size={32} className="text-pink-500 fill-pink-500 group-hover:scale-110 transition-transform" />
           </motion.div>
         </div>
       )}

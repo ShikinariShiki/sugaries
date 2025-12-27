@@ -12,6 +12,8 @@ import { ReplyModal } from '@/components/ReplyModal'
 import { MusicPlayer } from '@/components/MusicPlayer'
 import Confetti from 'react-confetti'
 import { useWindowSize } from '@/hooks/useWindowSize'
+import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 // Helper function to convert YouTube URL to embed URL
 function getYouTubeEmbedUrl(url: string): string | null {
@@ -144,7 +146,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   }
 
   return (
-    <div className="min-h-screen bg-rice-paper flex items-center justify-center p-4 md:p-8">
+    <div className="min-h-screen bg-[#fdfaf7] flex items-center justify-center p-4 md:p-8 overflow-x-hidden">
       <AnimatePresence mode="wait">
         {/* STATE 1: NAME_CHECK */}
         {state.state === 'NAME_CHECK' && (
@@ -153,34 +155,38 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
             shouldShake={shouldShake && !!state.error}
             onShakeComplete={() => setShouldShake(false)}
           >
-            <PaperCard className="max-w-md w-full">
+            <PaperCard className="max-w-md w-full border-none shadow-2xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
+                className="text-center"
               >
-                <h1 className="text-3xl font-bold text-ink mb-2 text-center">
-                  You've got mail! 💌
+                <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Mail className="text-pink-500" size={40} />
+                </div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2 font-poppins">
+                  You've got mail!
                 </h1>
-                <p className="text-gray-600 mb-6 text-center">
-                  Who are you?
+                <p className="text-gray-500 mb-8 font-poppins">
+                  To open this sugarcube, please tell us your name
                 </p>
 
                 <form onSubmit={handleNameSubmit} className="space-y-4">
-                  <div>
+                  <div className="relative">
                     <input
                       type="text"
                       value={nameInput}
                       onChange={(e) => setNameInput(e.target.value)}
-                      placeholder="Your name..."
-                      className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-pastel-pink focus:outline-none transition-colors font-handwriting text-lg"
+                      placeholder="Enter your name..."
+                      className="w-full px-6 py-4 rounded-xl border-2 border-gray-100 focus:border-pink-300 focus:outline-none transition-all font-poppins text-lg bg-gray-50/50"
                       disabled={state.isLoading}
                     />
                     {state.error && (
                       <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-red-500 text-sm mt-2"
+                        className="text-red-400 text-sm mt-2 font-medium"
                       >
                         {state.error}
                       </motion.p>
@@ -191,10 +197,10 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                     type="submit"
                     variant="primary"
                     size="lg"
-                    className="w-full"
+                    className="w-full py-6 rounded-xl text-lg font-bold"
                     disabled={state.isLoading || !nameInput.trim()}
                   >
-                    {state.isLoading ? 'Checking...' : 'Continue'}
+                    {state.isLoading ? 'Verifying...' : 'Continue'}
                   </SquishButton>
                 </form>
               </motion.div>
@@ -211,32 +217,35 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
             exit={{ opacity: 0, scale: 0.8 }}
             className="flex flex-col items-center justify-center w-full max-w-md"
           >
-            <motion.h2
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-2xl font-bold text-ink mb-8 text-center"
+              className="mb-12 text-center"
             >
-              A letter for you, {state.recipientName}
-            </motion.h2>
+              <h2 className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400 mb-2">Private Message</h2>
+              <h1 className="text-3xl font-bold text-gray-800 font-poppins">
+                For {state.recipientName}
+              </h1>
+            </motion.div>
 
             <Envelope
               recipientName={state.recipientName || ''}
               isOpen={isEnvelopeOpen}
               onClick={() => {
                 setIsEnvelopeOpen(true)
-                setTimeout(() => openEnvelope(), 1000)
+                setTimeout(() => openEnvelope(), 1500)
               }}
               color={state.letterColor as any}
             />
 
-            <motion.p
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-gray-600 mt-6 text-center"
+              transition={{ delay: 1 }}
+              className="mt-12 flex flex-col items-center gap-2"
             >
-              Click to open
-            </motion.p>
+              <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Click the envelope to open</p>
+            </motion.div>
           </motion.div>
         )}
 
@@ -247,17 +256,21 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
             shouldShake={shouldShake && !!state.error}
             onShakeComplete={() => setShouldShake(false)}
           >
-            <PaperCard className="max-w-md w-full">
+            <PaperCard className="max-w-md w-full border-none shadow-2xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
+                className="text-center"
               >
-                <h2 className="text-2xl font-bold text-ink mb-2 text-center">
-                  🔒 Enter Letter Code
+                <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Lock className="text-amber-500" size={40} />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2 font-poppins">
+                  Secured Sugarcube
                 </h2>
-                <p className="text-gray-600 mb-8 text-center">
-                  The sender gave you a secret code
+                <p className="text-gray-500 mb-8 font-poppins">
+                  Please enter the 4-digit code to read the letter
                 </p>
 
                 <PINInput
@@ -272,19 +285,9 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-red-500 text-sm mt-4 text-center"
+                    className="text-red-400 text-sm mt-4 font-medium"
                   >
                     {state.error}
-                  </motion.p>
-                )}
-
-                {state.isLoading && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-gray-500 text-sm mt-4 text-center"
-                  >
-                    Unlocking...
                   </motion.p>
                 )}
 
@@ -292,10 +295,10 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                   onClick={handlePinSubmit}
                   variant="primary"
                   size="lg"
-                  className="w-full mt-6"
+                  className="w-full mt-8 py-6 rounded-xl text-lg font-bold bg-amber-500 hover:bg-amber-600 border-amber-600 shadow-amber-200"
                   disabled={state.isLoading || !pinInput}
                 >
-                  {state.isLoading ? 'Unlocking...' : '🔓 Open Letter'}
+                  {state.isLoading ? 'Unlocking...' : 'Unlock Letter'}
                 </SquishButton>
               </motion.div>
             </PaperCard>
@@ -319,19 +322,17 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
             {/* Admin Info Banner */}
             {isAdminView && (
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="fixed top-2 left-2 z-50 max-w-xs w-auto"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="fixed top-6 left-6 z-50"
               >
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-2xl p-2 md:p-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 md:w-8 md:h-8 bg-white/20 rounded-full flex items-center justify-center text-xs md:text-base">
-                      🔑
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-xs md:text-sm">Admin View</h3>
-                      <p className="text-[10px] md:text-xs text-white/80">PIN bypassed</p>
-                    </div>
+                <div className="bg-white/80 backdrop-blur-md border border-gray-200 text-gray-800 rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                    <ShieldCheck className="text-indigo-600" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm">Preview Mode</h3>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Admin Privileges</p>
                   </div>
                 </div>
               </motion.div>
@@ -339,84 +340,102 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
 
             <motion.div
               key="reading"
-              initial={{ opacity: 0, rotateX: -90 }}
-              animate={{ opacity: 1, rotateX: 0 }}
-              exit={{ opacity: 0, rotateX: 90 }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="max-w-2xl w-full px-4"
-              style={{ transformStyle: 'preserve-3d' }}
+              initial={{ opacity: 0, scale: 0.95, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 50 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-3xl w-full px-4"
             >
-              <PaperCard className={`shadow-stack-floating bg-gradient-to-br ${themeColors.gradient}`} animate={false}>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <div className="mb-6 flex justify-between items-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-ink">
-                      Dear {state.recipientName},
-                    </h2>
-                    <span className="text-3xl md:text-4xl">💌</span>
-                  </div>
+              <div className="relative">
+                {/* Decorative Elements */}
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-20">
+                  <Heart size={80} className="text-pink-500 fill-pink-500" />
+                </div>
 
-                  {/* Image if provided */}
-                  {state.imageUrl && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.7 }}
-                      className="mb-6 rounded-xl overflow-hidden shadow-lg bg-gray-100"
-                    >
-                      <img
-                        src={state.imageUrl}
-                        alt="Letter attachment"
-                        className="w-full h-auto object-contain"
-                        style={{ maxHeight: '400px' }}
-                        onError={(e) => {
-                          console.error('Image failed to load:', state.imageUrl)
-                          const target = e.currentTarget
-                          target.style.display = 'none'
-                          const parent = target.parentElement
-                          if (parent) {
-                            parent.innerHTML = '<div class="p-6 text-center text-gray-500"><p class="mb-2">📷</p><p class="text-sm">Image failed to load</p><p class="text-xs mt-1 text-gray-400">The image link may be broken or private</p></div>'
-                          }
-                        }}
-                        onLoad={() => console.log('Image loaded successfully:', state.imageUrl)}
-                      />
-                    </motion.div>
+                <PaperCard
+                  className={cn(
+                    "shadow-[0_40px_100px_rgba(0,0,0,0.1)] border-none relative overflow-hidden",
+                    `bg-gradient-to-br ${themeColors.gradient}`
                   )}
-
-                  <div
-                    className={`prose prose-lg max-w-none ${fontClass} text-xl leading-relaxed text-ink whitespace-pre-wrap`}
-                  >
-                    {state.content}
-                  </div>
+                  animate={false}
+                >
+                  {/* Subtle Texture/Pattern */}
+                  <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
 
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1 }}
-                    className="mt-8 pt-6 border-t border-gray-200 space-y-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="relative z-10"
                   >
-                    <p className="text-gray-500 text-sm text-center">
-                      This letter was opened on {new Date().toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </p>
-                    <SquishButton
-                      onClick={() => setShowReplyModal(true)}
-                      variant="secondary"
-                      size="md"
-                      className="w-full"
+                    <header className="mb-12 flex justify-between items-start border-b border-black/5 pb-8">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40 mb-2">Recipient</p>
+                        <h2 className="text-3xl md:text-5xl font-handwriting font-bold text-gray-900 leading-tight">
+                          Dear {state.recipientName},
+                        </h2>
+                      </div>
+                      <div className="w-16 h-16 bg-white/40 rounded-full flex items-center justify-center border border-white/60">
+                        <Heart size={32} className="text-pink-500 fill-pink-400/30" />
+                      </div>
+                    </header>
+
+                    {/* Image if provided */}
+                    {state.imageUrl && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="mb-10 group"
+                      >
+                        <div className="p-2 bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg border border-white/80 overflow-hidden">
+                          <img
+                            src={state.imageUrl}
+                            alt="Letter attachment"
+                            className="w-full h-auto object-contain rounded-2xl max-h-[500px]"
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+
+                    <div
+                      className={cn(
+                        "prose prose-xl max-w-none text-gray-800 leading-[1.8] whitespace-pre-wrap",
+                        fontClass,
+                        "text-2xl md:text-3xl"
+                      )}
                     >
-                      ✉️ Send a Letter Back
-                    </SquishButton>
+                      {state.content}
+                    </div>
+
+                    <footer className="mt-16 pt-10 border-t border-black/5">
+                      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="text-center md:text-left">
+                          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-black/20 mb-1">Delivered on</p>
+                          <p className="text-gray-500 text-sm font-medium italic">
+                            {new Date().toLocaleDateString('en-US', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </p>
+                        </div>
+
+                        <SquishButton
+                          onClick={() => setShowReplyModal(true)}
+                          variant="secondary"
+                          size="lg"
+                          className="w-full md:w-auto px-10 py-4 rounded-2xl bg-white hover:bg-white text-gray-800 border-none shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 transition-all"
+                        >
+                          <Send size={20} />
+                          <span>Reply to Letter</span>
+                        </SquishButton>
+                      </div>
+                    </footer>
                   </motion.div>
-                </motion.div>
-              </PaperCard>
+                </PaperCard>
+              </div>
             </motion.div>
           </>
         )}
