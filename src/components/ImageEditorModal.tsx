@@ -83,6 +83,7 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
+  const [aspect, setAspect] = useState<number | undefined>(4 / 3)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -92,7 +93,7 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
 
   const handleSave = async () => {
     if (!croppedAreaPixels) return
-    
+
     setIsProcessing(true)
     try {
       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, rotation)
@@ -119,7 +120,7 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+          className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         >
           {/* Header */}
           <div className="bg-pink-500 p-4 flex items-center justify-between">
@@ -133,13 +134,13 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
           </div>
 
           {/* Cropper Area */}
-          <div className="relative h-[400px] md:h-[500px] bg-gray-900">
+          <div className="relative flex-1 bg-gray-900 min-h-[300px]">
             <Cropper
               image={imageSrc}
               crop={crop}
               zoom={zoom}
               rotation={rotation}
-              aspect={4 / 3}
+              aspect={aspect}
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onRotationChange={setRotation}
@@ -153,7 +154,52 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
           </div>
 
           {/* Controls */}
-          <div className="p-6 space-y-4 bg-white dark:bg-gray-800">
+          <div className="p-4 space-y-3 bg-white dark:bg-gray-800 shrink-0 overflow-y-auto">
+            {/* Aspect Ratio Selector */}
+            <div>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                📐 Aspect Ratio
+              </label>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                <button
+                  onClick={() => setAspect(undefined)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === undefined
+                      ? 'bg-pink-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                >
+                  Free
+                </button>
+                <button
+                  onClick={() => setAspect(4 / 3)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === 4 / 3
+                      ? 'bg-pink-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                >
+                  4:3
+                </button>
+                <button
+                  onClick={() => setAspect(16 / 9)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === 16 / 9
+                      ? 'bg-pink-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                >
+                  16:9
+                </button>
+                <button
+                  onClick={() => setAspect(9 / 16)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === 9 / 16
+                      ? 'bg-pink-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                >
+                  9:16
+                </button>
+              </div>
+            </div>
+
             {/* Zoom Control */}
             <div>
               <div className="flex items-center justify-between mb-2">
