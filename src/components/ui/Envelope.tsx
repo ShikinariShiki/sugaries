@@ -8,28 +8,48 @@ interface EnvelopeProps {
   isOpen?: boolean
   onClick?: () => void
   className?: string
-  color?: 'pink' | 'blue' | 'yellow' | 'lavender'
+  color?: 'pink' | 'blue' | 'yellow' | 'lavender' | 'mint' | 'peach' | 'sky' | 'cream' | 'rose-gold' | 'ocean' | 'sunset' | 'forest' | 'cherry' | 'galaxy'
 }
 
-export function Envelope({ 
-  recipientName, 
-  isOpen = false, 
+export function Envelope({
+  recipientName,
+  isOpen = false,
   onClick,
   className,
   color = 'pink'
 }: EnvelopeProps) {
-  const colors = {
+  const colors: Record<string, string> = {
     pink: 'bg-pink-300',
     blue: 'bg-blue-300',
     yellow: 'bg-yellow-300',
     lavender: 'bg-purple-300',
+    mint: 'bg-emerald-300',
+    peach: 'bg-orange-300',
+    sky: 'bg-sky-300',
+    cream: 'bg-amber-200',
+    'rose-gold': 'bg-rose-300',
+    ocean: 'bg-cyan-400',
+    sunset: 'bg-orange-400',
+    forest: 'bg-emerald-500',
+    cherry: 'bg-red-400',
+    galaxy: 'bg-indigo-400',
   }
 
-  const flapColors = {
+  const flapColors: Record<string, string> = {
     pink: 'bg-pink-200',
     blue: 'bg-blue-200',
     yellow: 'bg-yellow-200',
     lavender: 'bg-purple-200',
+    mint: 'bg-emerald-200',
+    peach: 'bg-orange-200',
+    sky: 'bg-sky-200',
+    cream: 'bg-amber-100',
+    'rose-gold': 'bg-rose-200',
+    ocean: 'bg-cyan-300',
+    sunset: 'bg-orange-300',
+    forest: 'bg-emerald-400',
+    cherry: 'bg-red-300',
+    galaxy: 'bg-indigo-300',
   }
 
   return (
@@ -44,7 +64,7 @@ export function Envelope({
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       {/* Main Envelope Body */}
-      <motion.div 
+      <motion.div
         className={cn(
           'absolute inset-0 rounded-2xl shadow-2xl',
           colors[color]
@@ -58,14 +78,14 @@ export function Envelope({
           colors[color]
         )}>
           {/* Left triangle */}
-          <div 
+          <div
             className="absolute inset-0 bg-pink-400/30"
             style={{
               clipPath: 'polygon(0 0, 0 100%, 50% 50%)'
             }}
           />
           {/* Right triangle */}
-          <div 
+          <div
             className="absolute inset-0 bg-pink-400/30"
             style={{
               clipPath: 'polygon(100% 0, 100% 100%, 50% 50%)'

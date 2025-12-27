@@ -16,51 +16,75 @@ import { useWindowSize } from '@/hooks/useWindowSize'
 // Helper function to convert YouTube URL to embed URL
 function getYouTubeEmbedUrl(url: string): string | null {
   if (!url) return null
-  
+
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
     /youtube\.com\/watch\?.*v=([^&\n?#]+)/
   ]
-  
+
   for (const pattern of patterns) {
     const match = url.match(pattern)
     if (match && match[1]) {
       return `https://www.youtube.com/embed/${match[1]}?autoplay=1&loop=1&playlist=${match[1]}`
     }
   }
-  
+
   return null
 }
 
 // Helper to get gradient and confetti colors for theme
 function getThemeColors(theme: string = 'pink') {
   const themes: Record<string, { gradient: string; confetti: string[] }> = {
-    pink: { 
+    pink: {
       gradient: 'from-pink-100 via-pink-50 to-white',
       confetti: ['#ffd6e7', '#ffb3d9', '#ff99cc', '#ff80bf']
     },
-    lavender: { 
+    lavender: {
       gradient: 'from-purple-100 via-purple-50 to-white',
       confetti: ['#e7d6ff', '#d6b3ff', '#c299ff', '#ae80ff']
     },
-    mint: { 
+    mint: {
       gradient: 'from-green-100 via-green-50 to-white',
       confetti: ['#d6ffe7', '#b3ffd6', '#99ffc9', '#80ffb3']
     },
-    peach: { 
+    peach: {
       gradient: 'from-orange-100 via-orange-50 to-white',
       confetti: ['#ffd6b3', '#ffcc99', '#ffc280', '#ffb366']
     },
-    sky: { 
+    sky: {
       gradient: 'from-blue-100 via-blue-50 to-white',
       confetti: ['#d6e7ff', '#b3d9ff', '#99ccff', '#80bfff']
     },
-    cream: { 
+    cream: {
       gradient: 'from-amber-50 via-yellow-50 to-white',
       confetti: ['#fff9d6', '#fff3b3', '#ffed99', '#ffe780']
     },
+    'rose-gold': {
+      gradient: 'from-rose-100 via-orange-50 to-white',
+      confetti: ['#fecdd3', '#fed7aa', '#ffe4e6', '#fff1f2']
+    },
+    ocean: {
+      gradient: 'from-cyan-100 via-blue-50 to-white',
+      confetti: ['#a5f3fc', '#bae6fd', '#e0f2fe', '#f0f9ff']
+    },
+    sunset: {
+      gradient: 'from-orange-100 via-rose-50 to-white',
+      confetti: ['#fdba74', '#fda4af', '#fff1f2', '#fff7ed']
+    },
+    forest: {
+      gradient: 'from-emerald-100 via-green-50 to-white',
+      confetti: ['#6ee7b7', '#a7f3d0', '#d1fae5', '#ecfdf5']
+    },
+    cherry: {
+      gradient: 'from-red-100 via-rose-50 to-white',
+      confetti: ['#fca5a5', '#fecdd3', '#ffe4e6', '#fff1f2']
+    },
+    galaxy: {
+      gradient: 'from-indigo-100 via-purple-50 to-white',
+      confetti: ['#a5b4fc', '#c4b5fd', '#e0e7ff', '#ede9fe']
+    },
   }
-  
+
   return themes[theme] || themes.pink
 }
 
@@ -74,7 +98,7 @@ function getFontClass(font: string = 'handwriting') {
     mono: 'font-mono',
     sans: 'font-sans',
   }
-  
+
   return fonts[font] || fonts.handwriting
 }
 
@@ -87,7 +111,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
-  
+
   // Get theme colors and font
   const themeColors = getThemeColors(state.letterColor)
   const fontClass = getFontClass(state.letterFont)
@@ -124,7 +148,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
       <AnimatePresence mode="wait">
         {/* STATE 1: NAME_CHECK */}
         {state.state === 'NAME_CHECK' && (
-          <ShakeWrapper 
+          <ShakeWrapper
             key="name-check"
             shouldShake={shouldShake && !!state.error}
             onShakeComplete={() => setShouldShake(false)}
@@ -202,7 +226,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                 setIsEnvelopeOpen(true)
                 setTimeout(() => openEnvelope(), 1000)
               }}
-              color="pink"
+              color={state.letterColor as any}
             />
 
             <motion.p
@@ -288,10 +312,10 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               numberOfPieces={200}
               colors={themeColors.confetti}
             />
-            
+
             {/* Music Player */}
             {state.musicUrl && <MusicPlayer musicUrl={state.musicUrl} />}
-            
+
             {/* Admin Info Banner */}
             {isAdminView && (
               <motion.div
@@ -312,7 +336,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                 </div>
               </motion.div>
             )}
-            
+
             <motion.div
               key="reading"
               initial={{ opacity: 0, rotateX: -90 }}
@@ -343,9 +367,9 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                       transition={{ delay: 0.7 }}
                       className="mb-6 rounded-xl overflow-hidden shadow-lg bg-gray-100"
                     >
-                      <img 
-                        src={state.imageUrl} 
-                        alt="Letter attachment" 
+                      <img
+                        src={state.imageUrl}
+                        alt="Letter attachment"
                         className="w-full h-auto object-contain"
                         style={{ maxHeight: '400px' }}
                         onError={(e) => {
@@ -362,7 +386,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                     </motion.div>
                   )}
 
-                  <div 
+                  <div
                     className={`prose prose-lg max-w-none ${fontClass} text-xl leading-relaxed text-ink whitespace-pre-wrap`}
                   >
                     {state.content}
