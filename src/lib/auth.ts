@@ -77,11 +77,13 @@ export const authOptions: NextAuthOptions = {
           token.email = dbUser.email
           // Always check against ADMIN_EMAILS list for role determination
           token.role = ADMIN_EMAILS.includes(dbUser.email || "") ? "admin" : (dbUser.role as "admin" | "user")
+          token.isOnboarded = dbUser.isOnboarded
         } catch (error) {
           console.error('JWT callback database error:', error)
           // Set minimal token data from Google profile
           token.email = user.email
           token.role = ADMIN_EMAILS.includes(user.email) ? "admin" : "user"
+          token.isOnboarded = false // Default to false on error
         }
       }
       return token
@@ -90,6 +92,9 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as "admin" | "user"
+        // Force type assertion as module augmentation for Session might be needed elsewhere
+        // @ts-ignore
+        session.user.isOnboarded = token.isOnboarded as boolean
       }
       return session
     },

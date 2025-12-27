@@ -128,7 +128,7 @@ export default function PrivacyPolicy() {
               If you have any questions about this Privacy Policy or our data practices, please contact us at:
             </p>
             <p className="text-blue-600 dark:text-blue-400 mb-2">
-              Email: privacy@sugaries.com
+              Email: privacy@gulalies.com
             </p>
             <p className="text-gray-700 dark:text-gray-300">
               We will respond to your inquiry within 30 days.
@@ -138,11 +138,11 @@ export default function PrivacyPolicy() {
 
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            By using Sugaries, you consent to the collection and use of information in accordance with this policy.
+            By using Gulalies, you consent to the collection and use of information in accordance with this policy.
           </p>
           <div className="mt-4">
             <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-              Return to Sugaries
+              Return to Gulalies
             </Link>
           </div>
         </div>

@@ -125,15 +125,24 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
     }
   }
 
-  const handleComplete = () => {
-    // Fire and forget - don't wait for API response
-    fetch('/api/onboarding', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    }).catch(() => { })
+  const handleComplete = async () => {
+    setIsCompleting(true)
+    try {
+      const res = await fetch('/api/onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
 
-    // Immediately redirect - don't block on anything
-    window.location.href = '/admin/compose'
+      if (!res.ok) throw new Error('Failed to update status')
+
+      // Wait a bit for the database to sync/propagate if needed, then redirect
+      router.refresh() // Refresh server components
+      window.location.href = '/admin/compose'
+    } catch (error) {
+      console.error('Onboarding failed:', error)
+      setIsCompleting(false)
+      // Optional: Add toast notification here
+    }
   }
 
   return (

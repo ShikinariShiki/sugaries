@@ -5,7 +5,7 @@ export default function SugarCubesIcon({ className = "w-8 h-8" }: { className?: 
   return (
     <Image
       src={iconImage}
-      alt="Sugaries Logo"
+      alt="Gulalies Logo"
       className={className}
       priority
     />

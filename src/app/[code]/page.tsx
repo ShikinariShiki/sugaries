@@ -24,10 +24,19 @@ export default async function ShortCodeRedirect({ params }: PageProps) {
 
     // Redirect to full letter URL
     redirect(`/letter/${letter.id}`)
-  } catch (error) {
+  } catch (error: unknown) {
+    // CRITICAL: Re-throw NEXT_REDIRECT and NEXT_NOT_FOUND errors
+    // These are how Next.js handles redirect() and notFound() calls internally
+    if (error && typeof error === 'object' && 'digest' in error) {
+      const digest = (error as { digest: string }).digest
+      if (digest.startsWith('NEXT_REDIRECT') || digest.startsWith('NEXT_NOT_FOUND')) {
+        throw error
+      }
+    }
+
     console.error('ShortCode redirect error:', error)
 
-    // Return error UI instead of crashing
+    // Return error UI for actual errors (like database issues)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
         <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4 text-center">

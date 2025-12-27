@@ -3,7 +3,7 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import SugariesIcon from '@/components/SugariesIcon'
+import GulaliesIcon from '@/components/GulaliesIcon'
 
 export default function LoginPage() {
   const [password, setPassword] = useState('')
@@ -47,7 +47,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
           <div className="text-center mb-8">
             <div className="w-16 h-16 mx-auto mb-4">
-              <SugariesIcon className="w-full h-full" />
+              <GulaliesIcon className="w-full h-full" />
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Admin Login</h1>
             <p className="text-gray-600">Enter your password to continue</p>

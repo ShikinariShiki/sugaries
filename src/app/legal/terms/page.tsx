@@ -17,19 +17,19 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">1. Acceptance of Terms</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              By accessing and using Sugaries ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+              By accessing and using Gulalies ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">2. Use License</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Permission is granted to temporarily use Sugaries for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+              Permission is granted to temporarily use Gulalies for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
             </p>
             <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
               <li>Modify or copy the materials</li>
               <li>Use the materials for any commercial purpose or for any public display</li>
-              <li>Attempt to reverse engineer any software contained on Sugaries</li>
+              <li>Attempt to reverse engineer any software contained on Gulalies</li>
               <li>Remove any copyright or other proprietary notations from the materials</li>
               <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
             </ul>
@@ -38,7 +38,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">3. User Content</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              You retain all rights to the content you create and share through Sugaries. By using our service, you grant us permission to store and display your content for the purpose of providing the service. You are responsible for:
+              You retain all rights to the content you create and share through Gulalies. By using our service, you grant us permission to store and display your content for the purpose of providing the service. You are responsible for:
             </p>
             <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
               <li>Ensuring your content does not violate any laws or regulations</li>
@@ -58,21 +58,21 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">5. Disclaimer</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              The materials on Sugaries are provided on an 'as is' basis. Sugaries makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+              The materials on Gulalies are provided on an 'as is' basis. Gulalies makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">6. Limitations</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              In no event shall Sugaries or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use Sugaries, even if Sugaries or a Sugaries authorized representative has been notified orally or in writing of the possibility of such damage.
+              In no event shall Gulalies or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use Gulalies, even if Gulalies or a Gulalies authorized representative has been notified orally or in writing of the possibility of such damage.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">7. Service Modifications</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Sugaries reserves the right to modify or discontinue the service at any time, with or without notice. We may also update these terms from time to time. Continued use of the service after such modifications constitutes acceptance of the updated terms.
+              Gulalies reserves the right to modify or discontinue the service at any time, with or without notice. We may also update these terms from time to time. Continued use of the service after such modifications constitutes acceptance of the updated terms.
             </p>
           </section>
 
@@ -89,18 +89,18 @@ export default function TermsOfService() {
               If you have any questions about these Terms of Service, please contact us at:
             </p>
             <p className="text-blue-600 dark:text-blue-400">
-              support@sugaries.com
+              support@gulalies.com
             </p>
           </section>
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            By using Sugaries, you acknowledge that you have read and understood these terms and agree to be bound by them.
+            By using Gulalies, you acknowledge that you have read and understood these terms and agree to be bound by them.
           </p>
           <div className="mt-4">
             <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-              Return to Sugaries
+              Return to Gulalies
             </Link>
           </div>
         </div>
