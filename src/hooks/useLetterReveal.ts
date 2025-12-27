@@ -16,6 +16,7 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
     case 'NAME_VERIFIED':
       return {
         ...state,
+        state: 'LOCKED_ENVELOPE',
         recipientName: action.payload.recipientName,
         letterColor: action.payload.letterColor,
         letterFont: action.payload.letterFont,
