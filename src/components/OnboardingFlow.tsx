@@ -3,6 +3,19 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import {
+  Sparkles,
+  FileText,
+  Music,
+  Image as ImageIcon,
+  Lock,
+  BarChart,
+  CheckCircle,
+  Mail,
+  Send,
+  ShieldCheck,
+  Zap
+} from 'lucide-react'
 
 type OnboardingProps = {
   userName: string
@@ -14,14 +27,18 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
   const [currentStep, setCurrentStep] = useState(0)
   const [isCompleting, setIsCompleting] = useState(false)
 
+
+
+  // ... in main component
+
   const steps = [
     {
       title: 'Welcome to Gulalies! 🎉',
       description: `Hi ${userName || 'there'}! We are thrilled to have you here.`,
       content: (
         <div className="text-center space-y-4">
-          <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center text-6xl">
-            ✉️
+          <div className="w-32 h-32 mx-auto bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
+            <Mail className="w-16 h-16 text-pink-500" />
           </div>
           <p className="text-lg text-gray-700 dark:text-gray-300">
             Gulalies lets you send beautiful, personalized digital letters to your loved ones with a touch of magic.
@@ -34,31 +51,31 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
       description: 'Creating and sending letters is simple!',
       content: (
         <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold flex-shrink-0">
-              1
+          <div className="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800">
+            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold flex-shrink-0">
+              <FileText size={20} />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Compose Your Letter</h3>
-              <p className="text-gray-600 dark:text-gray-400">Write your message, add images, and choose background music</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Write your message, add images, and choose background music</p>
             </div>
           </div>
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold flex-shrink-0">
-              2
+          <div className="flex items-start gap-4 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-800">
+            <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-800 text-amber-600 dark:text-amber-300 flex items-center justify-center font-bold flex-shrink-0">
+              <Lock size={20} />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Set a Secret PIN</h3>
-              <p className="text-gray-600 dark:text-gray-400">Create a 4-digit PIN to protect your letter</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Create a 4-digit PIN to protect your letter</p>
             </div>
           </div>
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold flex-shrink-0">
-              3
+          <div className="flex items-start gap-4 p-4 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-800">
+            <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-800 text-purple-600 dark:text-purple-300 flex items-center justify-center font-bold flex-shrink-0">
+              <Send size={20} />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Share the Magic</h3>
-              <p className="text-gray-600 dark:text-gray-400">Send the link to your recipient along with the PIN (separately!)</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Send the link to your recipient along with the PIN (separately!)</p>
             </div>
           </div>
         </div>
@@ -69,25 +86,33 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
       description: 'Discover what makes Gulalies special',
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-            <div className="text-3xl mb-2">🎵</div>
+          <div className="p-4 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl shadow-sm">
+            <div className="mb-3 text-pink-500">
+              <Music size={24} />
+            </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Background Music</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Add the perfect soundtrack to your letter</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Add the perfect soundtrack</p>
           </div>
-          <div className="p-4 bg-pink-50 dark:bg-pink-900/20 rounded-xl">
-            <div className="text-3xl mb-2">🖼️</div>
+          <div className="p-4 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl shadow-sm">
+            <div className="mb-3 text-blue-500">
+              <ImageIcon size={24} />
+            </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Image Support</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Include photos to make it personal</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Include personal photos</p>
           </div>
-          <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-            <div className="text-3xl mb-2">🔒</div>
+          <div className="p-4 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl shadow-sm">
+            <div className="mb-3 text-amber-500">
+              <ShieldCheck size={24} />
+            </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">PIN Protection</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Keep your messages private and secure</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Keep messages private</p>
           </div>
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
-            <div className="text-3xl mb-2">📊</div>
+          <div className="p-4 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl shadow-sm">
+            <div className="mb-3 text-green-500">
+              <BarChart size={24} />
+            </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Track Opens</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">See when your letters are read</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">See when letters are read</p>
           </div>
         </div>
       )
@@ -97,15 +122,16 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
       description: 'Ready to send your first letter?',
       content: (
         <div className="text-center space-y-6">
-          <div className="w-32 h-32 mx-auto bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-6xl animate-bounce">
-            🎉
+          <div className="w-32 h-32 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center animate-bounce">
+            <Zap className="w-16 h-16 text-green-500" />
           </div>
           <p className="text-lg text-gray-700 dark:text-gray-300">
             You are ready to start creating beautiful letters! Head to your dashboard to compose your first one.
           </p>
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              💡 <strong>Tip:</strong> You can access settings, view statistics, and manage your letters from the sidebar.
+          <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
+            <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
+              <Sparkles size={16} className="text-yellow-500" />
+              <strong>Tip:</strong> Access settings and statistics from the sidebar at any time.
             </p>
           </div>
         </div>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import GulaliesIcon from '@/components/GulaliesIcon'
+import { Home, Mail, BarChart2, User, Settings } from 'lucide-react'
 
 interface SidebarProps {
   isDark?: boolean
@@ -15,11 +16,11 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
   const pathname = usePathname()
 
   const navItems = [
-    { icon: '🏠', label: 'Dashboard', href: '/admin/dashboard' },
-    { icon: '✉️', label: 'Compose', href: '/admin/compose' },
-    { icon: '📊', label: 'Statistics', href: '/admin/statistics' },
-    { icon: '👤', label: 'Profile', href: '/admin/profile' },
-    { icon: '⚙️', label: 'Settings', href: '/admin/settings' },
+    { icon: <Home size={20} />, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: <Mail size={20} />, label: 'Compose', href: '/admin/compose' },
+    { icon: <BarChart2 size={20} />, label: 'Statistics', href: '/admin/statistics' },
+    { icon: <User size={20} />, label: 'Profile', href: '/admin/profile' },
+    { icon: <Settings size={20} />, label: 'Settings', href: '/admin/settings' },
   ]
 
   const sidebarContent = (
@@ -43,8 +44,8 @@ export default function Sidebar({ isDark = false, isMobileOpen = false, onMobile
               <motion.div
                 whileHover={{ x: 4 }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${isActive
-                    ? `${isDark ? 'bg-pink-600' : 'bg-pink-500'} text-white shadow-md`
-                    : `${isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
+                  ? `${isDark ? 'bg-pink-600' : 'bg-pink-500'} text-white shadow-md`
+                  : `${isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`
                   }`}
               >
                 <span className="text-xl">{item.icon}</span>

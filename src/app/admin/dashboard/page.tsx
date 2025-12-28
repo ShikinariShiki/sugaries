@@ -7,6 +7,20 @@ import { SquishButton } from '@/components/ui/SquishButton'
 import AdminLayout from '@/components/admin/AdminLayout'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import {
+  Search,
+  Upload,
+  Download,
+  Mail,
+  Sparkles,
+  Star,
+  Trash2,
+  Eye,
+  ArrowRight,
+  Loader2,
+  Inbox,
+  Send
+} from 'lucide-react'
 
 interface Letter {
   id: string
@@ -255,14 +269,17 @@ export default function DashboardPage() {
                   disabled={isDeleting}
                   className="bg-red-50 text-red-600 hover:bg-red-100 flex-1 md:flex-none"
                 >
-                  <span className="hidden sm:inline">{isDeleting ? '⏳' : '🗑️'} Delete {selectedLetters.size}</span>
-                  <span className="sm:hidden">🗑️ {selectedLetters.size}</span>
+                  <span className="hidden sm:inline flex items-center gap-2">
+                    {isDeleting ? <Loader2 className="animate-spin" size={16} /> : <Trash2 size={16} />}
+                    Delete {selectedLetters.size}
+                  </span>
+                  <span className="sm:hidden"><Trash2 size={16} /> {selectedLetters.size}</span>
                 </SquishButton>
               )}
               <Link href="/admin/compose" className="flex-1 md:flex-none">
                 <SquishButton variant="primary" size="lg" className="w-full">
-                  <span className="hidden sm:inline">✉️ Compose New</span>
-                  <span className="sm:inline md:hidden">✉️</span>
+                  <span className="hidden sm:inline flex items-center gap-2"><Mail size={16} /> Compose New</span>
+                  <span className="sm:inline md:hidden"><Mail size={16} /></span>
                 </SquishButton>
               </Link>
             </div>
@@ -292,7 +309,7 @@ export default function DashboardPage() {
             className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl md:text-2xl">📤</span>
+              <span className="text-xl md:text-2xl text-pink-500"><Send size={24} /></span>
               <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Sent</span>
             </div>
             <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent}</p>
@@ -306,7 +323,7 @@ export default function DashboardPage() {
             className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl md:text-2xl">📥</span>
+              <span className="text-xl md:text-2xl text-pink-500"><Inbox size={24} /></span>
               <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Received</span>
             </div>
             <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalReceived}</p>
@@ -320,7 +337,7 @@ export default function DashboardPage() {
             className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl md:text-2xl">💌</span>
+              <span className="text-xl md:text-2xl text-pink-500"><Mail size={24} /></span>
               <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Total</span>
             </div>
             <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent + totalReceived}</p>
@@ -335,7 +352,7 @@ export default function DashboardPage() {
               className="bg-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer text-white"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl">✨</span>
+                <span className="text-xl md:text-2xl"><Sparkles size={24} /></span>
                 <span className="text-[10px] md:text-sm font-poppins opacity-90">Open Rate</span>
               </div>
               <p className="text-xl md:text-3xl font-bold font-poppins">
@@ -353,7 +370,7 @@ export default function DashboardPage() {
               className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer text-white col-span-2 md:col-span-1"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl">⭐</span>
+                <span className="text-xl md:text-2xl"><Star size={24} className="fill-current" /></span>
                 <span className="text-[10px] md:text-sm font-poppins opacity-90">Satisfaction</span>
               </div>
               <p className="text-xl md:text-3xl font-bold font-poppins">

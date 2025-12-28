@@ -102,7 +102,11 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                       <div className="flex items-center justify-between">
                         <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
                         <button
-                          onClick={() => setNotifications(notifications.map(n => ({ ...n, unread: false })))}
+                          onClick={() => {
+                            setNotifications(notifications.map(n => ({ ...n, unread: false })))
+                            setUnreadCount(0) // Clear count
+                            fetch('/api/notifications', { method: 'POST' }).catch(console.error)
+                          }}
                           className="text-xs text-pink-500 hover:text-pink-600"
                         >
                           Mark all read
@@ -121,11 +125,18 @@ export default function TopBar({ adminName = 'Admin', adminImage, onThemeToggle,
                             key={notif.id}
                             className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${notif.unread ? 'bg-pink-50 dark:bg-pink-900/10' : ''
                               }`}
-                            onClick={() => {
+                            onClick={async () => {
+                              // Optimistically update UI
                               setNotifications(notifications.map(n =>
                                 n.id === notif.id ? { ...n, unread: false } : n
                               ))
                               setShowNotifications(false)
+
+                              // Call API to mark as read (this updates the global timestamp for simplicity in this implementation)
+                              // In a more granular system we'd mark individual IDs, but the request was just "persist read status"
+                              // and our backend logic uses a single timestamp.
+                              fetch('/api/notifications', { method: 'POST' }).catch(console.error)
+
                               if (notif.letterId) {
                                 window.location.href = `/letter/${notif.letterId}?admin=true`
                               }

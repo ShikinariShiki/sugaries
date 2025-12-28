@@ -104,7 +104,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
     <>
       <audio ref={audioRef} src={currentSong?.url} />
 
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
         {/* Queue Panel */}
         <AnimatePresence>
           {showQueue && (
@@ -112,7 +112,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="bg-white dark:bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden w-80 border border-gray-200 dark:border-pink-500/20"
+              className="bg-white dark:bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden w-80 max-w-[calc(100vw-32px)] border border-gray-200 dark:border-pink-500/20 pointer-events-auto"
             >
               {/* Queue Header */}
               <div className="px-4 py-3 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
@@ -180,7 +180,7 @@ export function MusicPlayerWithQueue({ songs, autoPlay = true }: MusicPlayerWith
             y: 0,
             width: isMinimized ? '64px' : '320px'
           }}
-          className="bg-white dark:bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-pink-500/20"
+          className="bg-white dark:bg-[#1e1b2e] rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-pink-500/20 pointer-events-auto max-w-[calc(100vw-32px)]"
         >
           {isMinimized ? (
             // Ultra Minimized - Just play/pause button

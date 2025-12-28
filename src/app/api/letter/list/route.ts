@@ -8,9 +8,9 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   try {
     console.log('=== Fetching letters ===')
-    
+
     const session = await getServerSession(authOptions)
-    
+
     if (!session) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -18,11 +18,11 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const isAdmin = session.user.role === 'admin'
-    
-    // Admin sees ALL letters, regular users see only their own
-    const whereClause = isAdmin ? {} : { userId: session.user.id }
-    
+    // STRICT DATA ISOLATION: Always filter by the current user's ID.
+    // Even admins should only see their own letters in their personal dashboard.
+    // If we need a "Super Admin" view, that should be a separate page/route.
+    const whereClause = { userId: session.user.id }
+
     const allLetters = await prisma.letter.findMany({
       where: whereClause,
       orderBy: {

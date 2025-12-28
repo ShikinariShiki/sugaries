@@ -122,22 +122,23 @@ export function Envelope({
       {/* Paper Letter Coming Out */}
       {isOpen && (
         <motion.div
-          initial={{ y: 0, opacity: 0 }}
-          animate={{ y: -100, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
+          initial={{ y: 20, opacity: 0, scale: 0.9 }}
+          animate={{ y: -120, opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.4, delay: 0.4 }}
           className={cn(
-            "absolute inset-x-6 top-6 h-56 rounded-lg shadow-2xl z-10 border border-white/50 bg-gradient-to-b",
+            "absolute left-4 right-4 md:left-6 md:right-6 h-40 md:h-48 rounded-lg shadow-sm z-10 border border-white/50 bg-gradient-to-b origin-bottom",
             paperGradients[color] || 'from-white to-gray-50'
           )}
+          style={{ top: 'auto', bottom: '10px' }}
         >
-          <div className="absolute inset-0 flex items-center justify-center p-6 bg-white/20 backdrop-blur-[2px] rounded-lg">
-            <div className="text-center">
-              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">To my dearest:</p>
-              <h3 className="font-handwriting text-3xl md:text-4xl text-ink font-bold drop-shadow-sm">
+          <div className="absolute inset-0 flex items-center justify-center p-4 bg-white/30 backdrop-blur-[1px] rounded-lg">
+            <div className="text-center w-full overflow-hidden">
+              <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">To my dearest:</p>
+              <h3 className="font-handwriting text-2xl md:text-3xl text-ink font-bold drop-shadow-sm truncate px-2">
                 {recipientName}
               </h3>
-              <div className="mt-4 flex justify-center">
-                <Heart size={24} className="text-pink-500 fill-pink-500 animate-pulse" />
+              <div className="mt-2 md:mt-4 flex justify-center">
+                <Heart size={20} className="text-pink-500 fill-pink-500 animate-pulse" />
               </div>
             </div>
           </div>

@@ -92,7 +92,7 @@ export function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorProps) {
         const url = URL.createObjectURL(blob)
         onSave(url)
       }
-    }, 'image/jpeg', 0.9)
+    }, 'image/png') // Use PNG to preserve transparency
   }
 
   return (
