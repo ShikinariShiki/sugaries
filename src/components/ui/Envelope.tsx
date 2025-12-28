@@ -81,50 +81,20 @@ export function Envelope({
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
-      {/* Main Envelope Body */}
-      <motion.div
+      {/* Back of Envelope */}
+      <div
         className={cn(
-          'absolute inset-0 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]',
+          'absolute inset-0 rounded-2xl shadow-xl',
           colors[color]
         )}
-        animate={isOpen ? { y: 10 } : { y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
-        {/* Bottom triangles for envelope effect */}
-        <div className={cn(
-          'absolute inset-0 rounded-2xl overflow-hidden',
-          colors[color]
-        )}>
-          {/* Left triangle */}
-          <div
-            className="absolute inset-0 bg-black/10"
-            style={{
-              clipPath: 'polygon(0 0, 0 100%, 50% 50%)'
-            }}
-          />
-          {/* Right triangle */}
-          <div
-            className="absolute inset-0 bg-black/10"
-            style={{
-              clipPath: 'polygon(100% 0, 100% 100%, 50% 50%)'
-            }}
-          />
-          {/* Bottom triangle */}
-          <div
-            className="absolute inset-0 bg-black/5"
-            style={{
-              clipPath: 'polygon(0 100%, 100% 100%, 50% 50%)'
-            }}
-          />
-        </div>
-      </motion.div>
+      />
 
       {/* Paper Letter Coming Out */}
       {isOpen && (
         <motion.div
           initial={{ y: 20, opacity: 0, scale: 0.9 }}
           animate={{ y: -120, opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, type: "spring", bounce: 0.4, delay: 0.4 }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.4, delay: 0.2 }}
           className={cn(
             "absolute left-4 right-4 md:left-6 md:right-6 h-40 md:h-48 rounded-lg shadow-sm z-10 border border-white/50 bg-gradient-to-b origin-bottom",
             paperGradients[color] || 'from-white to-gray-50'
@@ -145,19 +115,36 @@ export function Envelope({
         </motion.div>
       )}
 
+      {/* Front Pockets (Bottom Triangles) */}
+      <div className="absolute inset-0 z-20 pointer-events-none">
+        {/* Left Triangle */}
+        <div
+          className={cn("absolute inset-0 rounded-bl-2xl", colors[color], "brightness-105")}
+          style={{ clipPath: 'polygon(0 0, 0 100%, 50% 55%)' }}
+        />
+        {/* Right Triangle */}
+        <div
+          className={cn("absolute inset-0 rounded-br-2xl", colors[color], "brightness-105")}
+          style={{ clipPath: 'polygon(100% 0, 100% 100%, 50% 55%)' }}
+        />
+        {/* Bottom Triangle Main */}
+        <div
+          className={cn("absolute inset-0 rounded-b-2xl", colors[color])}
+          style={{ clipPath: 'polygon(0 100%, 100% 100%, 50% 55%)' }}
+        />
+      </div>
+
       {/* Top Flap */}
       <motion.div
         className={cn(
-          'absolute top-0 left-0 right-0 h-32 rounded-t-2xl shadow-md',
+          'absolute top-0 left-0 right-0 h-32 rounded-t-2xl shadow-md z-30 origin-top',
           flapColors[color]
         )}
         style={{
           clipPath: 'polygon(0 0, 50% 100%, 100% 0)',
-          transformOrigin: 'top center',
-          zIndex: 20,
         }}
-        animate={isOpen ? { rotateX: -180, y: -15, z: 50 } : { rotateX: 0, y: 0, z: 0 }}
-        transition={{ duration: 0.7, ease: "anticipate" }}
+        animate={isOpen ? { rotateX: 180, zIndex: 0 } : { rotateX: 0, zIndex: 30 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
       />
 
       {/* Heart Seal */}
