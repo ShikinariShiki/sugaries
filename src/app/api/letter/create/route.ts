@@ -8,7 +8,7 @@ import { generateUniqueShortCode } from '@/lib/shortcode'
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -16,19 +16,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { 
-      recipientName, 
+    const {
+      recipientName,
       senderName,
-      pin, 
+      pin,
       usePinProtection,
       customShortCode,
-      content, 
-      musicUrl, 
-      musicTitle, 
-      musicArtist, 
-      imageUrl, 
-      letterColor, 
-      letterFont 
+      content,
+      musicUrl,
+      musicTitle,
+      musicArtist,
+      imageUrl,
+      letterColor,
+      letterFont,
+      headerText
     } = await request.json()
 
     console.log('Creating letter with:', { recipientName, senderName, pin, usePinProtection, customShortCode, content })
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
     // Hash the PIN only if protection is enabled
     const pinHash = usePinProtection && pin ? await bcrypt.hash(pin, 10) : null
     const plainPin = usePinProtection && pin ? pin : null
-    
+
     // Handle short code - use custom if provided, otherwise generate
     let shortCode: string | undefined
     try {
@@ -64,19 +65,19 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         // Check if custom code already exists
         const existing = await prisma.letter.findUnique({
           where: { shortCode: cleanCode }
         })
-        
+
         if (existing) {
           return NextResponse.json(
             { error: 'This short code is already taken. Please choose another.' },
             { status: 400 }
           )
         }
-        
+
         shortCode = cleanCode
       } else {
         // Auto-generate
@@ -87,9 +88,9 @@ export async function POST(request: NextRequest) {
       shortCode = undefined
     }
 
-    console.log('Creating letter with data:', { 
-      recipientName, 
-      senderName: senderName || session.user.name || 'Anonymous', 
+    console.log('Creating letter with data:', {
+      recipientName,
+      senderName: senderName || session.user.name || 'Anonymous',
       hasPinHash: !!pinHash,
       hasPlainPin: !!plainPin,
       shortCode,
@@ -111,6 +112,7 @@ export async function POST(request: NextRequest) {
         imageUrl: imageUrl || null,
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',
+        headerText: headerText || 'To my dearest',
         isReply: false,
         userId: session.user.id,
       },

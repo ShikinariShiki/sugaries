@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
         recipientName: true,
         letterColor: true,
         letterFont: true,
+        headerText: true,
         // Explicitly exclude sensitive fields
       },
     })
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
       correctName: letter.recipientName,
       letterColor: letter.letterColor,
       letterFont: letter.letterFont,
+      headerText: letter.headerText,
     })
   } catch (error) {
     console.error('Verify name error:', error)

@@ -20,6 +20,7 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         recipientName: action.payload.recipientName,
         letterColor: action.payload.letterColor,
         letterFont: action.payload.letterFont,
+        headerText: action.payload.headerText,
         isLoading: false,
         error: undefined,
       }
@@ -53,6 +54,7 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         senderName: action.payload.senderName,
         pinHash: action.payload.pinHash,
         recipientName: action.payload.recipientName || state.recipientName,
+        headerText: action.payload.headerText,
         isLoading: false,
         error: undefined,
       }
@@ -94,6 +96,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             senderName: data.senderName,
             pinHash: data.pinHash,
             recipientName: data.recipientName,
+            headerText: data.headerText,
           }
         })
       }
@@ -127,7 +130,8 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
           payload: {
             recipientName: data.correctName,
             letterColor: data.letterColor,
-            letterFont: data.letterFont
+            letterFont: data.letterFont,
+            headerText: data.headerText,
           }
         })
       } else {
@@ -168,6 +172,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             senderName: data.senderName,
             pinHash: data.pinHash,
             recipientName: data.recipientName,
+            headerText: data.headerText,
           }
         })
       } else {
@@ -201,6 +206,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             imageUrl: data.imageUrl,
             letterColor: data.letterColor,
             letterFont: data.letterFont,
+            headerText: data.headerText,
           }
         })
       } else {

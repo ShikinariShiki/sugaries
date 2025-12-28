@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function GET(
   request: NextRequest,
@@ -10,11 +12,12 @@ export async function GET(
     const { searchParams } = new URL(request.url)
     const isAdmin = searchParams.get('admin') === 'true'
 
-    // Only allow admin bypass with proper authentication
-    // For now, we'll check if there's an admin session cookie
-    const adminSession = request.cookies.get('admin_session')
-    
-    if (!isAdmin || !adminSession) {
+    // Secure authentication check
+    const session = await getServerSession(authOptions)
+    const isUserAdmin = session?.user?.role === 'admin'
+
+    // Only allow bypass if user is admin AND requested admin view
+    if (!isAdmin || !isUserAdmin) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -31,6 +34,7 @@ export async function GET(
         letterColor: true,
         letterFont: true,
         recipientName: true,
+        headerText: true,
         senderName: true,
         pinHash: true,
         isOpened: true,

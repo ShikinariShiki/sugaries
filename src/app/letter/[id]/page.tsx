@@ -10,9 +10,15 @@ interface PageProps {
   }
 }
 
-export default function LetterPage({ params, searchParams }: PageProps) {
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+
+export default async function LetterPage({ params, searchParams }: PageProps) {
   const { id } = params
-  const isAdminView = searchParams?.admin === 'true'
+  const session = await getServerSession(authOptions)
+
+  // SECURE: Only allow admin view if user IS actually an admin
+  const isAdminView = searchParams?.admin === 'true' && session?.user?.role === 'admin'
 
   // Basic validation
   if (!id) {

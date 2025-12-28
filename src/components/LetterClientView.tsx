@@ -12,7 +12,7 @@ import { ReplyModal } from '@/components/ReplyModal'
 import { MusicPlayer } from '@/components/MusicPlayer'
 import Confetti from 'react-confetti'
 import { useWindowSize } from '@/hooks/useWindowSize'
-import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X } from 'lucide-react'
+import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Helper function to convert YouTube URL to embed URL
@@ -85,6 +85,70 @@ function getThemeColors(theme: string = 'pink') {
       gradient: 'from-indigo-100 via-purple-50 to-white',
       confetti: ['#a5b4fc', '#c4b5fd', '#e0e7ff', '#ede9fe']
     },
+    midnight: {
+      gradient: 'from-indigo-200 via-blue-100 to-white',
+      confetti: ['#818cf8', '#6366f1', '#4f46e5', '#3730a3']
+    },
+    coffee: {
+      gradient: 'from-amber-100 via-orange-50 to-white',
+      confetti: ['#d97706', '#b45309', '#92400e', '#78350f']
+    },
+    succulent: {
+      gradient: 'from-teal-100 via-emerald-50 to-white',
+      confetti: ['#2dd4bf', '#14b8a6', '#0d9488', '#0f766e']
+    },
+    wine: {
+      gradient: 'from-rose-200 via-pink-100 to-white',
+      confetti: ['#fb7185', '#f43f5e', '#e11d48', '#be123c']
+    },
+    charcoal: {
+      gradient: 'from-gray-200 via-slate-100 to-white',
+      confetti: ['#9ca3af', '#6b7280', '#4b5563', '#374151']
+    },
+    plum: {
+      gradient: 'from-fuchsia-100 via-purple-50 to-white',
+      confetti: ['#e879f9', '#d946ef', '#c026d3', '#a21caf']
+    },
+    gold: {
+      gradient: 'from-yellow-100 via-amber-50 to-white',
+      confetti: ['#facc15', '#eab308', '#ca8a04', '#a16207']
+    },
+    silver: {
+      gradient: 'from-slate-100 via-gray-50 to-white',
+      confetti: ['#cbd5e1', '#94a3b8', '#64748b', '#475569']
+    },
+    bronze: {
+      gradient: 'from-orange-100 via-amber-50 to-white',
+      confetti: ['#fb923c', '#f97316', '#ea580c', '#c2410c']
+    },
+    pearl: {
+      gradient: 'from-gray-50 via-slate-50 to-white',
+      confetti: ['#f8fafc', '#f1f5f9', '#e2e8f0', '#cbd5e1']
+    },
+    berry: {
+      gradient: 'from-pink-200 via-rose-100 to-white',
+      confetti: ['#f472b6', '#ec4899', '#db2777', '#be185d']
+    },
+    lemon: {
+      gradient: 'from-yellow-100 via-lime-50 to-white',
+      confetti: ['#fde047', '#facc15', '#eab308', '#ca8a04']
+    },
+    slate: {
+      gradient: 'from-slate-200 via-gray-100 to-white',
+      confetti: ['#94a3b8', '#64748b', '#475569', '#334155']
+    },
+    blush: {
+      gradient: 'from-rose-50 via-pink-50 to-white',
+      confetti: ['#fda4af', '#fb7185', '#f43f5e', '#e11d48']
+    },
+  }
+
+  // Handle custom hex colors
+  if (theme.startsWith('#')) {
+    return {
+      gradient: 'from-white to-gray-50', // Default clean background for custom colors
+      confetti: [theme, theme, '#ffffff', '#000000'] // Use the custom color for confetti
+    }
   }
 
   return themes[theme] || themes.pink
@@ -111,6 +175,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [shouldShake, setShouldShake] = useState(false)
   const [showReplyModal, setShowReplyModal] = useState(false)
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
 
@@ -236,6 +301,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                 setTimeout(() => openEnvelope(), 1500)
               }}
               color={state.letterColor as any}
+              headerText={state.headerText}
             />
 
             <motion.div
@@ -386,14 +452,18 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.7 }}
-                        className="mb-10 group"
+                        className="mb-10 group cursor-zoom-in"
+                        onClick={() => setIsLightboxOpen(true)}
                       >
-                        <div className="p-2 bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg border border-white/80 overflow-hidden">
+                        <div className="p-2 bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg border border-white/80 overflow-hidden relative">
                           <img
                             src={state.imageUrl}
                             alt="Letter attachment"
                             className="w-full h-auto object-contain rounded-2xl max-h-[500px]"
                           />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <Eye className="text-white drop-shadow-lg" size={48} />
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -438,6 +508,49 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isLightboxOpen && state.imageUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-lg flex items-center justify-center p-4 md:p-8"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsLightboxOpen(false)}
+              className="absolute top-4 right-4 md:top-8 md:right-8 text-white/50 hover:text-white transition-colors p-2"
+            >
+              <X size={32} />
+            </button>
+
+            {/* Download Button */}
+            <a
+              href={state.imageUrl}
+              download={`letter-attachment-${letterId}.png`}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-4 left-4 md:top-8 md:left-8 text-white/50 hover:text-white transition-colors p-2 flex items-center gap-2 group"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Download size={24} />
+              <span className="text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">Download</span>
+            </a>
+
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              src={state.imageUrl}
+              alt="Full size attachment"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking image
+            />
+          </motion.div>
         )}
       </AnimatePresence>
 

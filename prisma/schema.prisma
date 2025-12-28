@@ -29,6 +29,7 @@ model Letter {
   imageUrl      String?  // URL to image file for letter
   letterColor   String   @default("pink") // Letter theme color
   letterFont    String   @default("handwriting") // Letter font style
+  headerText    String   @default("To my dearest") // Custom header text
   userId        String?  // Link to user who created this letter
   user          User?    @relation(fields: [userId], references: [id])
   

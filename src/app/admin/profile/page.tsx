@@ -92,7 +92,7 @@ export default function ProfilePage() {
       // Convert base64 to blob
       const response = await fetch(croppedImage)
       const blob = await response.blob()
-      
+
       const formData = new FormData()
       formData.append('file', blob, 'avatar.jpg')
 
@@ -159,9 +159,9 @@ export default function ProfilePage() {
                   {/* Avatar */}
                   <div className="flex items-center gap-4">
                     {formData.avatar ? (
-                      <img 
-                        src={formData.avatar} 
-                        alt="Profile avatar" 
+                      <img
+                        src={formData.avatar}
+                        alt="Profile avatar"
                         className="w-20 h-20 rounded-full object-cover"
                       />
                     ) : (
@@ -258,66 +258,8 @@ export default function ProfilePage() {
               </PaperCard>
             </motion.div>
 
-            {/* Change Password */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <PaperCard>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Change Password</h2>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Current Password
-                    </label>
-                    <input
-                      type="password"
-                      value={formData.currentPassword}
-                      onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors"
-                      placeholder="Enter current password"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      value={formData.newPassword}
-                      onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors"
-                      placeholder="Enter new password"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Confirm New Password
-                    </label>
-                    <input
-                      type="password"
-                      value={formData.confirmPassword}
-                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors"
-                      placeholder="Confirm new password"
-                    />
-                  </div>
-
-                  <SquishButton
-                    variant="primary"
-                    size="md"
-                    onClick={() => console.log('Changing password')}
-                    className="w-full"
-                  >
-                    Update Password
-                  </SquishButton>
-                </div>
-              </PaperCard>
-            </motion.div>
+            {/* Change Password - Removed since Google Auth is enforced */}
+            {/* <motion.div ... relative code removed ... /> */}
           </>
         )}
       </div>

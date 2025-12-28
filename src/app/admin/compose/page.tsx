@@ -13,20 +13,36 @@ import AdminLayout from '@/components/admin/AdminLayout'
 import UserHeader from '@/components/UserHeader'
 import Link from 'next/link'
 import { songs } from '@/data/songs'
+import {
+  PenLine,
+  Send,
+  Music,
+  Image as ImageIcon,
+  Type,
+  Link as LinkIcon,
+  Lock,
+  Palette,
+  FileText,
+  Youtube,
+  Upload,
+  RefreshCw,
+  Copy,
+  LayoutTemplate
+} from 'lucide-react'
 
 const FONT_OPTIONS = [
-  { value: 'handwriting', label: '✍️ Handwriting (Kalam)' },
-  { value: 'poppins', label: '📝 Modern (Poppins)' },
-  { value: 'quicksand', label: '🌊 Friendly (Quicksand)' },
-  { value: 'serif', label: '📖 Elegant (Serif)' },
-  { value: 'mono', label: '⌨️ Code (Monospace)' },
-  { value: 'cursive', label: '💫 Cursive' },
-  { value: 'fantasy', label: '🎭 Fantasy' },
-  { value: 'pacifico', label: '🌺 Pacifico' },
-  { value: 'dancing', label: '💃 Dancing Script' },
-  { value: 'satisfy', label: '😊 Satisfy' },
-  { value: 'indie', label: '🎸 Indie Flower' },
-  { value: 'shadows', label: '👥 Shadows Into Light' },
+  { value: 'handwriting', label: 'Handwriting (Kalam)' },
+  { value: 'poppins', label: 'Modern (Poppins)' },
+  { value: 'quicksand', label: 'Friendly (Quicksand)' },
+  { value: 'serif', label: 'Elegant (Serif)' },
+  { value: 'mono', label: 'Code (Monospace)' },
+  { value: 'cursive', label: 'Cursive' },
+  { value: 'fantasy', label: 'Fantasy' },
+  { value: 'pacifico', label: 'Pacifico' },
+  { value: 'dancing', label: 'Dancing Script' },
+  { value: 'satisfy', label: 'Satisfy' },
+  { value: 'indie', label: 'Indie Flower' },
+  { value: 'shadows', label: 'Shadows Into Light' },
 ]
 
 // Helper function to convert Google Photos share links to direct image URLs
@@ -52,6 +68,7 @@ export default function ComposePage() {
   const [step, setStep] = useState<'compose' | 'success'>('compose')
   const [senderName, setSenderName] = useState('')
   const [recipientName, setRecipientName] = useState('')
+  const [headerText, setHeaderText] = useState('To my dearest')
   const [content, setContent] = useState('')
   const [pin, setPin] = useState('')
   const [usePinProtection, setUsePinProtection] = useState(true)
@@ -173,6 +190,7 @@ export default function ComposePage() {
           imageUrl: uploadedImageUrl?.trim() || convertGooglePhotosUrl(imageUrl.trim()) || undefined,
           letterColor,
           letterFont,
+          headerText: headerText.trim()
         }),
       })
 
@@ -218,6 +236,7 @@ export default function ComposePage() {
     setError('')
     setLetterColor('pink')
     setLetterFont('handwriting')
+    setHeaderText('To my dearest')
   }
 
   const handleFileSelect = (file: File) => {
@@ -250,7 +269,7 @@ export default function ComposePage() {
   }
 
   const composeContent = (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto min-h-screen pb-20">
       <AnimatePresence mode="wait">
         {step === 'compose' && (
           <motion.div
@@ -258,86 +277,145 @@ export default function ComposePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            className="space-y-8"
           >
             {/* Page Header */}
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Compose a Letter</h1>
-              <p className="text-gray-600 dark:text-gray-400">Send a secret, beautiful message ✨</p>
+            <div className="text-center pt-8 md:pt-12 mb-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="w-16 h-16 bg-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-pink-500/30"
+              >
+                <PenLine className="text-white" size={32} />
+              </motion.div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 font-poppins tracking-tight">
+                Compose a Letter
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 font-medium">
+                Create a digital sugarcube filled with love ✨
+              </p>
             </div>
 
-            <PaperCard>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Sender Name (only for non-admin) */}
-                {!isAdmin && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                      From:
-                    </label>
-                    <input
-                      type="text"
-                      value={senderName}
-                      onChange={(e) => setSenderName(e.target.value)}
-                      placeholder="Your name"
-                      className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
-                      disabled={isLoading}
-                    />
-                  </div>
-                )}
+            <div className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/60 dark:border-gray-700/60 shadow-xl rounded-3xl p-6 md:p-10">
+              <form onSubmit={handleSubmit} className="space-y-8">
 
-                {/* Recipient Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    To:
-                  </label>
-                  <input
-                    type="text"
-                    value={recipientName}
-                    onChange={(e) => setRecipientName(e.target.value)}
-                    placeholder="Recipient's name"
-                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg"
-                    disabled={isLoading}
-                  />
+                {/* 1. Recipient Info */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 text-pink-500 mb-2">
+                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                      <LayoutTemplate size={20} />
+                    </div>
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white font-poppins">Details</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Recipient Name */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                        To
+                      </label>
+                      <input
+                        type="text"
+                        value={recipientName}
+                        onChange={(e) => setRecipientName(e.target.value)}
+                        placeholder="Recipient's name"
+                        className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
+                        disabled={isLoading}
+                      />
+                    </div>
+
+                    {/* Sender Name (only for non-admin) */}
+                    {!isAdmin && (
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                          From
+                        </label>
+                        <input
+                          type="text"
+                          value={senderName}
+                          onChange={(e) => setSenderName(e.target.value)}
+                          placeholder="Your name"
+                          className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
+                          disabled={isLoading}
+                        />
+                      </div>
+                    )}
+
+                    {/* Header Text - NEW */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                        Envelope Title
+                      </label>
+                      <input
+                        type="text"
+                        value={headerText}
+                        onChange={(e) => setHeaderText(e.target.value)}
+                        placeholder="e.g. To my favorite person"
+                        className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-poppins text-sm shadow-sm hover:bg-white/70"
+                        disabled={isLoading}
+                      />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                        Appears on top of the envelope
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Message Content */}
+                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+                {/* 2. Message Content */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    Your Message:
-                  </label>
+                  <div className="flex items-center gap-3 text-pink-500 mb-4">
+                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                      <FileText size={20} />
+                    </div>
+                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                      Your Message
+                    </label>
+                  </div>
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Write your heartfelt message..."
                     rows={8}
                     maxLength={10000}
-                    className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-base md:text-lg resize-none"
+                    className="w-full px-5 py-4 rounded-2xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:bg-white/80 dark:focus:bg-gray-800/80 focus:outline-none transition-all font-handwriting text-xl leading-relaxed shadow-inner resize-none"
                     disabled={isLoading}
                   />
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-poppins">
-                    {content.length} / 10000 characters
-                  </p>
+                  <div className="flex justify-end mt-2">
+                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500 font-poppins bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">
+                      {content.length} / 10000 chars
+                    </p>
+                  </div>
                 </div>
 
-                {/* Music URL */}
+                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+                {/* 3. Music URL */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    🎵 Music (optional):
-                  </label>
+                  <div className="flex items-center gap-3 text-pink-500 mb-4">
+                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                      <Music size={20} />
+                    </div>
+                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                      Music (optional)
+                    </label>
+                  </div>
 
                   {/* Source Selection */}
-                  <div className="flex gap-3 mb-3">
+                  <div className="flex p-1 bg-gray-100 dark:bg-gray-800/50 rounded-xl mb-4">
                     <button
                       type="button"
                       onClick={() => {
                         setMusicSource('preset')
                         setMusicUrl('')
                       }}
-                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'preset'
-                        ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
-                        : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'preset'
+                        ? 'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                         }`}
                     >
-                      🎼 Preset
+                      <Music size={16} /> Preset
                     </button>
                     <button
                       type="button"
@@ -345,12 +423,12 @@ export default function ComposePage() {
                         setMusicSource('youtube')
                         setSelectedSong('')
                       }}
-                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'youtube'
-                        ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
-                        : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'youtube'
+                        ? 'bg-white dark:bg-gray-700 text-red-600 dark:text-red-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                         }`}
                     >
-                      📺 YouTube
+                      <Youtube size={16} /> YouTube
                     </button>
                     <button
                       type="button"
@@ -358,21 +436,21 @@ export default function ComposePage() {
                         setMusicSource('local')
                         setSelectedSong('')
                       }}
-                      className={`flex-1 px-4 py-2 rounded-xl border-2 transition-all font-poppins text-sm ${musicSource === 'local'
-                        ? 'border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 text-gray-900 dark:text-white font-medium'
-                        : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500'
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'local'
+                        ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                         }`}
                     >
-                      💿 Local
+                      <Upload size={16} /> Local
                     </button>
                   </div>
 
-                  {musicSource === 'preset' ? (
-                    <>
+                  <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-xl p-4 border border-gray-100 dark:border-gray-700/50">
+                    {musicSource === 'preset' ? (
                       <select
                         value={selectedSong}
                         onChange={(e) => setSelectedSong(e.target.value)}
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins cursor-pointer"
                         disabled={isLoading}
                       >
                         <option value="">-- Select a song --</option>
@@ -382,77 +460,59 @@ export default function ComposePage() {
                           </option>
                         ))}
                       </select>
-                    </>
-                  ) : musicSource === 'youtube' ? (
-                    <>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
-                        Paste YouTube Music or YouTube URL
-                      </p>
-                      <input
-                        type="url"
-                        value={musicUrl}
-                        onChange={(e) => setMusicUrl(e.target.value)}
-                        placeholder="https://youtube.com/watch?v=... or https://music.youtube.com/..."
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
-                        disabled={isLoading}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
-                        Paste direct MP3/audio file URL
-                      </p>
-                      <input
-                        type="url"
-                        value={musicUrl}
-                        onChange={(e) => setMusicUrl(e.target.value)}
-                        placeholder="https://example.com/audio.mp3"
-                        className="w-full px-3 md:px-4 py-2 md:py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins mb-3"
-                        disabled={isLoading}
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 font-poppins">
-                            Song Title (optional)
-                          </label>
+                    ) : musicSource === 'youtube' ? (
+                      <>
+                        <input
+                          type="url"
+                          value={musicUrl}
+                          onChange={(e) => setMusicUrl(e.target.value)}
+                          placeholder="https://youtube.com/watch?v=..."
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-red-500 focus:outline-none transition-colors text-sm font-poppins"
+                          disabled={isLoading}
+                        />
+                        <p className="text-xs text-gray-500 mt-2 ml-1">YouTube links will autoplay (desktop only)</p>
+                      </>
+                    ) : (
+                      <div className="space-y-3">
+                        <input
+                          type="url"
+                          value={musicUrl}
+                          onChange={(e) => setMusicUrl(e.target.value)}
+                          placeholder="https://example.com/audio.mp3"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:outline-none transition-colors text-sm font-poppins"
+                          disabled={isLoading}
+                        />
+                        <div className="grid grid-cols-2 gap-3">
                           <input
                             type="text"
                             value={musicTitle}
                             onChange={(e) => setMusicTitle(e.target.value)}
-                            placeholder="My Favorite Song"
-                            className="w-full px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs font-poppins"
-                            disabled={isLoading}
+                            placeholder="Song Title"
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs font-poppins"
                           />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 font-poppins">
-                            Artist (optional)
-                          </label>
                           <input
                             type="text"
                             value={musicArtist}
                             onChange={(e) => setMusicArtist(e.target.value)}
-                            placeholder="Artist Name"
-                            className="w-full px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs font-poppins"
-                            disabled={isLoading}
+                            placeholder="Artist"
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs font-poppins"
                           />
                         </div>
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-poppins">
-                        💡 Tip: Upload your audio file to Google Drive, Dropbox, or any hosting service and paste the direct link here.
-                      </p>
-                    </>
-                  )}
+                    )}
+                  </div>
                 </div>
 
-                {/* Image Upload */}
+                {/* 4. Image Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    📷 Image (optional):
-                  </label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-poppins">
-                    Drag & drop an image, or paste Google Photos link
-                  </p>
+                  <div className="flex items-center gap-3 text-pink-500 mb-4">
+                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                      <ImageIcon size={20} />
+                    </div>
+                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                      Image (optional)
+                    </label>
+                  </div>
 
                   {/* Drag and Drop Area */}
                   <div
@@ -467,9 +527,9 @@ export default function ComposePage() {
                       const file = e.dataTransfer.files[0]
                       if (file) handleFileSelect(file)
                     }}
-                    className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${isDragging
+                    className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all group ${isDragging
                       ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/50'
+                      : 'border-white/60 dark:border-gray-600/60 hover:border-pink-400 bg-white/30 dark:bg-gray-800/30'
                       }`}
                   >
                     <input
@@ -479,24 +539,27 @@ export default function ComposePage() {
                         const file = e.target.files?.[0]
                         if (file) handleFileSelect(file)
                       }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       disabled={isLoading}
                     />
-                    <div className="pointer-events-none">
-                      <p className="text-gray-600 dark:text-gray-300 font-poppins mb-2">
-                        📎 Drag & drop image here, or click to browse
+                    <div className="pointer-events-none flex flex-col items-center gap-2">
+                      <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                        <Upload className="text-pink-500" size={24} />
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-200 font-medium font-poppins">
+                        Click or drag image here
                       </p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 font-poppins">
-                        Supports JPG, PNG, GIF - Will open editor for cropping
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Supports JPG, PNG, GIF
                       </p>
                     </div>
                   </div>
 
                   {/* Image URL Input */}
-                  <div className="mt-3">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
-                      Or paste direct image URL (for Google Photos: right-click image → Copy image address):
-                    </p>
+                  <div className="mt-3 relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                      <LinkIcon size={14} />
+                    </span>
                     <input
                       type="url"
                       value={!imageFile ? imageUrl : ''}
@@ -504,149 +567,163 @@ export default function ComposePage() {
                         setImageFile(null)
                         setImageUrl(e.target.value)
                       }}
-                      placeholder="https://... (direct image link ending in .jpg, .png, etc.)"
-                      className="w-full px-3 md:px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:outline-none transition-colors text-xs md:text-sm font-poppins"
+                      placeholder="Or paste direct image URL..."
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
                       disabled={isLoading || !!imageFile}
                     />
                   </div>
+                </div>
 
-                  {/* Image Preview */}
-                  {imageUrl && (
-                    <div className="mt-4 space-y-2">
-                      <div className="relative rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                        <img
-                          src={imageUrl}
-                          alt="Preview"
-                          className="w-full max-h-64 object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none'
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImageUrl('')
-                            setImageFile(null)
-                          }}
-                          className="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full hover:bg-red-600 transition-colors"
-                        >
-                          ×
-                        </button>
+                {/* 5. Customization (Color & Font) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="flex items-center gap-3 text-pink-500 mb-4">
+                      <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                        <Palette size={20} />
                       </div>
-                      <SquishButton
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setShowEditor(true)}
-                        className="w-full"
-                      >
-                        ✂️ Edit Image (Crop & Rotate)
-                      </SquishButton>
+                      <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                        Theme & Style
+                      </label>
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                {/* Color Theme Picker */}
-                <ColorPicker
-                  selectedColor={letterColor}
-                  onChange={setLetterColor}
-                />
-
-                {/* Font Style Picker */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    ✒️ Letter Font Style:
-                  </label>
-                  <select
-                    value={letterFont}
-                    onChange={(e) => setLetterFont(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors font-poppins text-base cursor-pointer"
-                    disabled={isLoading}
-                  >
-                    {FONT_OPTIONS.map(font => (
-                      <option key={font.value} value={font.value}>
-                        {font.label}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
-                    Choose how your message will appear to the recipient
-                  </p>
-                </div>
-
-                {/* Custom Short Link */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                    Custom Short Link (Optional):
-                  </label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-poppins">
-                    Customize the link ending (4-20 alphanumeric characters)
-                  </p>
-                  <input
-                    type="text"
-                    value={customShortCode}
-                    onChange={(e) => setCustomShortCode(e.target.value)}
-                    placeholder="e.g., myletter2024"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-poppins focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    maxLength={20}
-                  />
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-poppins">
-                    Preview: gulalies.app/{customShortCode || 'auto-generated'}
-                  </p>
-                </div>
-
-                {/* PIN Protection Toggle */}
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-                  <input
-                    type="checkbox"
-                    id="usePinProtection"
-                    checked={usePinProtection}
-                    onChange={(e) => setUsePinProtection(e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer"
-                  />
-                  <label htmlFor="usePinProtection" className="text-sm font-medium text-gray-700 dark:text-gray-300 font-poppins cursor-pointer">
-                    Use PIN Protection
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-poppins ml-auto">
-                    {usePinProtection ? 'Recipient will need a code' : 'Anyone with link can open'}
-                  </p>
-                </div>
-
-                {/* Letter Code Setup */}
-                {usePinProtection && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 font-poppins">
-                      Set a Letter Code:
-                    </label>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-poppins">
-                      The recipient will need this to open the letter
-                    </p>
-                    <PINInput
-                      value={pin}
-                      onChange={setPin}
-                      error={!!error && !pin}
+                  {/* Color Theme */}
+                  <div className="col-span-1 md:col-span-2">
+                    <ColorPicker
+                      selectedColor={letterColor}
+                      onChange={setLetterColor}
                     />
                   </div>
-                )}
+
+                  {/* Font */}
+                  <div className="col-span-1 md:col-span-2">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 font-poppins ml-1">
+                      <div className="flex items-center gap-2">
+                        <Type size={16} /> Font Style
+                      </div>
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {FONT_OPTIONS.map(font => (
+                        <button
+                          key={font.value}
+                          type="button"
+                          onClick={() => setLetterFont(font.value)}
+                          className={`px-3 py-3 rounded-xl border-2 transition-all text-sm truncate ${letterFont === font.value
+                            ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 shadow-md'
+                            : 'border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:border-pink-300'
+                            }`}
+                          style={{ fontFamily: font.value === 'handwriting' ? 'Kalam' : font.value }} // Simplified preview
+                        >
+                          {font.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+                {/* 6. Settings (Shortlink & PIN) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="col-span-1 md:col-span-2 flex items-center gap-3 text-pink-500 mb-2">
+                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                      <LinkIcon size={20} />
+                    </div>
+                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                      Privacy & Link
+                    </label>
+                  </div>
+
+                  {/* Custom Short Link */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                      Custom Short Link
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">gulalies.app/</span>
+                      <input
+                        type="text"
+                        value={customShortCode}
+                        onChange={(e) => setCustomShortCode(e.target.value)}
+                        placeholder="my-love-letter"
+                        className="w-full pl-28 pr-4 py-3 rounded-xl border min-w-0 border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-poppins text-sm"
+                        maxLength={20}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                      Optional. Leave empty for auto-generated link.
+                    </p>
+                  </div>
+
+                  {/* PIN Protection */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                      Security
+                    </label>
+                    <div className={`p-4 rounded-xl border transition-all ${usePinProtection ? 'bg-pink-50/50 border-pink-200' : 'bg-gray-50/50 border-gray-200'}`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Lock size={16} className={usePinProtection ? 'text-pink-500' : 'text-gray-400'} />
+                          <span className="font-medium text-sm text-gray-800 dark:text-gray-200">PIN Protection</span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={usePinProtection}
+                          onChange={(e) => setUsePinProtection(e.target.checked)}
+                          className="w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer accent-pink-500"
+                        />
+                      </div>
+
+                      {usePinProtection ? (
+                        <div className="pl-6">
+                          <PINInput
+                            value={pin}
+                            onChange={setPin}
+                            error={!!error && !pin}
+                          />
+                          <p className="text-xs text-green-600 mt-2">
+                            Recipient will need this PIN to open.
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500 pl-6">
+                          Anyone with the link can open this letter.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
                 {error && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-center gap-3"
                   >
-                    <p className="text-red-600 dark:text-red-400 text-sm font-poppins">{error}</p>
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                    <p className="text-red-600 dark:text-red-400 text-sm font-poppins font-medium">{error}</p>
                   </motion.div>
                 )}
 
-                <button
+                <SquishButton
                   type="submit"
                   disabled={isLoading || !recipientName.trim() || !content.trim() || (usePinProtection && !pin)}
-                  className="w-full px-4 md:px-6 py-3 md:py-4 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-poppins font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 text-lg font-bold rounded-2xl flex items-center justify-center gap-3 mt-8 shadow-xl shadow-pink-500/20"
                 >
-                  {isLoading ? 'Creating...' : '🎁 Create Letter'}
-                </button>
+                  {isLoading ? (
+                    <>
+                      <RefreshCw className="animate-spin" size={24} /> Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={24} /> Create Letter
+                    </>
+                  )}
+                </SquishButton>
               </form>
-            </PaperCard>
+            </div>
+            {/* End of Glass Card */}
           </motion.div>
         )}
 
