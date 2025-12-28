@@ -276,10 +276,10 @@ export default function DashboardPage() {
                   <span className="sm:hidden"><Trash2 size={16} /> {selectedLetters.size}</span>
                 </SquishButton>
               )}
-              <Link href="/admin/compose" className="flex-1 md:flex-none hidden">
+              <Link href="/admin/compose" className="flex-1 md:flex-none">
                 <SquishButton variant="primary" size="lg" className="w-full">
                   <span className="hidden sm:inline flex items-center gap-2"><Mail size={16} /> Compose New</span>
-                  <span className="sm:inline md:hidden"><Mail size={16} /></span>
+                  <span className="inline sm:hidden"><Mail size={16} /></span>
                 </SquishButton>
               </Link>
             </div>
