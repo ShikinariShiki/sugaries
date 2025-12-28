@@ -49,7 +49,8 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    console.log(`Total letters found: ${allLetters.length} (Admin: ${isAdmin}, User: ${session.user.email})`)
+    // console.log(`Total letters found: ${allLetters.length} (Admin: ${isAdmin}, User: ${session.user.email})`)
+    console.log(`Total letters found: ${allLetters.length} (User: ${session.user.id})`)
 
     // Split between sent (original letters) and received (replies)
     const sentLetters = allLetters.filter(letter => !letter.isReply || letter.isReply === null)

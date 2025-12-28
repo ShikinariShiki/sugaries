@@ -41,7 +41,7 @@ export async function GET() {
         isOpened: true,
         isReply: true,
         createdAt: true,
-        updatedAt: true, // If you have updatedAt, otherwise rely on createdAt might be tricky for "opened" events if we don't track openedAt.
+
         // Assuming we want to notify when *something happens*.
         // If 'isOpened' becomes true, we don't have an 'openedAt' field in the schema presented. 
         // We will use createdAt for now as a proxy or just show the interaction.
