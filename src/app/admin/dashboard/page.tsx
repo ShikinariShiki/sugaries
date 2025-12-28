@@ -762,11 +762,19 @@ export default function DashboardPage() {
                       👁️ View Full Letter (Admin)
                     </button>
 
+                    {/* Link Display */}
+                    <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-3 mb-3 border border-gray-100 dark:border-gray-600">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-poppins">Unique Link:</p>
+                      <code className="block text-xs md:text-sm bg-white dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-600 break-all text-pink-600 dark:text-pink-400 font-mono select-all">
+                        {`${typeof window !== 'undefined' ? window.location.origin : ''}/letter/${previewLetter.id}`}
+                      </code>
+                    </div>
+
                     <div className="flex gap-3">
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(`${window.location.origin}/letter/${previewLetter.id}`)
-                          alert('Link copied to clipboard!')
+                          alert('Link copied to clipboard! ✨')
                         }}
                         className="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-poppins font-medium transition-colors"
                       >

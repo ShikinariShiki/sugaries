@@ -83,7 +83,7 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
-  const [aspect, setAspect] = useState<number | undefined>(4 / 3)
+  const [aspect, setAspect] = useState<number | undefined>(undefined)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -164,8 +164,8 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
                 <button
                   onClick={() => setAspect(undefined)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === undefined
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   Free
@@ -173,8 +173,8 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
                 <button
                   onClick={() => setAspect(4 / 3)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === 4 / 3
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   4:3
@@ -182,8 +182,8 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
                 <button
                   onClick={() => setAspect(16 / 9)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === 16 / 9
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   16:9
@@ -191,8 +191,8 @@ export default function ImageEditorModal({ imageSrc, onSave, onCancel }: ImageEd
                 <button
                   onClick={() => setAspect(9 / 16)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-poppins whitespace-nowrap transition-colors ${aspect === 9 / 16
-                      ? 'bg-pink-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   9:16

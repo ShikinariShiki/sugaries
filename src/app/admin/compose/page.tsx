@@ -27,7 +27,8 @@ import {
   Upload,
   RefreshCw,
   Copy,
-  LayoutTemplate
+  LayoutTemplate,
+  X
 } from 'lucide-react'
 
 const FONT_OPTIONS = [
@@ -88,7 +89,7 @@ export default function ComposePage() {
   const [shortUrl, setShortUrl] = useState('')
   const [error, setError] = useState('')
   const [letterColor, setLetterColor] = useState('pink')
-  const [letterFont, setLetterFont] = useState('handwriting')
+  const [letterFont, setLetterFont] = useState('poppins')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -379,7 +380,14 @@ export default function ComposePage() {
                     placeholder="Write your heartfelt message..."
                     rows={8}
                     maxLength={10000}
-                    className="w-full px-5 py-4 rounded-2xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:bg-white/80 dark:focus:bg-gray-800/80 focus:outline-none transition-all font-handwriting text-xl leading-relaxed shadow-inner resize-none"
+                    style={{
+                      fontFamily: letterFont === 'handwriting' ? 'var(--font-kalam)' :
+                        letterFont === 'poppins' ? 'var(--font-poppins)' :
+                          letterFont === 'quicksand' ? 'var(--font-quicksand)' :
+                            letterFont === 'mono' ? 'monospace' :
+                              letterFont === 'serif' ? 'serif' : 'sans-serif'
+                    }}
+                    className="w-full px-5 py-4 rounded-2xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:bg-white/80 dark:focus:bg-gray-800/80 focus:outline-none transition-all text-xl leading-relaxed shadow-inner resize-none"
                     disabled={isLoading}
                   />
                   <div className="flex justify-end mt-2">
@@ -514,64 +522,88 @@ export default function ComposePage() {
                     </label>
                   </div>
 
-                  {/* Drag and Drop Area */}
-                  <div
-                    onDragOver={(e) => {
-                      e.preventDefault()
-                      setIsDragging(true)
-                    }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={(e) => {
-                      e.preventDefault()
-                      setIsDragging(false)
-                      const file = e.dataTransfer.files[0]
-                      if (file) handleFileSelect(file)
-                    }}
-                    className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all group ${isDragging
-                      ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                      : 'border-white/60 dark:border-gray-600/60 hover:border-pink-400 bg-white/30 dark:bg-gray-800/30'
-                      }`}
-                  >
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) handleFileSelect(file)
-                      }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      disabled={isLoading}
-                    />
-                    <div className="pointer-events-none flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                        <Upload className="text-pink-500" size={24} />
+                  {imageUrl || imageFile ? (
+                    <div className="relative rounded-2xl overflow-hidden border-2 border-pink-500 shadow-md bg-gray-50 dark:bg-gray-800">
+                      <img
+                        src={imageUrl}
+                        alt="Preview"
+                        className="w-full h-auto max-h-[400px] object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImageFile(null)
+                          setImageUrl('')
+                        }}
+                        className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                      >
+                        <X size={20} />
+                      </button>
+                      <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">
+                        {imageFile ? 'Uploaded File' : 'External URL'}
                       </div>
-                      <p className="text-gray-700 dark:text-gray-200 font-medium font-poppins">
-                        Click or drag image here
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Supports JPG, PNG, GIF
-                      </p>
                     </div>
-                  </div>
+                  ) : (
+                    <>
+                      {/* Drag and Drop Area */}
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault()
+                          setIsDragging(true)
+                        }}
+                        onDragLeave={() => setIsDragging(false)}
+                        onDrop={(e) => {
+                          e.preventDefault()
+                          setIsDragging(false)
+                          const file = e.dataTransfer.files[0]
+                          if (file) handleFileSelect(file)
+                        }}
+                        className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all group ${isDragging
+                          ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
+                          : 'border-white/60 dark:border-gray-600/60 hover:border-pink-400 bg-white/30 dark:bg-gray-800/30'
+                          }`}
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) handleFileSelect(file)
+                          }}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                          disabled={isLoading}
+                        />
+                        <div className="pointer-events-none flex flex-col items-center gap-2">
+                          <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                            <Upload className="text-pink-500" size={24} />
+                          </div>
+                          <p className="text-gray-700 dark:text-gray-200 font-medium font-poppins">
+                            Click or drag image here
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Supports JPG, PNG, GIF
+                          </p>
+                        </div>
+                      </div>
 
-                  {/* Image URL Input */}
-                  <div className="mt-3 relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                      <LinkIcon size={14} />
-                    </span>
-                    <input
-                      type="url"
-                      value={!imageFile ? imageUrl : ''}
-                      onChange={(e) => {
-                        setImageFile(null)
-                        setImageUrl(e.target.value)
-                      }}
-                      placeholder="Or paste direct image URL..."
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
-                      disabled={isLoading || !!imageFile}
-                    />
-                  </div>
+                      {/* Image URL Input */}
+                      <div className="mt-3 relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                          <LinkIcon size={14} />
+                        </span>
+                        <input
+                          type="url"
+                          value={imageUrl}
+                          onChange={(e) => {
+                            setImageUrl(e.target.value)
+                          }}
+                          placeholder="Or paste direct image URL..."
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* 5. Customization (Color & Font) */}

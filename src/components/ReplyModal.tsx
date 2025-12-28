@@ -11,6 +11,20 @@ interface ReplyModalProps {
   onClose: () => void
 }
 
+import ColorPicker from '@/components/ColorPicker'
+import { Type } from 'lucide-react'
+
+// ... existing imports ...
+
+const FONT_OPTIONS = [
+  { value: 'handwriting', label: 'Handwriting (Kalam)' },
+  { value: 'poppins', label: 'Modern (Poppins)' },
+  { value: 'quicksand', label: 'Friendly (Quicksand)' },
+  { value: 'serif', label: 'Elegant (Serif)' },
+  { value: 'mono', label: 'Code (Monospace)' },
+  { value: 'cursive', label: 'Cursive' },
+]
+
 export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModalProps) {
   const [content, setContent] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +36,8 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imageUrl, setImageUrl] = useState('')
   const [createdLetterId, setCreatedLetterId] = useState<string | null>(null)
+  const [letterColor, setLetterColor] = useState('pink')
+  const [letterFont, setLetterFont] = useState('handwriting')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,22 +55,23 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
       // Convert image to base64 if exists
       if (imageFile) {
+        // ... existing image processing code ...
         console.log('=== Reply Image Processing ===')
         console.log('Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type)
-        
+
         try {
           // Compress image first
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
           const img = new Image()
-          
+
           const imageLoadPromise = new Promise<string>((resolve, reject) => {
             img.onload = () => {
               // Calculate new dimensions (max 1200px width/height)
               let width = img.width
               let height = img.height
               const maxSize = 1200
-              
+
               if (width > maxSize || height > maxSize) {
                 if (width > height) {
                   height = (height / width) * maxSize
@@ -64,22 +81,20 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
                   height = maxSize
                 }
               }
-              
+
               canvas.width = width
               canvas.height = height
               ctx?.drawImage(img, 0, 0, width, height)
-              
+
               // Convert to base64 with quality compression
               const base64 = canvas.toDataURL('image/jpeg', 0.8)
-              console.log('Image compressed and converted, original:', imageFile.size, 'new length:', base64.length)
               resolve(base64)
             }
             img.onerror = reject
           })
-          
+
           img.src = URL.createObjectURL(imageFile)
           uploadedImageUrl = await imageLoadPromise
-          console.log('Image ready for upload')
         } catch (error) {
           console.error('Failed to process image:', error)
           setError('Failed to process image')
@@ -89,10 +104,6 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
       }
 
       console.log('=== Sending Reply ===')
-      console.log('Recipient:', 'Kevin')
-      console.log('Sender:', recipientName)
-      console.log('Content length:', content.trim().length)
-      console.log('Image URL:', uploadedImageUrl ? 'Present' : 'None')
 
       const response = await fetch('/api/letter/reply', {
         method: 'POST',
@@ -102,50 +113,38 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
           content: content.trim(),
           senderName: recipientName,
           imageUrl: uploadedImageUrl || undefined,
+          letterColor,
+          letterFont,
         }),
       })
 
-      console.log('Reply response status:', response.status)
+      // ... existing response handling ...
       const data = await response.json()
-      console.log('Reply response data:', data)
-
       if (response.ok) {
-        console.log('Reply sent successfully!')
         setCreatedLetterId(data.letterId)
         setSuccess(true)
-        // Show rating after 1 second
         setTimeout(() => setShowRating(true), 1000)
       } else {
-        console.error('Reply failed:', data)
         setError(data.error || 'Failed to send reply')
       }
     } catch (error) {
-      console.error('Reply error:', error)
       setError(`Failed to send reply: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
   }
 
+  // ... handleRatingSubmit ...
   const handleRatingSubmit = async () => {
     if (rating > 0 && createdLetterId) {
       try {
-        console.log('=== Saving Rating ===')
-        console.log('Letter ID:', createdLetterId)
-        console.log('Rating:', rating)
-        
         const response = await fetch('/api/letter/rate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ letterId: createdLetterId, rating }),
         })
-        
         if (response.ok) {
-          console.log('Rating saved successfully')
-          // Trigger page reload to refresh dashboard
           setTimeout(() => window.location.reload(), 500)
-        } else {
-          console.error('Failed to save rating:', await response.text())
         }
       } catch (error) {
         console.error('Failed to save rating:', error)
@@ -178,7 +177,7 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
                     ✉️ Reply to {originalSender || 'Sender'}
                   </h2>
                   <p className="text-gray-600 font-poppins">
-                    Send your message back
+                    Customize your response
                   </p>
                 </div>
                 <button
@@ -192,6 +191,35 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+
+                {/* 1. Appearance Customization */}
+                <div className="space-y-4 p-4 bg-gray-50 rounded-xl">
+                  {/* Font Selection */}
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2 font-poppins">
+                      <Type size={16} /> Font Style
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {FONT_OPTIONS.map((font) => (
+                        <button
+                          key={font.value}
+                          type="button"
+                          onClick={() => setLetterFont(font.value)}
+                          className={`px-3 py-2 rounded-lg text-sm border transition-all ${letterFont === font.value
+                              ? 'bg-white border-pink-500 text-pink-600 shadow-sm'
+                              : 'bg-white border-gray-200 text-gray-600 hover:border-pink-300'
+                            }`}
+                        >
+                          {font.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Color Picker */}
+                  <ColorPicker selectedColor={letterColor} onChange={setLetterColor} />
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
                     Your Message:
@@ -202,7 +230,14 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
                     placeholder="Write your reply..."
                     rows={8}
                     maxLength={10000}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors font-handwriting text-lg resize-none"
+                    style={{
+                      fontFamily: letterFont === 'handwriting' ? 'var(--font-kalam)' :
+                        letterFont === 'poppins' ? 'var(--font-poppins)' :
+                          letterFont === 'quicksand' ? 'var(--font-quicksand)' :
+                            letterFont === 'mono' ? 'monospace' :
+                              letterFont === 'serif' ? 'serif' : 'sans-serif'
+                    }}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-lg resize-none"
                     disabled={isLoading}
                   />
                   <p className="text-sm text-gray-500 mt-1 font-poppins">

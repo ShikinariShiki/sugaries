@@ -4,8 +4,8 @@ import { prisma } from '@/lib/prisma'
 export async function POST(request: Request) {
   try {
     console.log('=== Reply API Called ===')
-    const { recipientName, content, senderName, rating, imageUrl } = await request.json()
-    
+    const { recipientName, content, senderName, rating, imageUrl, letterColor, letterFont } = await request.json()
+
     console.log('Reply data:', { recipientName, senderName, contentLength: content?.length, rating, hasImage: !!imageUrl })
 
     // Validate required fields
@@ -28,9 +28,11 @@ export async function POST(request: Request) {
         rating: rating || null,
         imageUrl: imageUrl || null,
         pinHash: null, // No password for replies
+        letterColor: letterColor || 'pink',
+        letterFont: letterFont || 'handwriting',
       },
     })
-    
+
     console.log('Reply letter created:', letter.id, 'isReply:', letter.isReply)
 
     // Send email notification
