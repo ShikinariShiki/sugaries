@@ -111,8 +111,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {children}
         </main>
 
-        {/* Music Player with Queue */}
-        <MusicPlayerWithQueue />
+
       </div>
     </div>
   )
