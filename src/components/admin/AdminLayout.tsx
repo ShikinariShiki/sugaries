@@ -7,7 +7,7 @@ import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import { MusicPlayerWithQueue } from '@/components/MusicPlayerWithQueue'
 import OnboardingFlow from '@/components/OnboardingFlow'
-import { songs as songsData } from '@/data/songs'
+
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -112,15 +112,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </main>
 
         {/* Music Player with Queue */}
-        <MusicPlayerWithQueue
-          songs={songsData.map(song => ({
-            id: song.id,
-            title: song.title,
-            artist: song.artist,
-            url: song.src
-          }))}
-          autoPlay={true}
-        />
+        <MusicPlayerWithQueue />
       </div>
     </div>
   )
