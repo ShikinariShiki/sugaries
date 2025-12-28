@@ -113,6 +113,16 @@ export default function ClientHome({ session }: { session: any }) {
             </p>
           </div>
         )}
+
+        <footer className="mt-16 py-8 border-t border-gray-200/50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500 font-poppins">
+            <p>© {new Date().getFullYear()} Gulalies. All rights reserved.</p>
+            <div className="flex gap-4">
+              <Link href="/privacy" className="hover:text-pink-500 transition-colors">Privacy Policy</Link>
+              <a href="mailto:shikimanmaru@gmail.com" className="hover:text-pink-500 transition-colors">Contact</a>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   )
