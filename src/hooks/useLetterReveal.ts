@@ -21,6 +21,7 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         letterColor: action.payload.letterColor,
         letterFont: action.payload.letterFont,
         headerText: action.payload.headerText,
+        pinLength: action.payload.pinLength,
         isLoading: false,
         error: undefined,
       }
@@ -132,6 +133,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             letterColor: data.letterColor,
             letterFont: data.letterFont,
             headerText: data.headerText,
+            pinLength: data.pinLength,
           }
         })
       } else {

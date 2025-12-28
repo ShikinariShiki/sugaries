@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
         letterColor: true,
         letterFont: true,
         headerText: true,
+        pin: true, // Select PIN only to count length, do not return it
         // Explicitly exclude sensitive fields
       },
     })
@@ -41,12 +42,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Return the correct name and non-sensitive options
+    // Calculate PIN length (default to 4 if null/empty, though it should be handled)
+    const pinLength = letter.pin ? letter.pin.length : 4
+
+    // Return the correct name, options, and PIN length
     return NextResponse.json({
       correctName: letter.recipientName,
       letterColor: letter.letterColor,
       letterFont: letter.letterFont,
       headerText: letter.headerText,
+      pinLength: pinLength,
     })
   } catch (error) {
     console.error('Verify name error:', error)

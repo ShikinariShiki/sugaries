@@ -17,11 +17,12 @@ export interface LetterStateData {
   senderName?: string
   pinHash?: string
   headerText?: string
+  pinLength?: number
 }
 
 export type LetterAction =
   | { type: 'VERIFY_NAME'; payload: { name: string } }
-  | { type: 'NAME_VERIFIED'; payload: { recipientName: string; letterColor?: string; letterFont?: string; headerText?: string } }
+  | { type: 'NAME_VERIFIED'; payload: { recipientName: string; letterColor?: string; letterFont?: string; headerText?: string; pinLength?: number } }
   | { type: 'NAME_FAILED'; payload: { error: string } }
   | { type: 'OPEN_ENVELOPE' }
   | { type: 'VERIFY_PIN'; payload: { pin: string } }
