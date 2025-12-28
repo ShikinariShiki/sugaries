@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
         return true
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       if (user && user.email) {
         // On sign in, fetch or create user in database
         try {
@@ -86,12 +86,23 @@ export const authOptions: NextAuthOptions = {
           token.isOnboarded = false // Default to false on error
         }
       }
+
+      // Handle client-side session updates (e.g. Profile Name/Image changes)
+      if (trigger === "update" && session) {
+        if (session.name) token.name = session.name
+        if (session.image) token.picture = session.image
+      }
+
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as "admin" | "user"
+        // Explicitly update name/image from token to ensure client-side changes persist
+        if (token.name) session.user.name = token.name
+        if (token.picture) session.user.image = token.picture
+
         // Force type assertion as module augmentation for Session might be needed elsewhere
         // @ts-ignore
         session.user.isOnboarded = token.isOnboarded as boolean
