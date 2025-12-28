@@ -1,15 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import { songs } from '@/data/songs'
-
-interface Song {
-    id: string
-    title: string
-    artist: string
-    url: string
-    duration?: number
-}
+import { songs, Song } from '@/data/songs'
 
 interface MusicContextType {
     isPlaying: boolean
@@ -69,16 +61,24 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         if (savedState) {
             try {
                 const parsed = JSON.parse(savedState)
-                setQueue(parsed.queue || songs)
+                // Filter out any songs that might not match current schema if needed, but for now just use parsed
+                // We need to ensure we don't break if Song structure changed. 
+                // Let's assume queue is okay, but if it has 'url' instead of 'src' from old state, we might need migration.
+                // For simplicity, let's just use what's there or default.
+
+                // Hack fix for migration: check if first item has url but no src
+                const loadedQueue = parsed.queue || songs
+                if (loadedQueue.length > 0 && loadedQueue[0].url && !loadedQueue[0].src) {
+                    // Maps old url to src
+                    loadedQueue.forEach((s: any) => { s.src = s.url })
+                }
+
+                setQueue(loadedQueue)
                 setCurrentIndex(parsed.currentIndex || 0)
                 setVolumeState(parsed.volume ?? 0.7)
                 setIsMuted(parsed.isMuted || false)
                 setCurrentTime(parsed.currentTime || 0)
                 setIsMinimized(parsed.isMinimized || false)
-                // Check if it was playing - maybe don't auto-play on refresh to avoid scaring user, 
-                // or adhere strictly to "restore status". Let's pause by default on refresh unless requested otherwise.
-                // User asked "saves ... status play/pausenya". 
-                // If we restore 'true', browsers might block autoplay. Let's try, but fallback to false.
                 setIsPlaying(parsed.isPlaying || false)
             } catch (e) {
                 console.error('Failed to parse music state', e)
@@ -109,8 +109,8 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
         // Update source if changed
         const currentSong = queue[currentIndex]
-        if (currentSong && audio.src !== currentSong.url) {
-            audio.src = currentSong.url
+        if (currentSong && audio.src !== currentSong.src) {
+            audio.src = currentSong.src
             audio.currentTime = currentTime // Restore time if mounting
         }
 
