@@ -18,16 +18,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // STRICT DATA ISOLATION: Always filter by the current user's ID.
-    // Even admins should only see their own letters in their personal dashboard.
-    // If we need a "Super Admin" view, that should be a separate page/route.
-    const ADMIN_EMAILS = ['natkevin143@gmail.com', 'theseproyt@gmail.com']
-    const isAdmin = session?.user?.email && ADMIN_EMAILS.includes(session.user.email)
-
     // STRICT DATA ISOLATION: 
-    // Regular users: Only filter by the current user's ID
-    // Admins: Bypass filter to see ALL letters (for now, or logic can be refined)
-    const whereClause = isAdmin ? {} : { userId: session.user.id }
+    // Always filter by the current user's ID for the personal dashboard.
+    // Even admins should only see their own letters here.
+    const whereClause = { userId: session.user.id }
 
     const allLetters = await prisma.letter.findMany({
       where: whereClause,

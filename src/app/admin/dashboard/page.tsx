@@ -306,42 +306,48 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 shadow-sm border border-pink-100 dark:border-gray-700 hover:shadow-md transition-all group"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl md:text-2xl text-pink-500"><Send size={24} /></span>
-              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Sent</span>
+              <span className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg text-pink-500 group-hover:scale-110 transition-transform"><Send size={20} /></span>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 font-poppins">Sent</span>
             </div>
-            <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent}</p>
-            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{openedSent} opened</p>
+            <p className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white font-poppins mt-2">{totalSent}</p>
+            <div className="flex items-center gap-1 mt-2">
+              <span className="w-2 h-2 rounded-full bg-green-400"></span>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins">{openedSent} opened</p>
+            </div>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 shadow-sm border border-purple-100 dark:border-gray-700 hover:shadow-md transition-all group"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl md:text-2xl text-pink-500"><Inbox size={24} /></span>
-              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Received</span>
+              <span className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-500 group-hover:scale-110 transition-transform"><Inbox size={20} /></span>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 font-poppins">Received</span>
             </div>
-            <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalReceived}</p>
-            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">{unreadReceived} unread</p>
+            <p className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white font-poppins mt-2">{totalReceived}</p>
+            <div className="flex items-center gap-1 mt-2">
+              <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+              <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins">{unreadReceived} unread</p>
+            </div>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 shadow-sm border border-blue-100 dark:border-gray-700 hover:shadow-md transition-all group"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl md:text-2xl text-pink-500"><Mail size={24} /></span>
-              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-300 font-poppins">Total</span>
+              <span className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-500 group-hover:scale-110 transition-transform"><Mail size={20} /></span>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 font-poppins">Total</span>
             </div>
-            <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white font-poppins">{totalSent + totalReceived}</p>
-            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-poppins mt-1">All letters</p>
+            <p className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white font-poppins mt-2">{totalSent + totalReceived}</p>
+            <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 font-poppins mt-2">All interactions</p>
           </motion.div>
 
           <Link href="/admin/statistics">
@@ -349,16 +355,19 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer text-white"
+              className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-4 md:p-6 shadow-lg shadow-pink-200 dark:shadow-none hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer text-white h-full relative overflow-hidden group"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl"><Sparkles size={24} /></span>
-                <span className="text-[10px] md:text-sm font-poppins opacity-90">Open Rate</span>
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Sparkles size={60} />
               </div>
-              <p className="text-xl md:text-3xl font-bold font-poppins">
+              <div className="flex items-center justify-between mb-2 relative z-10">
+                <span className="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><Sparkles size={18} /></span>
+                <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-white/80 font-poppins">Success</span>
+              </div>
+              <p className="text-2xl md:text-4xl font-bold font-poppins relative z-10">
                 {totalSent > 0 ? Math.round((openedSent / totalSent) * 100) : 0}%
               </p>
-              <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">Success rate</p>
+              <p className="text-[10px] md:text-xs text-white/80 font-poppins mt-2 relative z-10">Open rate</p>
             </motion.div>
           </Link>
 
@@ -367,18 +376,21 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer text-white col-span-2 md:col-span-1"
+              className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-4 md:p-6 shadow-lg shadow-purple-200 dark:shadow-none hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer text-white col-span-2 md:col-span-1 h-full relative overflow-hidden group"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl md:text-2xl"><Star size={24} className="fill-current" /></span>
-                <span className="text-[10px] md:text-sm font-poppins opacity-90">Satisfaction</span>
+              <div className="absolute -bottom-4 -right-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Star size={80} />
               </div>
-              <p className="text-xl md:text-3xl font-bold font-poppins">
-                {averageSatisfaction || 'N/A'}
-                {averageSatisfaction && <span className="text-sm ml-1">/5</span>}
-              </p>
-              <p className="text-[10px] md:text-xs opacity-90 font-poppins mt-1">
-                {ratingsFromReplies.length > 0 ? `${ratingsFromReplies.length} ratings` : 'No ratings yet'}
+              <div className="flex items-center justify-between mb-2 relative z-10">
+                <span className="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><Star size={18} /></span>
+                <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-white/80 font-poppins">Rating</span>
+              </div>
+              <div className="flex items-baseline gap-1 relative z-10">
+                <p className="text-2xl md:text-4xl font-bold font-poppins">{averageSatisfaction || 'N/A'}</p>
+                {averageSatisfaction && <span className="text-sm opacity-80">/5</span>}
+              </div>
+              <p className="text-[10px] md:text-xs text-white/80 font-poppins mt-2 relative z-10">
+                {ratingsFromReplies.length > 0 ? `${ratingsFromReplies.length} reviewed` : 'No reviews'}
               </p>
             </motion.div>
           </Link>
