@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
-import { MusicPlayerWithQueue } from '@/components/MusicPlayerWithQueue'
+
 import OnboardingFlow from '@/components/OnboardingFlow'
 
 
