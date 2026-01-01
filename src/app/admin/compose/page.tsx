@@ -279,7 +279,7 @@ export default function ComposePage() {
   }
 
   const composeContent = (
-    <div className="max-w-4xl mx-auto min-h-screen pb-20">
+    <div className="max-w-4xl xl:max-w-7xl mx-auto min-h-screen pb-20">
       <AnimatePresence mode="wait">
         {step === 'compose' && (
           <motion.div
@@ -306,511 +306,523 @@ export default function ComposePage() {
               </p>
             </div>
 
-            <div className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/60 dark:border-gray-700/60 shadow-xl rounded-3xl p-6 md:p-10">
-              <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-                {/* 1. Recipient Info */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 text-pink-500 mb-2">
-                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
-                      <LayoutTemplate size={20} />
-                    </div>
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white font-poppins">Details</h3>
-                  </div>
-
-                  {/* Letter Mode Toggle */}
-                  <div className="flex p-1 bg-gray-100 dark:bg-gray-800/50 rounded-xl mb-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsBlastMode(false)}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all font-poppins text-sm font-medium ${!isBlastMode
-                        ? 'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                        }`}
-                    >
-                      <User size={16} /> Single Recipient
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsBlastMode(true)}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all font-poppins text-sm font-medium ${isBlastMode
-                        ? 'bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                        }`}
-                    >
-                      <Users size={16} /> Blast Mode
-                    </button>
-                  </div>
-
-                  {/* Blast Mode Info */}
-                  {isBlastMode && (
-                    <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-xl p-4 mb-4">
-                      <div className="flex items-start gap-3">
-                        <div className="p-1.5 bg-purple-100 dark:bg-purple-800/50 rounded-lg">
-                          <Users size={16} className="text-purple-600 dark:text-purple-400" />
+                {/* LEFT COLUMN: Main Content */}
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/60 dark:border-gray-700/60 shadow-xl rounded-3xl p-6 md:p-8">
+                    {/* 1. Recipient Info */}
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3 text-pink-500 mb-2">
+                        <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                          <LayoutTemplate size={20} />
                         </div>
-                        <div>
-                          <h4 className="font-semibold text-purple-800 dark:text-purple-300 text-sm font-poppins">Blast Mode Enabled</h4>
-                          <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                            No name verification required! Recipients will enter their own name, which will be used as the "Dear" greeting. Perfect for sharing with multiple people.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Recipient Name */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                        {isBlastMode ? 'Default Name (Optional)' : 'To'}
-                      </label>
-                      <input
-                        type="text"
-                        value={recipientName}
-                        onChange={(e) => setRecipientName(e.target.value)}
-                        placeholder={isBlastMode ? "e.g. Friend" : "Recipient's name"}
-                        className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
-                        disabled={isLoading}
-                      />
-                      {isBlastMode && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
-                          Recipients will input their own name when opening
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Sender Name (only for non-admin) */}
-                    {!isAdmin && (
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                          From
-                        </label>
-                        <input
-                          type="text"
-                          value={senderName}
-                          onChange={(e) => setSenderName(e.target.value)}
-                          placeholder="Your name"
-                          className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
-                          disabled={isLoading}
-                        />
-                      </div>
-                    )}
-
-                    {/* Header Text - NEW */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                        Envelope Title
-                      </label>
-                      <input
-                        type="text"
-                        value={headerText}
-                        onChange={(e) => setHeaderText(e.target.value)}
-                        placeholder="e.g. To my favorite person"
-                        className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-poppins text-sm shadow-sm hover:bg-white/70"
-                        disabled={isLoading}
-                      />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
-                        Appears on top of the envelope
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
-
-                {/* 2. Message Content */}
-                <div>
-                  <div className="flex items-center gap-3 text-pink-500 mb-4">
-                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
-                      <FileText size={20} />
-                    </div>
-                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
-                      Your Message
-                    </label>
-                  </div>
-                  <textarea
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder="Write your heartfelt message..."
-                    rows={8}
-                    maxLength={10000}
-                    style={{
-                      fontFamily: letterFont === 'handwriting' ? 'var(--font-kalam)' :
-                        letterFont === 'poppins' ? 'var(--font-poppins)' :
-                          letterFont === 'quicksand' ? 'var(--font-quicksand)' :
-                            letterFont === 'mono' ? 'monospace' :
-                              letterFont === 'serif' ? 'serif' : 'sans-serif'
-                    }}
-                    className="w-full px-5 py-4 rounded-2xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:bg-white/80 dark:focus:bg-gray-800/80 focus:outline-none transition-all text-xl leading-relaxed shadow-inner resize-none"
-                    disabled={isLoading}
-                  />
-                  <div className="flex justify-end mt-2">
-                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500 font-poppins bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">
-                      {content.length} / 10000 chars
-                    </p>
-                  </div>
-                </div>
-
-                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
-
-                {/* 3. Music URL */}
-                <div>
-                  <div className="flex items-center gap-3 text-pink-500 mb-4">
-                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
-                      <Music size={20} />
-                    </div>
-                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
-                      Music (optional)
-                    </label>
-                  </div>
-
-                  {/* Source Selection */}
-                  <div className="flex p-1 bg-gray-100 dark:bg-gray-800/50 rounded-xl mb-4">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMusicSource('preset')
-                        setMusicUrl('')
-                      }}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'preset'
-                        ? 'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                        }`}
-                    >
-                      <Music size={16} /> Preset
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMusicSource('youtube')
-                        setSelectedSong('')
-                      }}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'youtube'
-                        ? 'bg-white dark:bg-gray-700 text-red-600 dark:text-red-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                        }`}
-                    >
-                      <Youtube size={16} /> YouTube
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMusicSource('local')
-                        setSelectedSong('')
-                      }}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'local'
-                        ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                        }`}
-                    >
-                      <Upload size={16} /> Local
-                    </button>
-                  </div>
-
-                  <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-xl p-4 border border-gray-100 dark:border-gray-700/50">
-                    {musicSource === 'preset' ? (
-                      <select
-                        value={selectedSong}
-                        onChange={(e) => setSelectedSong(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins cursor-pointer"
-                        disabled={isLoading}
-                      >
-                        <option value="">-- Select a song --</option>
-                        {songs.map((song) => (
-                          <option key={song.id} value={song.id}>
-                            {song.title} - {song.artist}
-                          </option>
-                        ))}
-                      </select>
-                    ) : musicSource === 'youtube' ? (
-                      <>
-                        <input
-                          type="url"
-                          value={musicUrl}
-                          onChange={(e) => setMusicUrl(e.target.value)}
-                          placeholder="https://youtube.com/watch?v=..."
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-red-500 focus:outline-none transition-colors text-sm font-poppins"
-                          disabled={isLoading}
-                        />
-                        <p className="text-xs text-gray-500 mt-2 ml-1">YouTube links will autoplay (desktop only)</p>
-                      </>
-                    ) : (
-                      <div className="space-y-3">
-                        <input
-                          type="url"
-                          value={musicUrl}
-                          onChange={(e) => setMusicUrl(e.target.value)}
-                          placeholder="https://example.com/audio.mp3"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:outline-none transition-colors text-sm font-poppins"
-                          disabled={isLoading}
-                        />
-                        <div className="grid grid-cols-2 gap-3">
-                          <input
-                            type="text"
-                            value={musicTitle}
-                            onChange={(e) => setMusicTitle(e.target.value)}
-                            placeholder="Song Title"
-                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs font-poppins"
-                          />
-                          <input
-                            type="text"
-                            value={musicArtist}
-                            onChange={(e) => setMusicArtist(e.target.value)}
-                            placeholder="Artist"
-                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs font-poppins"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* 4. Image Upload */}
-                <div>
-                  <div className="flex items-center gap-3 text-pink-500 mb-4">
-                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
-                      <ImageIcon size={20} />
-                    </div>
-                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
-                      Image (optional)
-                    </label>
-                  </div>
-
-                  {imageUrl || imageFile ? (
-                    <div className="relative rounded-2xl overflow-hidden border-2 border-pink-500 shadow-md bg-gray-50 dark:bg-gray-800">
-                      <img
-                        src={imageUrl}
-                        alt="Preview"
-                        className="w-full h-auto max-h-[400px] object-contain"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setImageFile(null)
-                          setImageUrl('')
-                        }}
-                        className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
-                      >
-                        <X size={20} />
-                      </button>
-                      <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">
-                        {imageFile ? 'Uploaded File' : 'External URL'}
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Drag and Drop Area */}
-                      <div
-                        onDragOver={(e) => {
-                          e.preventDefault()
-                          setIsDragging(true)
-                        }}
-                        onDragLeave={() => setIsDragging(false)}
-                        onDrop={(e) => {
-                          e.preventDefault()
-                          setIsDragging(false)
-                          const file = e.dataTransfer.files[0]
-                          if (file) handleFileSelect(file)
-                        }}
-                        className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all group ${isDragging
-                          ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                          : 'border-white/60 dark:border-gray-600/60 hover:border-pink-400 bg-white/30 dark:bg-gray-800/30'
-                          }`}
-                      >
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0]
-                            if (file) handleFileSelect(file)
-                          }}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                          disabled={isLoading}
-                        />
-                        <div className="pointer-events-none flex flex-col items-center gap-2">
-                          <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                            <Upload className="text-pink-500" size={24} />
-                          </div>
-                          <p className="text-gray-700 dark:text-gray-200 font-medium font-poppins">
-                            Click or drag image here
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            Supports JPG, PNG, GIF
-                          </p>
-                        </div>
+                        <h3 className="font-bold text-lg text-gray-900 dark:text-white font-poppins">Details</h3>
                       </div>
 
-                      {/* Image URL Input */}
-                      <div className="mt-3 relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                          <LinkIcon size={14} />
-                        </span>
-                        <input
-                          type="url"
-                          value={imageUrl}
-                          onChange={(e) => {
-                            setImageUrl(e.target.value)
-                          }}
-                          placeholder="Or paste direct image URL..."
-                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
-                          disabled={isLoading}
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* 5. Customization (Color & Font) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="col-span-1 md:col-span-2">
-                    <div className="flex items-center gap-3 text-pink-500 mb-4">
-                      <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
-                        <Palette size={20} />
-                      </div>
-                      <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
-                        Theme & Style
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Color Theme */}
-                  <div className="col-span-1 md:col-span-2">
-                    <ColorPicker
-                      selectedColor={letterColor}
-                      onChange={setLetterColor}
-                    />
-                  </div>
-
-                  {/* Font */}
-                  <div className="col-span-1 md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 font-poppins ml-1">
-                      <div className="flex items-center gap-2">
-                        <Type size={16} /> Font Style
-                      </div>
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {FONT_OPTIONS.map(font => (
+                      {/* Letter Mode Toggle */}
+                      <div className="flex p-1 bg-gray-100 dark:bg-gray-800/50 rounded-xl mb-4">
                         <button
-                          key={font.value}
                           type="button"
-                          onClick={() => setLetterFont(font.value)}
-                          className={`px-3 py-3 rounded-xl border-2 transition-all text-sm truncate ${letterFont === font.value
-                            ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 shadow-md'
-                            : 'border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:border-pink-300'
+                          onClick={() => setIsBlastMode(false)}
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all font-poppins text-sm font-medium ${!isBlastMode
+                            ? 'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                             }`}
-                          style={{ fontFamily: font.value === 'handwriting' ? 'Kalam' : font.value }} // Simplified preview
                         >
-                          {font.label}
+                          <User size={16} /> Single Recipient
                         </button>
-                      ))}
+                        <button
+                          type="button"
+                          onClick={() => setIsBlastMode(true)}
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all font-poppins text-sm font-medium ${isBlastMode
+                            ? 'bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                          <Users size={16} /> Blast Mode
+                        </button>
+                      </div>
+
+                      {/* Blast Mode Info */}
+                      {isBlastMode && (
+                        <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-xl p-4 mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className="p-1.5 bg-purple-100 dark:bg-purple-800/50 rounded-lg">
+                              <Users size={16} className="text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-purple-800 dark:text-purple-300 text-sm font-poppins">Blast Mode Enabled</h4>
+                              <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                                No name verification required! Recipients will enter their own name, which will be used as the "Dear" greeting. Perfect for sharing with multiple people.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Recipient Name */}
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                            {isBlastMode ? 'Default Name (Optional)' : 'To'}
+                          </label>
+                          <input
+                            type="text"
+                            value={recipientName}
+                            onChange={(e) => setRecipientName(e.target.value)}
+                            placeholder={isBlastMode ? "e.g. Friend" : "Recipient's name"}
+                            className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
+                            disabled={isLoading}
+                          />
+                          {isBlastMode && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                              Recipients will input their own name when opening
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Sender Name (only for non-admin) */}
+                        {!isAdmin && (
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                              From
+                            </label>
+                            <input
+                              type="text"
+                              value={senderName}
+                              onChange={(e) => setSenderName(e.target.value)}
+                              placeholder="Your name"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
+                              disabled={isLoading}
+                            />
+                          </div>
+                        )}
+
+                        {/* Header Text - NEW */}
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                            Envelope Title
+                          </label>
+                          <input
+                            type="text"
+                            value={headerText}
+                            onChange={(e) => setHeaderText(e.target.value)}
+                            placeholder="e.g. To my favorite person"
+                            className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-poppins text-sm shadow-sm hover:bg-white/70"
+                            disabled={isLoading}
+                          />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                            Appears on top of the envelope
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent my-8" />
+
+                    {/* 2. Message Content */}
+                    <div>
+                      <div className="flex items-center gap-3 text-pink-500 mb-4">
+                        <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                          <FileText size={20} />
+                        </div>
+                        <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                          Your Message
+                        </label>
+                      </div>
+                      <textarea
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="Write your heartfelt message..."
+                        rows={12}
+                        maxLength={10000}
+                        style={{
+                          fontFamily: letterFont === 'handwriting' ? 'var(--font-kalam)' :
+                            letterFont === 'poppins' ? 'var(--font-poppins)' :
+                              letterFont === 'quicksand' ? 'var(--font-quicksand)' :
+                                letterFont === 'mono' ? 'monospace' :
+                                  letterFont === 'serif' ? 'serif' : 'sans-serif'
+                        }}
+                        className="w-full px-5 py-4 rounded-2xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-pink-500 focus:bg-white/80 dark:focus:bg-gray-800/80 focus:outline-none transition-all text-xl leading-relaxed shadow-inner resize-none min-h-[300px]"
+                        disabled={isLoading}
+                      />
+                      <div className="flex justify-end mt-2">
+                        <p className="text-xs font-medium text-gray-400 dark:text-gray-500 font-poppins bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">
+                          {content.length} / 10000 chars
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
+                {/* RIGHT COLUMN: Settings & Customization */}
+                <div className="lg:col-span-5 space-y-6">
+                  <div className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/60 dark:border-gray-700/60 shadow-xl rounded-3xl p-6 md:p-8 space-y-8">
 
-                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
-
-                {/* 6. Settings (Shortlink & PIN) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="col-span-1 md:col-span-2 flex items-center gap-3 text-pink-500 mb-2">
-                    <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
-                      <LinkIcon size={20} />
-                    </div>
-                    <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
-                      Privacy & Link
-                    </label>
-                  </div>
-
-                  {/* Custom Short Link */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                      Custom Short Link
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">gulalies.app/</span>
-                      <input
-                        type="text"
-                        value={customShortCode}
-                        onChange={(e) => setCustomShortCode(e.target.value)}
-                        placeholder="my-love-letter"
-                        className="w-full pl-28 pr-4 py-3 rounded-xl border min-w-0 border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-poppins text-sm"
-                        maxLength={20}
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
-                      Optional. Leave empty for auto-generated link.
-                    </p>
-                  </div>
-
-                  {/* PIN Protection */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                      Security
-                    </label>
-                    <div className={`p-4 rounded-xl border transition-all ${usePinProtection ? 'bg-pink-50/50 border-pink-200' : 'bg-gray-50/50 border-gray-200'}`}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <Lock size={16} className={usePinProtection ? 'text-pink-500' : 'text-gray-400'} />
-                          <span className="font-medium text-sm text-gray-800 dark:text-gray-200">PIN Protection</span>
+                    {/* 3. Music URL */}
+                    <div>
+                      <div className="flex items-center gap-3 text-pink-500 mb-4">
+                        <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                          <Music size={20} />
                         </div>
-                        <input
-                          type="checkbox"
-                          checked={usePinProtection}
-                          onChange={(e) => setUsePinProtection(e.target.checked)}
-                          className="w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer accent-pink-500"
-                        />
+                        <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                          Music (optional)
+                        </label>
                       </div>
 
-                      {usePinProtection ? (
-                        <div className="pl-6">
-                          <PINInput
-                            value={pin}
-                            onChange={setPin}
-                            error={!!error && !pin}
+                      {/* Source Selection */}
+                      <div className="flex p-1 bg-gray-100 dark:bg-gray-800/50 rounded-xl mb-4">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMusicSource('preset')
+                            setMusicUrl('')
+                          }}
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'preset'
+                            ? 'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                          <Music size={16} /> Preset
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMusicSource('youtube')
+                            setSelectedSong('')
+                          }}
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'youtube'
+                            ? 'bg-white dark:bg-gray-700 text-red-600 dark:text-red-400 shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                          <Youtube size={16} /> YouTube
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMusicSource('local')
+                            setSelectedSong('')
+                          }}
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all font-poppins text-sm font-medium ${musicSource === 'local'
+                            ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                          <Upload size={16} /> Local
+                        </button>
+                      </div>
+
+                      <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-xl p-4 border border-gray-100 dark:border-gray-700/50">
+                        {musicSource === 'preset' ? (
+                          <select
+                            value={selectedSong}
+                            onChange={(e) => setSelectedSong(e.target.value)}
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins cursor-pointer"
+                            disabled={isLoading}
+                          >
+                            <option value="">-- Select a song --</option>
+                            {songs.map((song) => (
+                              <option key={song.id} value={song.id}>
+                                {song.title} - {song.artist}
+                              </option>
+                            ))}
+                          </select>
+                        ) : musicSource === 'youtube' ? (
+                          <>
+                            <input
+                              type="url"
+                              value={musicUrl}
+                              onChange={(e) => setMusicUrl(e.target.value)}
+                              placeholder="https://youtube.com/watch?v=..."
+                              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-red-500 focus:outline-none transition-colors text-sm font-poppins"
+                              disabled={isLoading}
+                            />
+                            <p className="text-xs text-gray-500 mt-2 ml-1">YouTube links will autoplay (desktop only)</p>
+                          </>
+                        ) : (
+                          <div className="space-y-3">
+                            <input
+                              type="url"
+                              value={musicUrl}
+                              onChange={(e) => setMusicUrl(e.target.value)}
+                              placeholder="https://example.com/audio.mp3"
+                              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:outline-none transition-colors text-sm font-poppins"
+                              disabled={isLoading}
+                            />
+                            <div className="grid grid-cols-2 gap-3">
+                              <input
+                                type="text"
+                                value={musicTitle}
+                                onChange={(e) => setMusicTitle(e.target.value)}
+                                placeholder="Song Title"
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs font-poppins"
+                              />
+                              <input
+                                type="text"
+                                value={musicArtist}
+                                onChange={(e) => setMusicArtist(e.target.value)}
+                                placeholder="Artist"
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs font-poppins"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+                    {/* 4. Image Upload */}
+                    <div>
+                      <div className="flex items-center gap-3 text-pink-500 mb-4">
+                        <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                          <ImageIcon size={20} />
+                        </div>
+                        <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                          Image (optional)
+                        </label>
+                      </div>
+
+                      {imageUrl || imageFile ? (
+                        <div className="relative rounded-2xl overflow-hidden border-2 border-pink-500 shadow-md bg-gray-50 dark:bg-gray-800">
+                          <img
+                            src={imageUrl}
+                            alt="Preview"
+                            className="w-full h-auto max-h-[400px] object-contain"
                           />
-                          <p className="text-xs text-green-600 mt-2">
-                            Recipient will need this PIN to open.
-                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setImageFile(null)
+                              setImageUrl('')
+                            }}
+                            className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                          >
+                            <X size={20} />
+                          </button>
+                          <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">
+                            {imageFile ? 'Uploaded File' : 'External URL'}
+                          </div>
                         </div>
                       ) : (
-                        <p className="text-xs text-gray-500 pl-6">
-                          Anyone with the link can open this letter.
-                        </p>
+                        <>
+                          {/* Drag and Drop Area */}
+                          <div
+                            onDragOver={(e) => {
+                              e.preventDefault()
+                              setIsDragging(true)
+                            }}
+                            onDragLeave={() => setIsDragging(false)}
+                            onDrop={(e) => {
+                              e.preventDefault()
+                              setIsDragging(false)
+                              const file = e.dataTransfer.files[0]
+                              if (file) handleFileSelect(file)
+                            }}
+                            className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all group ${isDragging
+                              ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
+                              : 'border-white/60 dark:border-gray-600/60 hover:border-pink-400 bg-white/30 dark:bg-gray-800/30'
+                              }`}
+                          >
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0]
+                                if (file) handleFileSelect(file)
+                              }}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                              disabled={isLoading}
+                            />
+                            <div className="pointer-events-none flex flex-col items-center gap-2">
+                              <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                <Upload className="text-pink-500" size={24} />
+                              </div>
+                              <p className="text-gray-700 dark:text-gray-200 font-medium font-poppins">
+                                Click or drag image here
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                Supports JPG, PNG, GIF
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Image URL Input */}
+                          <div className="mt-3 relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                              <LinkIcon size={14} />
+                            </span>
+                            <input
+                              type="url"
+                              value={imageUrl}
+                              onChange={(e) => {
+                                setImageUrl(e.target.value)
+                              }}
+                              placeholder="Or paste direct image URL..."
+                              className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-pink-500 focus:outline-none transition-colors text-sm font-poppins"
+                              disabled={isLoading}
+                            />
+                          </div>
+                        </>
                       )}
                     </div>
+
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+                    {/* 5. Customization (Color & Font) */}
+                    <div>
+                      <div className="flex items-center gap-3 text-pink-500 mb-4">
+                        <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                          <Palette size={20} />
+                        </div>
+                        <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                          Theme & Style
+                        </label>
+                      </div>
+
+                      {/* Color Theme */}
+                      <div className="mb-6">
+                        <ColorPicker
+                          selectedColor={letterColor}
+                          onChange={setLetterColor}
+                        />
+                      </div>
+
+                      {/* Font */}
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 font-poppins ml-1">
+                          <div className="flex items-center gap-2">
+                            <Type size={16} /> Font Style
+                          </div>
+                        </label>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                          {FONT_OPTIONS.map(font => (
+                            <button
+                              key={font.value}
+                              type="button"
+                              onClick={() => setLetterFont(font.value)}
+                              className={`px-3 py-3 rounded-xl border-2 transition-all text-sm truncate ${letterFont === font.value
+                                ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 shadow-md'
+                                : 'border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:border-pink-300'
+                                }`}
+                              style={{ fontFamily: font.value === 'handwriting' ? 'Kalam' : font.value }} // Simplified preview
+                            >
+                              {font.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+                    {/* 6. Settings (Shortlink & PIN) */}
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3 text-pink-500 mb-2">
+                        <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-lg">
+                          <LinkIcon size={20} />
+                        </div>
+                        <label className="font-bold text-lg text-gray-900 dark:text-white font-poppins">
+                          Privacy & Link
+                        </label>
+                      </div>
+
+                      {/* Custom Short Link */}
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                          Custom Short Link
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">gulalies.app/</span>
+                          <input
+                            type="text"
+                            value={customShortCode}
+                            onChange={(e) => setCustomShortCode(e.target.value)}
+                            placeholder="my-love-letter"
+                            className="w-full pl-28 pr-4 py-3 rounded-xl border min-w-0 border-white/60 dark:border-gray-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-poppins text-sm"
+                            maxLength={20}
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                          Optional. Leave empty for auto-generated link.
+                        </p>
+                      </div>
+
+                      {/* PIN Protection */}
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                          Security
+                        </label>
+                        <div className={`p-4 rounded-xl border transition-all ${usePinProtection ? 'bg-pink-50/50 border-pink-200' : 'bg-gray-50/50 border-gray-200'}`}>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <Lock size={16} className={usePinProtection ? 'text-pink-500' : 'text-gray-400'} />
+                              <span className="font-medium text-sm text-gray-800 dark:text-gray-200">PIN Protection</span>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={usePinProtection}
+                              onChange={(e) => setUsePinProtection(e.target.checked)}
+                              className="w-5 h-5 rounded border-gray-300 text-pink-500 focus:ring-pink-500 cursor-pointer accent-pink-500"
+                            />
+                          </div>
+
+                          {usePinProtection ? (
+                            <div className="pl-6">
+                              <PINInput
+                                value={pin}
+                                onChange={setPin}
+                                error={!!error && !pin}
+                              />
+                              <p className="text-xs text-green-600 mt-2">
+                                Recipient will need this PIN to open.
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-gray-500 pl-6">
+                              Anyone with the link can open this letter.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {error && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-center gap-3"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                        <p className="text-red-600 dark:text-red-400 text-sm font-poppins font-medium">{error}</p>
+                      </motion.div>
+                    )}
+
+                    <SquishButton
+                      type="submit"
+                      disabled={isLoading || (!isBlastMode && !recipientName.trim()) || !content.trim() || (usePinProtection && !pin)}
+                      className="w-full py-4 text-lg font-bold rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-pink-500/20"
+                    >
+                      {isLoading ? (
+                        <>
+                          <RefreshCw className="animate-spin" size={24} /> Creating...
+                        </>
+                      ) : (
+                        <>
+                          <Send size={24} /> Create Letter
+                        </>
+                      )}
+                    </SquishButton>
+
                   </div>
                 </div>
 
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-center gap-3"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                    <p className="text-red-600 dark:text-red-400 text-sm font-poppins font-medium">{error}</p>
-                  </motion.div>
-                )}
+              </div>
+            </form>
 
-                <SquishButton
-                  type="submit"
-                  disabled={isLoading || (!isBlastMode && !recipientName.trim()) || !content.trim() || (usePinProtection && !pin)}
-                  className="w-full py-4 text-lg font-bold rounded-2xl flex items-center justify-center gap-3 mt-8 shadow-xl shadow-pink-500/20"
-                >
-                  {isLoading ? (
-                    <>
-                      <RefreshCw className="animate-spin" size={24} /> Creating...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={24} /> Create Letter
-                    </>
-                  )}
-                </SquishButton>
-              </form>
-            </div>
-            {/* End of Glass Card */}
           </motion.div>
         )}
 
