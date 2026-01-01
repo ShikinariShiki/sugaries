@@ -8,6 +8,11 @@ interface ColorPickerProps {
 }
 
 const colors = [
+  { name: 'Valentine', value: 'valentine', gradient: 'from-rose-100 via-pink-50 to-white' },
+  { name: 'Birthday', value: 'birthday', gradient: 'from-purple-100 via-yellow-50 to-white' },
+  { name: 'New Year', value: 'new-year', gradient: 'from-slate-100 via-amber-50 to-white' },
+  { name: 'Christmas', value: 'christmas', gradient: 'from-red-100 via-green-50 to-white' },
+  { name: 'Graduation', value: 'graduation', gradient: 'from-blue-100 via-amber-50 to-white' },
   { name: 'Pink', value: 'pink', gradient: 'from-pink-100 via-pink-50 to-white' },
   { name: 'Lavender', value: 'lavender', gradient: 'from-purple-100 via-purple-50 to-white' },
   { name: 'Mint', value: 'mint', gradient: 'from-green-100 via-green-50 to-white' },

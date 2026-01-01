@@ -12,7 +12,7 @@ import { ReplyModal } from '@/components/ReplyModal'
 import { MusicPlayer } from '@/components/MusicPlayer'
 import Confetti from 'react-confetti'
 import { useWindowSize } from '@/hooks/useWindowSize'
-import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X, Download } from 'lucide-react'
+import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X, Download, Sparkles, Cake, PartyPopper, Snowflake, GraduationCap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from "next-auth/react"
 
@@ -142,6 +142,26 @@ function getThemeColors(theme: string = 'pink') {
       gradient: 'from-rose-50 via-pink-50 to-white',
       confetti: ['#fda4af', '#fb7185', '#f43f5e', '#e11d48']
     },
+    valentine: {
+      gradient: 'from-rose-100 via-pink-50 to-white',
+      confetti: ['#be123c', '#fb7185', '#f43f5e', '#e11d48']
+    },
+    birthday: {
+      gradient: 'from-purple-100 via-yellow-50 to-white',
+      confetti: ['#a855f7', '#fbbf24', '#f43f5e', '#3b82f6', '#10b981']
+    },
+    'new-year': {
+      gradient: 'from-slate-100 via-amber-50 to-white',
+      confetti: ['#fbbf24', '#94a3b8', '#0f172a', '#cbd5e1']
+    },
+    christmas: {
+      gradient: 'from-red-100 via-green-50 to-white',
+      confetti: ['#ef4444', '#10b981', '#fbbf24', '#ffffff']
+    },
+    graduation: {
+      gradient: 'from-blue-100 via-amber-50 to-white',
+      confetti: ['#3b82f6', '#fbbf24', '#1e293b', '#ffffff']
+    },
   }
 
   // Handle custom hex colors
@@ -167,6 +187,42 @@ function getFontClass(font: string = 'handwriting') {
   }
 
   return fonts[font] || fonts.handwriting
+}
+
+// Helper to get theme icon
+function getThemeIcon(theme: string) {
+  switch (theme) {
+    case 'birthday':
+      return <Cake size={32} className="text-purple-500 fill-purple-400/30" />
+    case 'new-year':
+      return <Sparkles size={32} className="text-amber-500 fill-amber-400/30" />
+    case 'christmas':
+      return <Snowflake size={32} className="text-blue-400 fill-blue-300/30" />
+    case 'graduation':
+      return <GraduationCap size={32} className="text-blue-600 fill-blue-500/30" />
+    case 'valentine':
+      return <Heart size={32} className="text-rose-500 fill-rose-400/30" />
+    default:
+      return <Heart size={32} className="text-pink-500 fill-pink-400/30" />
+  }
+}
+
+// Helper to get decorative element
+function getDecorativeElement(theme: string) {
+  switch (theme) {
+    case 'birthday':
+      return <PartyPopper size={80} className="text-purple-500 fill-purple-500" />
+    case 'new-year':
+      return <Sparkles size={80} className="text-amber-500 fill-amber-500" />
+    case 'christmas':
+      return <Snowflake size={80} className="text-red-500 fill-red-500" />
+    case 'graduation':
+      return <GraduationCap size={80} className="text-blue-800 fill-blue-800" />
+    case 'valentine':
+      return <Heart size={80} className="text-rose-500 fill-rose-500" />
+    default:
+      return <Heart size={80} className="text-pink-500 fill-pink-500" />
+  }
 }
 
 export default function LetterClientView({ letterId, isAdminView = false }: { letterId: string, isAdminView?: boolean }) {
@@ -418,7 +474,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               <div className="relative">
                 {/* Decorative Elements */}
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-20">
-                  <Heart size={80} className="text-pink-500 fill-pink-500" />
+                  {getDecorativeElement(state.letterColor)}
                 </div>
 
                 <PaperCard
@@ -445,7 +501,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                         </h2>
                       </div>
                       <div className="w-16 h-16 bg-white/40 rounded-full flex items-center justify-center border border-white/60">
-                        <Heart size={32} className="text-pink-500 fill-pink-400/30" />
+                        {getThemeIcon(state.letterColor)}
                       </div>
                     </header>
 
@@ -478,7 +534,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                         "text-2xl md:text-3xl"
                       )}
                     >
-                      {state.content}
+                      {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
                     </div>
 
                     <footer className="mt-16 pt-10 border-t border-black/5">

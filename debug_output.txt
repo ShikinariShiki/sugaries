@@ -1,0 +1,46 @@
+--- Users ---
+ID: cmiyg3ehx0000lgdbbfnkxens
+Email: natkevinirwanto@student.ub.ac.id
+Name: Nathanael Kevin Irwanto
+Created: Tue Dec 09 2025 10:36:14 GMT+0700 (Western Indonesia Time)
+Updated: Tue Dec 09 2025 10:36:14 GMT+0700 (Western Indonesia Time)
+Letters: 0
+----------------
+ID: cmiymz0720000ax5lzzbp6gvz
+Email: shikimanmaru@gmail.com
+Name: Shiki Manmaru
+Created: Tue Dec 09 2025 13:48:46 GMT+0700 (Western Indonesia Time)
+Updated: Thu Dec 11 2025 11:14:43 GMT+0700 (Western Indonesia Time)
+Letters: 0
+----------------
+ID: cmj12f28m00003svnbccyp51j
+Email: test@gmail.com
+Name: Test
+Created: Thu Dec 11 2025 06:36:42 GMT+0700 (Western Indonesia Time)
+Updated: Thu Dec 11 2025 09:26:50 GMT+0700 (Western Indonesia Time)
+Letters: 0
+----------------
+ID: cmjqn6ffk0000ldiz3kbzq4ao
+Email: inaawry@gmail.com
+Name: Inaa Dasele
+Created: Mon Dec 29 2025 11:12:06 GMT+0700 (Western Indonesia Time)
+Updated: Mon Dec 29 2025 11:12:06 GMT+0700 (Western Indonesia Time)
+Letters: 0
+----------------
+ID: cmiyeup6v0000pisitbxsu97s
+Email: theseproyt@gmail.com
+Name: Shiki
+Created: Tue Dec 09 2025 10:01:29 GMT+0700 (Western Indonesia Time)
+Updated: Thu Jan 01 2026 00:50:35 GMT+0700 (Western Indonesia Time)
+Letters: 1
+----------------
+ID: cmiycb56p0000hqr6woyrwic7
+Email: natkevin143@gmail.com
+Name: Kevin
+Created: Tue Dec 09 2025 08:50:17 GMT+0700 (Western Indonesia Time)
+Updated: Thu Jan 01 2026 10:03:35 GMT+0700 (Western Indonesia Time)
+Letters: 15
+----------------
+
+--- Total Letters in DB ---
+Total: 16

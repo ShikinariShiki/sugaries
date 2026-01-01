@@ -25,7 +25,8 @@ export const authOptions: NextAuthOptions = {
           where: { email: user.email },
           update: {
             name: user.name,
-            image: user.image,
+            // Do NOT overwrite image on sign in to preserve custom profile pictures
+            // image: user.image, 
           },
           create: {
             email: user.email,
@@ -38,74 +39,53 @@ export const authOptions: NextAuthOptions = {
 
         // Store the database user ID
         user.id = dbUser.id
+        // @ts-ignore
+        user.role = dbUser.role
 
         return true
       } catch (error) {
-        // Log the error with details for debugging
         console.error('Database error during sign in:', error)
-        console.error('User email:', user.email)
-
-        // Still allow sign in even if database fails
-        // The jwt callback will handle creating/fetching user data
-        // This prevents "AccessDenied" errors from temporary DB issues
         return true
       }
     },
-    async jwt({ token, user, account, trigger, session }) {
-      if (user && user.email) {
-        // On sign in, fetch or create user in database
-        try {
-          let dbUser = await prisma.user.findUnique({
-            where: { email: user.email }
-          })
-
-          // If user doesn't exist (signIn had a DB error), create them now
-          if (!dbUser) {
-            console.log('Creating user in jwt callback (fallback):', user.email)
-            dbUser = await prisma.user.create({
-              data: {
-                email: user.email,
-                name: user.name,
-                image: user.image,
-                role: ADMIN_EMAILS.includes(user.email) ? "admin" : "user",
-                isOnboarded: false,
-              }
-            })
-          }
-
-          token.id = dbUser.id
-          token.email = dbUser.email
-          // Always check against ADMIN_EMAILS list for role determination
-          token.role = ADMIN_EMAILS.includes(dbUser.email || "") ? "admin" : (dbUser.role as "admin" | "user")
-          token.isOnboarded = dbUser.isOnboarded
-        } catch (error) {
-          console.error('JWT callback database error:', error)
-          // Set minimal token data from Google profile
-          token.email = user.email
-          token.role = ADMIN_EMAILS.includes(user.email) ? "admin" : "user"
-          token.isOnboarded = false // Default to false on error
-        }
+    async jwt({ token, user, trigger, session }) {
+      // Initial sign in
+      if (user) {
+        token.id = user.id
+        token.email = user.email
+        // @ts-ignore
+        token.role = user.role || (ADMIN_EMAILS.includes(user.email || "") ? "admin" : "user")
       }
 
-      // Handle client-side session updates (e.g. Profile Name/Image changes)
-      if (trigger === "update" && session) {
-        if (session.name) token.name = session.name
-        if (session.image) token.picture = session.image
-      }
+      // Note: We deliberately do NOT update the token on 'update' trigger
+      // nor do we store name/picture in the token.
+      // This keeps the cookie size small and prevents "Header too large" errors.
+      // The session callback handles fetching fresh data from DB.
 
       return token
     },
     async session({ session, token }) {
-      if (session.user) {
+      if (session.user && token.id) {
         session.user.id = token.id as string
         session.user.role = token.role as "admin" | "user"
-        // Explicitly update name/image from token to ensure client-side changes persist
-        if (token.name) session.user.name = token.name
-        if (token.picture) session.user.image = token.picture
 
-        // Force type assertion as module augmentation for Session might be needed elsewhere
-        // @ts-ignore
-        session.user.isOnboarded = token.isOnboarded as boolean
+        // Fetch fresh profile data from database every time
+        // This ensures the custom profile picture (even if base64) is always displayed correctly
+        // without bloating the session cookie.
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string }
+          })
+
+          if (dbUser) {
+            session.user.name = dbUser.name
+            session.user.image = dbUser.image
+            // @ts-ignore
+            session.user.isOnboarded = dbUser.isOnboarded
+          }
+        } catch (error) {
+          console.error('Failed to fetch user data for session:', error)
+        }
       }
       return session
     },

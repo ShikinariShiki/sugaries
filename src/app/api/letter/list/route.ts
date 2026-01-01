@@ -11,6 +11,9 @@ export async function GET(request: NextRequest) {
 
     const session = await getServerSession(authOptions)
 
+    console.log('Session User ID:', session?.user?.id) // DEBUG LOG
+    console.log('Session User Email:', session?.user?.email) // DEBUG LOG
+
     if (!session) {
       return NextResponse.json(
         { error: 'Unauthorized' },

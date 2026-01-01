@@ -52,6 +52,11 @@ export function Envelope({
     lemon: 'bg-yellow-300',
     slate: 'bg-slate-500',
     blush: 'bg-rose-200',
+    valentine: 'bg-rose-400',
+    birthday: 'bg-purple-400',
+    'new-year': 'bg-slate-800',
+    christmas: 'bg-red-600',
+    graduation: 'bg-blue-800',
   }
 
   const flapColors: Record<string, string> = {
@@ -83,6 +88,11 @@ export function Envelope({
     lemon: 'bg-yellow-200',
     slate: 'bg-slate-400',
     blush: 'bg-rose-100',
+    valentine: 'bg-rose-300',
+    birthday: 'bg-purple-300',
+    'new-year': 'bg-slate-700',
+    christmas: 'bg-red-500',
+    graduation: 'bg-blue-700',
   }
 
   const paperGradients: Record<string, string> = {
@@ -114,6 +124,11 @@ export function Envelope({
     lemon: 'from-yellow-50 to-white',
     slate: 'from-slate-50 to-white',
     blush: 'from-rose-50 to-white',
+    valentine: 'from-rose-50 to-pink-50',
+    birthday: 'from-purple-50 to-yellow-50',
+    'new-year': 'from-slate-100 to-amber-50',
+    christmas: 'from-red-50 to-green-50',
+    graduation: 'from-blue-50 to-amber-50',
   }
 
   return (
