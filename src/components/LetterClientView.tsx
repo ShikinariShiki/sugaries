@@ -190,7 +190,7 @@ function getFontClass(font: string = 'handwriting') {
 }
 
 // Helper to get theme icon
-function getThemeIcon(theme: string) {
+function getThemeIcon(theme: string = 'pink') {
   switch (theme) {
     case 'birthday':
       return <Cake size={32} className="text-purple-500 fill-purple-400/30" />
@@ -208,7 +208,7 @@ function getThemeIcon(theme: string) {
 }
 
 // Helper to get decorative element
-function getDecorativeElement(theme: string) {
+function getDecorativeElement(theme: string = 'pink') {
   switch (theme) {
     case 'birthday':
       return <PartyPopper size={80} className="text-purple-500 fill-purple-500" />
