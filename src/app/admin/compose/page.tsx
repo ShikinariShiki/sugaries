@@ -28,7 +28,9 @@ import {
   RefreshCw,
   Copy,
   LayoutTemplate,
-  X
+  X,
+  Users,
+  User
 } from 'lucide-react'
 
 const FONT_OPTIONS = [
@@ -90,14 +92,19 @@ export default function ComposePage() {
   const [error, setError] = useState('')
   const [letterColor, setLetterColor] = useState('pink')
   const [letterFont, setLetterFont] = useState('poppins')
+  const [isBlastMode, setIsBlastMode] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     // Validation
-    if (!recipientName.trim() || !content.trim()) {
-      setError('Recipient name and content are required')
+    if (!isBlastMode && !recipientName.trim()) {
+      setError('Recipient name is required')
+      return
+    }
+    if (!content.trim()) {
+      setError('Content is required')
       return
     }
 
@@ -191,7 +198,8 @@ export default function ComposePage() {
           imageUrl: uploadedImageUrl?.trim() || convertGooglePhotosUrl(imageUrl.trim()) || undefined,
           letterColor,
           letterFont,
-          headerText: headerText.trim()
+          headerText: headerText.trim(),
+          isBlastMode
         }),
       })
 
@@ -238,6 +246,7 @@ export default function ComposePage() {
     setLetterColor('pink')
     setLetterFont('handwriting')
     setHeaderText('To my dearest')
+    setIsBlastMode(false)
   }
 
   const handleFileSelect = (file: File) => {
@@ -309,20 +318,66 @@ export default function ComposePage() {
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white font-poppins">Details</h3>
                   </div>
 
+                  {/* Letter Mode Toggle */}
+                  <div className="flex p-1 bg-gray-100 dark:bg-gray-800/50 rounded-xl mb-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsBlastMode(false)}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all font-poppins text-sm font-medium ${!isBlastMode
+                        ? 'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                        }`}
+                    >
+                      <User size={16} /> Single Recipient
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsBlastMode(true)}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all font-poppins text-sm font-medium ${isBlastMode
+                        ? 'bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                        }`}
+                    >
+                      <Users size={16} /> Blast Mode
+                    </button>
+                  </div>
+
+                  {/* Blast Mode Info */}
+                  {isBlastMode && (
+                    <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-xl p-4 mb-4">
+                      <div className="flex items-start gap-3">
+                        <div className="p-1.5 bg-purple-100 dark:bg-purple-800/50 rounded-lg">
+                          <Users size={16} className="text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-purple-800 dark:text-purple-300 text-sm font-poppins">Blast Mode Enabled</h4>
+                          <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                            No name verification required! Recipients will enter their own name, which will be used as the "Dear" greeting. Perfect for sharing with multiple people.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Recipient Name */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                        To
+                        {isBlastMode ? 'Default Name (Optional)' : 'To'}
                       </label>
                       <input
                         type="text"
                         value={recipientName}
                         onChange={(e) => setRecipientName(e.target.value)}
-                        placeholder="Recipient's name"
+                        placeholder={isBlastMode ? "e.g. Friend" : "Recipient's name"}
                         className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
                         disabled={isLoading}
                       />
+                      {isBlastMode && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                          Recipients will input their own name when opening
+                        </p>
+                      )}
                     </div>
 
                     {/* Sender Name (only for non-admin) */}
@@ -740,7 +795,7 @@ export default function ComposePage() {
 
                 <SquishButton
                   type="submit"
-                  disabled={isLoading || !recipientName.trim() || !content.trim() || (usePinProtection && !pin)}
+                  disabled={isLoading || (!isBlastMode && !recipientName.trim()) || !content.trim() || (usePinProtection && !pin)}
                   className="w-full py-4 text-lg font-bold rounded-2xl flex items-center justify-center gap-3 mt-8 shadow-xl shadow-pink-500/20"
                 >
                   {isLoading ? (

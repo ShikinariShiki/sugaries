@@ -29,14 +29,23 @@ export async function POST(request: NextRequest) {
       imageUrl,
       letterColor,
       letterFont,
-      headerText
+      headerText,
+      isBlastMode
     } = await request.json()
 
-    console.log('Creating letter with:', { recipientName, senderName, pin, usePinProtection, customShortCode, content })
+    console.log('Creating letter with:', { recipientName, senderName, pin, usePinProtection, customShortCode, content, isBlastMode })
 
-    if (!recipientName || !content) {
+    // In blast mode, recipient name is optional (defaults to "Friend")
+    if (!isBlastMode && !recipientName) {
       return NextResponse.json(
-        { error: 'Recipient name and content are required' },
+        { error: 'Recipient name is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!content) {
+      return NextResponse.json(
+        { error: 'Content is required' },
         { status: 400 }
       )
     }
@@ -100,7 +109,7 @@ export async function POST(request: NextRequest) {
     // Create the letter linked to the user
     const letter = await prisma.letter.create({
       data: {
-        recipientName,
+        recipientName: recipientName || 'Friend', // Default for blast mode
         senderName: senderName || session.user.name || 'Anonymous',
         pinHash,
         pin: plainPin,
@@ -113,6 +122,7 @@ export async function POST(request: NextRequest) {
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',
         headerText: headerText || 'To my dearest',
+        isBlastMode: isBlastMode || false,
         isReply: false,
         userId: session.user.id,
       },
