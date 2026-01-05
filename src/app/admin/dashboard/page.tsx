@@ -176,6 +176,42 @@ export default function DashboardPage() {
     }
   }
 
+  const handleBatchMarkRead = async () => {
+    if (selectedLetters.size === 0) return
+
+    // Optimistic update
+    const idsToUpdate = Array.from(selectedLetters)
+    const prevReceived = receivedLetters
+
+    setReceivedLetters(prev => prev.map(l =>
+      idsToUpdate.includes(l.id) ? { ...l, isOpened: true } : l
+    ))
+    setSelectedLetters(new Set())
+
+    try {
+      const updatePromises = idsToUpdate.map(letterId =>
+        fetch(`/api/letter/${letterId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isOpened: true })
+        })
+      )
+
+      const results = await Promise.all(updatePromises)
+      const failed = results.filter(r => !r.ok)
+
+      if (failed.length > 0) {
+        // Revert on error
+        setReceivedLetters(prevReceived)
+        alert(`Failed to update ${failed.length} letter(s)`)
+      }
+    } catch (error) {
+      console.error('Failed to update letters:', error)
+      setReceivedLetters(prevReceived)
+      alert('Some letters could not be updated')
+    }
+  }
+
   const handleBatchDelete = async () => {
     if (selectedLetters.size === 0) return
 
@@ -437,13 +473,24 @@ export default function DashboardPage() {
               </span>
             </label>
             {selectedLetters.size > 0 && (
-              <button
-                onClick={handleBatchDelete}
-                disabled={isDeleting}
-                className="text-sm text-red-600 hover:text-red-700 font-medium"
-              >
-                {isDeleting ? 'Deleting...' : 'Delete Selected'}
-              </button>
+              <div className="flex items-center gap-2">
+                {activeTab === 'received' && (
+                  <button
+                    onClick={handleBatchMarkRead}
+                    disabled={isDeleting}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-1 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                  >
+                    Mark as Read
+                  </button>
+                )}
+                <button
+                  onClick={handleBatchDelete}
+                  disabled={isDeleting}
+                  className="text-sm text-red-600 hover:text-red-700 font-medium px-3 py-1 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Selected'}
+                </button>
+              </div>
             )}
           </div>
         )}

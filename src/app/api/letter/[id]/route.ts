@@ -96,18 +96,23 @@ export async function PATCH(
 ) {
   try {
     const { id } = params
-    const { content } = await request.json()
+    const { content, isOpened } = await request.json()
 
-    if (!content) {
+    // Allow updating content or status
+    if (content === undefined && isOpened === undefined) {
       return NextResponse.json(
-        { error: 'Content is required' },
+        { error: 'Content or status is required' },
         { status: 400 }
       )
     }
 
+    const data: any = {}
+    if (content !== undefined) data.content = content
+    if (isOpened !== undefined) data.isOpened = isOpened
+
     const letter = await prisma.letter.update({
       where: { id },
-      data: { content },
+      data,
     })
 
     return NextResponse.json({ success: true, letter })
