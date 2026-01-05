@@ -67,7 +67,8 @@ function convertGooglePhotosUrl(url: string): string {
 
 export default function ComposePage() {
   const { data: session } = useSession()
-  const isAdmin = session?.user?.role === 'admin'
+  const ADMIN_EMAILS = ["natkevin143@gmail.com", "theseproyt@gmail.com"]
+  const isAdmin = session?.user?.role === 'admin' || ADMIN_EMAILS.includes(session?.user?.email || '')
   const [step, setStep] = useState<'compose' | 'success'>('compose')
   const [senderName, setSenderName] = useState('')
   const [recipientName, setRecipientName] = useState('')

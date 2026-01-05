@@ -16,14 +16,25 @@ export default function SettingsPage() {
     refreshInterval: 5,
   })
   const [isSaving, setIsSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Load settings from localStorage
-    const savedSettings = localStorage.getItem('appSettings')
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings))
-    }
+    fetchSettings()
   }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/settings')
+      if (res.ok) {
+        const data = await res.json()
+        setSettings(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleToggle = (key: keyof typeof settings) => {
     setSettings(prev => ({ ...prev, [key]: !prev[key] }))
@@ -35,14 +46,26 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     setIsSaving(true)
-    // Save to localStorage
-    localStorage.setItem('appSettings', JSON.stringify(settings))
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    setIsSaving(false)
-    alert('Settings saved successfully!')
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+      })
+
+      if (res.ok) {
+        alert('Settings saved successfully!')
+      } else {
+        throw new Error('Failed to save settings')
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error)
+      alert('Failed to save settings. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -67,7 +90,7 @@ export default function SettingsPage() {
           >
             <PaperCard>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Notifications</h2>
-              
+
               <div className="space-y-4">
                 <SettingToggle
                   label="Email Notifications"
@@ -75,14 +98,14 @@ export default function SettingsPage() {
                   checked={settings.emailNotifications}
                   onChange={() => handleToggle('emailNotifications')}
                 />
-                
+
                 <SettingToggle
                   label="New Letter Alerts"
                   description="Get notified when you receive a new letter"
                   checked={settings.newLetterAlerts}
                   onChange={() => handleToggle('newLetterAlerts')}
                 />
-                
+
                 <SettingToggle
                   label="Weekly Digest"
                   description="Receive a weekly summary of your letter activity"
@@ -101,7 +124,7 @@ export default function SettingsPage() {
           >
             <PaperCard>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Appearance & Behavior</h2>
-              
+
               <div className="space-y-4">
                 <SettingToggle
                   label="Sound Effects"
@@ -109,14 +132,14 @@ export default function SettingsPage() {
                   checked={settings.soundEffects}
                   onChange={() => handleToggle('soundEffects')}
                 />
-                
+
                 <SettingToggle
                   label="Auto Refresh"
                   description="Automatically refresh dashboard data"
                   checked={settings.autoRefresh}
                   onChange={() => handleToggle('autoRefresh')}
                 />
-                
+
                 {settings.autoRefresh && (
                   <div className="ml-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -181,14 +204,12 @@ function SettingToggle({
       </div>
       <button
         onClick={onChange}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-          checked ? 'bg-pink-500' : 'bg-gray-200 dark:bg-gray-600'
-        }`}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${checked ? 'bg-pink-500' : 'bg-gray-200 dark:bg-gray-600'
+          }`}
       >
         <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-            checked ? 'translate-x-6' : 'translate-x-1'
-          }`}
+          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${checked ? 'translate-x-6' : 'translate-x-1'
+            }`}
         />
       </button>
     </div>
