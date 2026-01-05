@@ -3,10 +3,25 @@
 import { signOut, useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import GulaliesIcon from '@/components/GulaliesIcon'
+import { LayoutDashboard, PenLine, FileText } from 'lucide-react'
 
 export default function UserHeader() {
   const { data: session } = useSession()
   const [showDropdown, setShowDropdown] = useState(false)
+  const pathname = usePathname()
+  const isAdmin = session?.user?.role === 'admin'
+
+  const navItems = [
+    { label: 'Compose', href: '/admin/compose', icon: <PenLine size={18} /> },
+    // Only show admin dashboard link if user is admin
+    ...(isAdmin ? [
+      { label: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard size={18} /> },
+      { label: 'Letters', href: '/admin/letters', icon: <FileText size={18} /> },
+    ] : [])
+  ]
 
   if (!session?.user) return null
 
@@ -15,11 +30,33 @@ export default function UserHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="text-2xl">✉️</div>
-            <h1 className="text-xl font-bold text-pink-500">
-              Gulalies
-            </h1>
+          <div className="flex items-center gap-8">
+            <Link href={isAdmin ? "/admin/dashboard" : "/"} className="flex items-center gap-3">
+              <GulaliesIcon className="w-8 h-8" />
+              <h1 className="text-xl font-bold text-pink-500">
+                Gulalies
+              </h1>
+            </Link>
+
+            {/* Navigation - Desktop */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${isActive
+                        ? 'bg-pink-50 text-pink-600'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </nav>
           </div>
 
           {/* Profile Dropdown */}

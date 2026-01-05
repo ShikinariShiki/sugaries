@@ -4,24 +4,28 @@ import { getToken } from "next-auth/jwt"
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
-  
+
+  // Admin emails list (must match auth.ts)
+  const ADMIN_EMAILS = ["natkevin143@gmail.com", "theseproyt@gmail.com"]
+
   // If not logged in, redirect to signin
   if (!token) {
     const url = new URL('/auth/signin', req.url)
     url.searchParams.set('callbackUrl', req.url)
     return NextResponse.redirect(url)
   }
-  
+
   // Allow compose page for all authenticated users
   if (req.nextUrl.pathname === '/admin/compose') {
     return NextResponse.next()
   }
-  
+
   // All other admin pages require admin role
-  if (token.role !== 'admin') {
+  // Check role or email fallback
+  if (token.role !== 'admin' && !ADMIN_EMAILS.includes(token.email as string)) {
     return NextResponse.redirect(new URL('/admin/compose', req.url))
   }
-  
+
   return NextResponse.next()
 }
 

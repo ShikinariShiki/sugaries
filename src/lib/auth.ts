@@ -81,6 +81,8 @@ export const authOptions: NextAuthOptions = {
             session.user.name = dbUser.name
             session.user.image = dbUser.image
             // @ts-ignore
+            session.user.role = dbUser.role
+            // @ts-ignore
             session.user.isOnboarded = dbUser.isOnboarded
           }
         } catch (error) {
