@@ -44,7 +44,7 @@ export default function ProfilePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
-          avatar: formData.avatar
+          image: formData.avatar
         })
       })
 

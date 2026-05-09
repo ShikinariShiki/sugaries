@@ -25,7 +25,8 @@ export const authOptions: NextAuthOptions = {
         const dbUser = await prisma.user.upsert({
           where: { email: user.email },
           update: {
-            name: user.name,
+            // Do NOT overwrite name on sign in to preserve custom profile names
+            // name: user.name,
             // Do NOT overwrite image on sign in to preserve custom profile pictures
             // image: user.image, 
             // Always sync admin role from ADMIN_EMAILS list

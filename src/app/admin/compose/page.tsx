@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PaperCard } from '@/components/ui/PaperCard'
@@ -70,7 +70,7 @@ export default function ComposePage() {
   const ADMIN_EMAILS = ["natkevin143@gmail.com", "theseproyt@gmail.com"]
   const isAdmin = session?.user?.role === 'admin' || ADMIN_EMAILS.includes(session?.user?.email || '')
   const [step, setStep] = useState<'compose' | 'success'>('compose')
-  const [senderName, setSenderName] = useState('')
+  const [senderName, setSenderName] = useState(session?.user?.name || '')
   const [recipientName, setRecipientName] = useState('')
   const [headerText, setHeaderText] = useState('To my dearest')
   const [content, setContent] = useState('')
@@ -94,6 +94,13 @@ export default function ComposePage() {
   const [letterColor, setLetterColor] = useState('pink')
   const [letterFont, setLetterFont] = useState('poppins')
   const [isBlastMode, setIsBlastMode] = useState(false)
+
+  // Sync senderName from profile when session loads
+  useEffect(() => {
+    if (session?.user?.name && !senderName) {
+      setSenderName(session.user.name)
+    }
+  }, [session?.user?.name])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -188,7 +195,7 @@ export default function ComposePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           recipientName: recipientName.trim(),
-          senderName: isAdmin ? undefined : senderName.trim(),
+          senderName: senderName.trim() || session?.user?.name || undefined,
           content: content.trim(),
           pin: usePinProtection ? pin : undefined,
           usePinProtection,
@@ -384,22 +391,23 @@ export default function ComposePage() {
                           )}
                         </div>
 
-                        {/* Sender Name (only for non-admin) */}
-                        {!isAdmin && (
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
-                              From
-                            </label>
-                            <input
-                              type="text"
-                              value={senderName}
-                              onChange={(e) => setSenderName(e.target.value)}
-                              placeholder="Your name"
-                              className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
-                              disabled={isLoading}
-                            />
-                          </div>
-                        )}
+                        {/* Sender Name (all users) */}
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 font-poppins ml-1">
+                            From
+                          </label>
+                          <input
+                            type="text"
+                            value={senderName}
+                            onChange={(e) => setSenderName(e.target.value)}
+                            placeholder="Your name"
+                            className="w-full px-4 py-3 rounded-xl border-2 border-white/50 dark:border-gray-600/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none transition-all font-handwriting text-xl shadow-sm hover:bg-white/70"
+                            disabled={isLoading}
+                          />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-1">
+                            This is how the recipient sees you
+                          </p>
+                        </div>
 
                         {/* Header Text - NEW */}
                         <div>
