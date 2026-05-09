@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
         letterColor: true,
         letterFont: true,
         userId: true,
+        shortCode: true,
       },
     })
 
