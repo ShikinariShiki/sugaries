@@ -4,9 +4,9 @@ import { prisma } from '@/lib/prisma'
 export async function POST(request: Request) {
   try {
     console.log('=== Reply API Called ===')
-    const { recipientName, content, senderName, rating, imageUrl, letterColor, letterFont } = await request.json()
+    const { recipientName, content, senderName, rating, imageUrl, letterColor, letterFont, parentLetterId } = await request.json()
 
-    console.log('Reply data:', { recipientName, senderName, contentLength: content?.length, rating, hasImage: !!imageUrl })
+    console.log('Reply data:', { recipientName, senderName, contentLength: content?.length, rating, hasImage: !!imageUrl, parentLetterId })
 
     // Validate required fields
     if (!recipientName || !content || !senderName) {
@@ -15,6 +15,18 @@ export async function POST(request: Request) {
         { error: 'Missing required fields' },
         { status: 400 }
       )
+    }
+
+    // If parentLetterId is provided, look up the parent letter to get the userId
+    let parentUserId: string | null = null
+    if (parentLetterId) {
+      const parentLetter = await prisma.letter.findUnique({
+        where: { id: parentLetterId },
+        select: { userId: true },
+      })
+      if (parentLetter) {
+        parentUserId = parentLetter.userId
+      }
     }
 
     console.log('Creating reply letter in database...')
@@ -30,6 +42,8 @@ export async function POST(request: Request) {
         pinHash: null, // No password for replies
         letterColor: letterColor || 'pink',
         letterFont: letterFont || 'handwriting',
+        parentId: parentLetterId || null,
+        userId: parentUserId, // Assign to same user as parent letter
       },
     })
 

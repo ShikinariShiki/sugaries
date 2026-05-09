@@ -33,10 +33,26 @@ model Letter {
   isBlastMode   Boolean  @default(false) // Blast mode - skip name verification, use user input as name
   userId        String?  // Link to user who created this letter
   user          User?    @relation(fields: [userId], references: [id])
+  parentId      String?  // Link reply to original letter
+  parent        Letter?  @relation("LetterReplies", fields: [parentId], references: [id])
+  replies       Letter[] @relation("LetterReplies")
+  reactions     Reaction[]
   
   @@index([recipientName])
   @@index([userId])
   @@index([shortCode])
+  @@index([parentId])
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  emoji     String   // The emoji reaction (❤️, 👍, 😢, etc.)
+  name      String?  // Name of the person who reacted
+  letterId  String
+  letter    Letter   @relation(fields: [letterId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([letterId])
 }
 
 model User {

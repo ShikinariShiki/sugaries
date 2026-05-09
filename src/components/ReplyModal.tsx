@@ -8,6 +8,7 @@ import { SquishButton } from '@/components/ui/SquishButton'
 interface ReplyModalProps {
   originalSender?: string
   recipientName: string
+  parentLetterId?: string
   onClose: () => void
 }
 
@@ -25,8 +26,9 @@ const FONT_OPTIONS = [
   { value: 'cursive', label: 'Cursive' },
 ]
 
-export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModalProps) {
+export function ReplyModal({ originalSender, recipientName, parentLetterId, onClose }: ReplyModalProps) {
   const [content, setContent] = useState('')
+  const [senderNameInput, setSenderNameInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -45,6 +47,11 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
     if (!content.trim()) {
       setError('Please write a message')
+      return
+    }
+
+    if (!senderNameInput.trim()) {
+      setError('Please enter your name so the sender knows who replied!')
       return
     }
 
@@ -109,12 +116,13 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recipientName: 'Kevin',
+          recipientName: originalSender || 'Kevin',
           content: content.trim(),
-          senderName: recipientName,
+          senderName: senderNameInput.trim(),
           imageUrl: uploadedImageUrl || undefined,
           letterColor,
           letterFont,
+          parentLetterId: parentLetterId || undefined,
         }),
       })
 
@@ -218,6 +226,23 @@ export function ReplyModal({ originalSender, recipientName, onClose }: ReplyModa
 
                   {/* Color Picker */}
                   <ColorPicker selectedColor={letterColor} onChange={setLetterColor} />
+                </div>
+
+                {/* Your Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">
+                    👤 Your Name <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={senderNameInput}
+                    onChange={(e) => setSenderNameInput(e.target.value)}
+                    placeholder="Enter your real name..."
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none transition-colors text-lg font-poppins"
+                    disabled={isLoading}
+                    maxLength={50}
+                  />
+                  <p className="text-xs text-gray-400 mt-1 font-poppins">So the sender knows who you are! 😊</p>
                 </div>
 
                 <div>

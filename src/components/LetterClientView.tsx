@@ -225,6 +225,116 @@ function getDecorativeElement(theme: string = 'pink') {
   }
 }
 
+const REACTION_EMOJIS = ['❤️', '👍', '😢', '😂', '🥰', '🔥', '✨', '🫶']
+
+function ReactionsBar({ letterId, recipientName }: { letterId: string; recipientName: string }) {
+  const [reactions, setReactions] = useState<Record<string, { count: number; names: string[] }>>({})
+  const [isReacting, setIsReacting] = useState(false)
+  const [showPicker, setShowPicker] = useState(false)
+  const [hoveredEmoji, setHoveredEmoji] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/letter/reaction?letterId=${letterId}`)
+      .then(r => r.json())
+      .then(d => setReactions(d.reactions || {}))
+      .catch(() => {})
+  }, [letterId])
+
+  const addReaction = async (emoji: string) => {
+    if (isReacting) return
+    setIsReacting(true)
+    try {
+      await fetch('/api/letter/reaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ letterId, emoji, name: recipientName }),
+      })
+      setReactions(prev => ({
+        ...prev,
+        [emoji]: {
+          count: (prev[emoji]?.count || 0) + 1,
+          names: [...(prev[emoji]?.names || []), recipientName],
+        },
+      }))
+    } catch {}
+    setIsReacting(false)
+    setShowPicker(false)
+  }
+
+  const existingEmojis = Object.entries(reactions).filter(([, v]) => v.count > 0)
+
+  return (
+    <div className="mt-8 pt-6 border-t border-black/5">
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Existing reactions */}
+        {existingEmojis.map(([emoji, data]) => (
+          <motion.button
+            key={emoji}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => addReaction(emoji)}
+            onMouseEnter={() => setHoveredEmoji(emoji)}
+            onMouseLeave={() => setHoveredEmoji(null)}
+            className="relative flex items-center gap-1.5 px-3 py-1.5 bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-black/10 rounded-full text-sm transition-all shadow-sm hover:shadow-md"
+            disabled={isReacting}
+          >
+            <span className="text-lg">{emoji}</span>
+            <span className="text-xs font-semibold text-gray-600">{data.count}</span>
+            {/* Tooltip with names */}
+            {hoveredEmoji === emoji && data.names.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap shadow-xl z-50"
+              >
+                {data.names.slice(0, 5).join(', ')}{data.names.length > 5 ? ` +${data.names.length - 5} more` : ''}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+              </motion.div>
+            )}
+          </motion.button>
+        ))}
+
+        {/* Add reaction button */}
+        <div className="relative">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowPicker(!showPicker)}
+            className="flex items-center justify-center w-9 h-9 bg-white/40 hover:bg-white/70 border border-dashed border-black/15 rounded-full text-gray-400 hover:text-gray-600 transition-all"
+          >
+            <span className="text-lg leading-none">+</span>
+          </motion.button>
+
+          {/* Emoji picker */}
+          <AnimatePresence>
+            {showPicker && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 8 }}
+                className="absolute bottom-full left-0 mb-2 flex gap-1 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 z-50"
+              >
+                {REACTION_EMOJIS.map(emoji => (
+                  <motion.button
+                    key={emoji}
+                    whileHover={{ scale: 1.3 }}
+                    whileTap={{ scale: 0.8 }}
+                    onClick={() => addReaction(emoji)}
+                    className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 text-xl transition-colors"
+                    disabled={isReacting}
+                  >
+                    {emoji}
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function LetterClientView({ letterId, isAdminView = false }: { letterId: string, isAdminView?: boolean }) {
   const { data: session } = useSession()
   const { state, verifyName, openEnvelope, verifyPin } = useLetterReveal(letterId, isAdminView)
@@ -537,6 +647,12 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                       {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
                     </div>
 
+                    {/* Reactions Bar */}
+                    <ReactionsBar letterId={letterId} recipientName={state.recipientName || 'Anonymous'} />
+
+                    <div className="hidden">
+                    </div>
+
                     <footer className="mt-16 pt-10 border-t border-black/5">
                       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="text-center md:text-left">
@@ -617,6 +733,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
         {showReplyModal && (
           <ReplyModal
             recipientName={state.recipientName || ''}
+            parentLetterId={letterId}
             onClose={() => setShowReplyModal(false)}
           />
         )}
