@@ -29,15 +29,28 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         return
       }
 
+      // First check localStorage - if already onboarded locally, skip API call
+      const localOnboarded = localStorage.getItem('gulalies_onboarded')
+      if (localOnboarded === 'true') {
+        setShowOnboarding(false)
+        setIsCheckingOnboarding(false)
+        return
+      }
+
       try {
         const response = await fetch('/api/check-onboarding')
         const data = await response.json()
 
         if (!data.isOnboarded) {
           setShowOnboarding(true)
+        } else {
+          // Sync localStorage with DB
+          localStorage.setItem('gulalies_onboarded', 'true')
         }
       } catch (error) {
         console.error('Failed to check onboarding:', error)
+        // On error, don't block user - just skip onboarding
+        setShowOnboarding(false)
       } finally {
         setIsCheckingOnboarding(false)
       }

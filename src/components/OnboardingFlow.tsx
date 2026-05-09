@@ -153,22 +153,30 @@ export default function OnboardingFlow({ userName, userEmail }: OnboardingProps)
 
   const handleComplete = async () => {
     setIsCompleting(true)
-    try {
-      const res = await fetch('/api/onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+    
+    // Always save to localStorage immediately so the modal never shows again
+    localStorage.setItem('gulalies_onboarded', 'true')
+
+    // Fire API call in background with timeout - don't block UI
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 5000)
+    
+    fetch('/api/onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+    })
+      .then(res => {
+        clearTimeout(timeout)
+        if (!res.ok) console.error('Failed to mark onboarding in DB (non-blocking)')
+      })
+      .catch(err => {
+        clearTimeout(timeout)
+        console.error('Onboarding API error (non-blocking):', err)
       })
 
-      if (!res.ok) throw new Error('Failed to update status')
-
-      // Wait a bit for the database to sync/propagate if needed, then redirect
-      router.refresh() // Refresh server components
-      window.location.href = '/admin/compose'
-    } catch (error) {
-      console.error('Onboarding failed:', error)
-      setIsCompleting(false)
-      // Optional: Add toast notification here
-    }
+    // Redirect immediately - don't wait for API
+    window.location.href = '/admin/compose'
   }
 
   return (

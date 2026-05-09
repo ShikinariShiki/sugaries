@@ -21,18 +21,21 @@ export const authOptions: NextAuthOptions = {
 
       try {
         // Create or update user in database
+        const isAdmin = ADMIN_EMAILS.includes(user.email)
         const dbUser = await prisma.user.upsert({
           where: { email: user.email },
           update: {
             name: user.name,
             // Do NOT overwrite image on sign in to preserve custom profile pictures
             // image: user.image, 
+            // Always sync admin role from ADMIN_EMAILS list
+            ...(isAdmin ? { role: "admin" } : {}),
           },
           create: {
             email: user.email,
             name: user.name,
             image: user.image,
-            role: ADMIN_EMAILS.includes(user.email) ? "admin" : "user",
+            role: isAdmin ? "admin" : "user",
             isOnboarded: false,
           }
         })
