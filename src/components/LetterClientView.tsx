@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLetterReveal } from '@/hooks/useLetterReveal'
 import { PaperCard } from '@/components/ui/PaperCard'
@@ -12,7 +12,7 @@ import { ReplyModal } from '@/components/ReplyModal'
 import { MusicPlayer } from '@/components/MusicPlayer'
 import Confetti from 'react-confetti'
 import { useWindowSize } from '@/hooks/useWindowSize'
-import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X, Download, Sparkles, Cake, PartyPopper, Snowflake, GraduationCap } from 'lucide-react'
+import { Mail, Heart, ShieldCheck, Lock, Send, Copy, Eye, X, Download, Sparkles, Cake, PartyPopper, Snowflake, GraduationCap, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from "next-auth/react"
 
@@ -227,18 +227,28 @@ function getDecorativeElement(theme: string = 'pink') {
 
 const REACTION_EMOJIS = ['❤️', '👍', '😢', '😂', '🥰', '🔥', '✨', '🫶']
 
-function ReactionsBar({ letterId, recipientName }: { letterId: string; recipientName: string }) {
-  const [reactions, setReactions] = useState<Record<string, { count: number; names: string[] }>>({})
+function ReactionsBar({ letterId, recipientName, isAdminView = false }: { letterId: string; recipientName: string; isAdminView?: boolean }) {
+  const { data: session } = useSession()
+  const [reactions, setReactions] = useState<Record<string, { count: number; names: string[]; details?: { id: string; name: string; createdAt: string }[] }>>({})
   const [isReacting, setIsReacting] = useState(false)
   const [showPicker, setShowPicker] = useState(false)
   const [hoveredEmoji, setHoveredEmoji] = useState<string | null>(null)
+  
+  // State for the admin reactions list modal
+  const [activeEmojiList, setActiveEmojiList] = useState<string | null>(null)
+  const [isDeletingId, setIsDeletingId] = useState<string | null>(null)
+
+  const fetchReactions = useCallback(async () => {
+    try {
+      const r = await fetch(`/api/letter/reaction?letterId=${letterId}`)
+      const d = await r.json()
+      setReactions(d.reactions || {})
+    } catch {}
+  }, [letterId])
 
   useEffect(() => {
-    fetch(`/api/letter/reaction?letterId=${letterId}`)
-      .then(r => r.json())
-      .then(d => setReactions(d.reactions || {}))
-      .catch(() => {})
-  }, [letterId])
+    fetchReactions()
+  }, [fetchReactions])
 
   const addReaction = async (emoji: string) => {
     if (isReacting) return
@@ -249,16 +259,31 @@ function ReactionsBar({ letterId, recipientName }: { letterId: string; recipient
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ letterId, emoji, name: recipientName }),
       })
-      setReactions(prev => ({
-        ...prev,
-        [emoji]: {
-          count: (prev[emoji]?.count || 0) + 1,
-          names: [...(prev[emoji]?.names || []), recipientName],
-        },
-      }))
+      await fetchReactions()
     } catch {}
     setIsReacting(false)
     setShowPicker(false)
+  }
+
+  const deleteReaction = async (reactionId: string) => {
+    if (isDeletingId) return
+    setIsDeletingId(reactionId)
+    try {
+      const response = await fetch(`/api/letter/reaction?reactionId=${reactionId}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        await fetchReactions()
+      } else {
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to delete reaction')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error deleting reaction')
+    } finally {
+      setIsDeletingId(null)
+    }
   }
 
   const existingEmojis = Object.entries(reactions).filter(([, v]) => v.count > 0)
@@ -272,11 +297,17 @@ function ReactionsBar({ letterId, recipientName }: { letterId: string; recipient
             key={emoji}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => addReaction(emoji)}
+            onClick={() => {
+              if (isAdminView) {
+                setActiveEmojiList(emoji)
+              } else {
+                addReaction(emoji)
+              }
+            }}
             onMouseEnter={() => setHoveredEmoji(emoji)}
             onMouseLeave={() => setHoveredEmoji(null)}
-            className="relative flex items-center gap-1.5 px-3 py-1.5 bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-black/10 rounded-full text-sm transition-all shadow-sm hover:shadow-md"
-            disabled={isReacting}
+            className="relative flex items-center gap-1.5 px-3 py-1.5 bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-black/10 rounded-full text-sm transition-all shadow-sm hover:shadow-md cursor-pointer"
+            disabled={!isAdminView && isReacting}
           >
             <span className="text-lg">{emoji}</span>
             <span className="text-xs font-semibold text-gray-600">{data.count}</span>
@@ -285,9 +316,18 @@ function ReactionsBar({ letterId, recipientName }: { letterId: string; recipient
               <motion.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap shadow-xl z-50"
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap shadow-xl z-50 text-center"
               >
-                {data.names.slice(0, 5).join(', ')}{data.names.length > 5 ? ` +${data.names.length - 5} more` : ''}
+                {isAdminView ? (
+                  <div>
+                    <p className="font-semibold">{data.names.slice(0, 5).join(', ')}{data.names.length > 5 ? ` +${data.names.length - 5} more` : ''}</p>
+                    <p className="text-[10px] text-pink-400 mt-0.5">Click to view & delete</p>
+                  </div>
+                ) : (
+                  <>
+                    {data.names.slice(0, 5).join(', ')}{data.names.length > 5 ? ` +${data.names.length - 5} more` : ''}
+                  </>
+                )}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
               </motion.div>
             )}
@@ -331,6 +371,81 @@ function ReactionsBar({ letterId, recipientName }: { letterId: string; recipient
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Admin Reaction Details Modal */}
+      <AnimatePresence>
+        {activeEmojiList && isAdminView && reactions[activeEmojiList] && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] flex items-center justify-center p-4"
+            onClick={() => setActiveEmojiList(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-black/5 text-gray-900"
+            >
+              {/* Header */}
+              <div className="p-6 pb-4 border-b border-black/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">{activeEmojiList}</span>
+                  <div className="text-left">
+                    <h3 className="font-bold text-gray-900 font-poppins">Reactions</h3>
+                    <p className="text-xs text-gray-505">{reactions[activeEmojiList].count} reaction{reactions[activeEmojiList].count !== 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveEmojiList(null)}
+                  className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* List of reactions */}
+              <div className="p-6 max-h-[350px] overflow-y-auto space-y-3">
+                {reactions[activeEmojiList].details && reactions[activeEmojiList].details!.length > 0 ? (
+                  reactions[activeEmojiList].details!.map((detail) => (
+                    <div key={detail.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl hover:bg-gray-100/70 transition-all border border-gray-100/50">
+                      <div className="min-w-0 flex-1 text-left">
+                        <p className="font-semibold text-gray-800 text-sm font-poppins truncate">{detail.name}</p>
+                        <p className="text-[10px] text-gray-400 font-poppins">
+                          {new Date(detail.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => deleteReaction(detail.id)}
+                        disabled={isDeletingId === detail.id}
+                        className="p-2 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all disabled:opacity-50 flex-shrink-0 ml-2"
+                        title="Delete reaction"
+                      >
+                        {isDeletingId === detail.id ? (
+                          <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-red-500 border-t-transparent" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </motion.button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-400 py-6 text-sm font-poppins">No reactions found</p>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -648,7 +763,11 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                     </div>
 
                     {/* Reactions Bar */}
-                    <ReactionsBar letterId={letterId} recipientName={state.recipientName || 'Anonymous'} />
+                    <ReactionsBar
+                      letterId={letterId}
+                      recipientName={state.recipientName || 'Anonymous'}
+                      isAdminView={isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)}
+                    />
 
                     <div className="hidden">
                     </div>

@@ -40,6 +40,7 @@ export async function GET(
         isOpened: true,
         isReply: true,
         createdAt: true,
+        userId: true,
       },
     })
 

@@ -56,6 +56,7 @@ function letterReducer(state: LetterStateData, action: LetterAction): LetterStat
         pinHash: action.payload.pinHash,
         recipientName: action.payload.recipientName || state.recipientName,
         headerText: action.payload.headerText,
+        userId: action.payload.userId,
         isLoading: false,
         error: undefined,
       }
@@ -98,6 +99,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             pinHash: data.pinHash,
             recipientName: data.recipientName,
             headerText: data.headerText,
+            userId: data.userId,
           }
         })
       }
@@ -175,6 +177,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             pinHash: data.pinHash,
             recipientName: data.recipientName,
             headerText: data.headerText,
+            userId: data.userId,
           }
         })
       } else {
@@ -209,6 +212,7 @@ export function useLetterReveal(letterId: string, isAdminView = false) {
             letterColor: data.letterColor,
             letterFont: data.letterFont,
             headerText: data.headerText,
+            userId: data.userId,
           }
         })
       } else {

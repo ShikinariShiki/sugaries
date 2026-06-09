@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
         letterFont: true,
         recipientName: true,
         headerText: true,
+        userId: true,
       },
     })
 
@@ -74,6 +75,7 @@ export async function POST(request: NextRequest) {
         recipientName: letter.recipientName,
         headerText: letter.headerText,
         pinHash: null,
+        userId: letter.userId || null,
       })
     }
 
@@ -131,6 +133,7 @@ export async function POST(request: NextRequest) {
       letterColor: letter.letterColor || 'mint',
       letterFont: letter.letterFont || 'handwriting',
       headerText: letter.headerText,
+      userId: letter.userId || null,
     })
   } catch (error) {
     console.error('Unlock letter error:', error)
