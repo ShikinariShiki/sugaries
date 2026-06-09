@@ -642,7 +642,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 50 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={cn("w-full px-4 transition-all duration-500", state.imageUrl ? "max-w-6xl" : "max-w-3xl")}
+              className={cn("w-full px-4 transition-all duration-500", state.imageUrl ? "max-w-5xl lg:max-w-[1100px]" : "max-w-3xl")}
             >
               <div className="relative">
                 {/* Decorative Elements */}
@@ -667,89 +667,96 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                     className="relative z-10"
                   >
                     {state.imageUrl ? (
-                      /* 2-Column Desktop Responsive Layout */
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start text-left">
-                        {/* Left: Sticky Image container */}
-                        <div className="md:col-span-5 md:sticky md:top-6">
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.7 }}
-                            className="group cursor-zoom-in"
-                            onClick={() => setIsLightboxOpen(true)}
-                          >
-                            <div className="p-2 bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg border border-white/80 overflow-hidden relative">
-                              <img
-                                src={state.imageUrl}
-                                alt="Letter attachment"
-                                className="w-full h-auto object-contain rounded-2xl max-h-[500px]"
-                              />
-                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <Eye className="text-white drop-shadow-lg" size={48} />
+                      /* Desktop: Hero header + 2-column layout */
+                      <div className="text-left">
+                        {/* Full-width hero header */}
+                        <header className="mb-8 md:mb-10 flex justify-between items-start border-b border-black/5 pb-6 md:pb-8">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40 mb-2">Recipient</p>
+                            <h2 className="text-3xl md:text-5xl font-handwriting font-bold text-gray-900 leading-tight">
+                              Dear {session?.user?.name || state.recipientName},
+                            </h2>
+                          </div>
+                          <div className="w-14 h-14 md:w-16 md:h-16 bg-white/40 rounded-full flex items-center justify-center border border-white/60 flex-shrink-0">
+                            {getThemeIcon(state.letterColor)}
+                          </div>
+                        </header>
+
+                        {/* 2-column grid: image left, text right on desktop */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+                          {/* Image column */}
+                          <div className="lg:sticky lg:top-8">
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.7 }}
+                              className="group cursor-zoom-in"
+                              onClick={() => setIsLightboxOpen(true)}
+                            >
+                              <div className="p-1.5 md:p-2 bg-white/60 backdrop-blur-sm rounded-2xl md:rounded-3xl shadow-lg border border-white/80 overflow-hidden relative">
+                                <img
+                                  src={state.imageUrl}
+                                  alt="Letter attachment"
+                                  className="w-full h-auto object-cover rounded-xl md:rounded-2xl max-h-[400px] lg:max-h-[550px]"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-xl md:rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                                    <Eye className="text-white drop-shadow-lg" size={32} />
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </motion.div>
-                        </div>
-
-                        {/* Right: Content details */}
-                        <div className="md:col-span-7 flex flex-col justify-between h-full">
-                          <header className="mb-8 flex justify-between items-start border-b border-black/5 pb-6">
-                            <div>
-                              <p className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40 mb-2">Recipient</p>
-                              <h2 className="text-3xl md:text-4xl font-handwriting font-bold text-gray-900 leading-tight">
-                                Dear {session?.user?.name || state.recipientName},
-                              </h2>
-                            </div>
-                            <div className="w-14 h-14 bg-white/40 rounded-full flex items-center justify-center border border-white/60 flex-shrink-0">
-                              {getThemeIcon(state.letterColor)}
-                            </div>
-                          </header>
-
-                          <div
-                            className={cn(
-                              "prose prose-xl max-w-none text-gray-800 leading-[1.8] whitespace-pre-wrap mb-8",
-                              fontClass,
-                              "text-xl md:text-2xl"
-                            )}
-                          >
-                            {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
+                              <p className="text-center text-[10px] uppercase tracking-[0.2em] text-black/25 font-bold mt-3 hidden lg:block">Click to enlarge</p>
+                            </motion.div>
                           </div>
 
-                          <ReactionsBar
-                            letterId={letterId}
-                            recipientName={state.recipientName || 'Anonymous'}
-                            isAdminView={isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)}
-                            reactions={reactions}
-                            isReacting={isReacting}
-                            addReaction={addReaction}
-                            onEmojiClick={(emoji) => setActiveEmojiList(emoji)}
-                          />
-
-                          <footer className="mt-12 pt-8 border-t border-black/5">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                              <div className="text-center md:text-left">
-                                <p className="text-[10px] uppercase tracking-[0.2em] font-black text-black/20 mb-1">Delivered on</p>
-                                <p className="text-gray-500 text-sm font-medium italic">
-                                  {new Date().toLocaleDateString('en-US', {
-                                    weekday: 'long',
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                  })}
-                                </p>
-                              </div>
-
-                              <SquishButton
-                                onClick={() => setShowReplyModal(true)}
-                                variant="secondary"
-                                size="lg"
-                                className="w-full md:w-auto px-10 py-4 rounded-2xl bg-white hover:bg-white text-gray-800 border-none shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 transition-all"
-                              >
-                                <Send size={20} />
-                                <span>Reply to Letter</span>
-                              </SquishButton>
+                          {/* Content column */}
+                          <div className="flex flex-col">
+                            <div
+                              className={cn(
+                                "prose max-w-none text-gray-800 leading-[1.9] whitespace-pre-wrap",
+                                fontClass,
+                                "text-lg md:text-xl"
+                              )}
+                            >
+                              {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
                             </div>
-                          </footer>
+
+                            <ReactionsBar
+                              letterId={letterId}
+                              recipientName={state.recipientName || 'Anonymous'}
+                              isAdminView={isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)}
+                              reactions={reactions}
+                              isReacting={isReacting}
+                              addReaction={addReaction}
+                              onEmojiClick={(emoji) => setActiveEmojiList(emoji)}
+                            />
+
+                            <footer className="mt-10 pt-8 border-t border-black/5">
+                              <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+                                <div className="text-center md:text-left">
+                                  <p className="text-[10px] uppercase tracking-[0.2em] font-black text-black/20 mb-1">Delivered on</p>
+                                  <p className="text-gray-500 text-sm font-medium italic">
+                                    {new Date().toLocaleDateString('en-US', {
+                                      weekday: 'long',
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </p>
+                                </div>
+
+                                <SquishButton
+                                  onClick={() => setShowReplyModal(true)}
+                                  variant="secondary"
+                                  size="lg"
+                                  className="w-full md:w-auto px-8 py-3.5 rounded-2xl bg-white hover:bg-white text-gray-800 border-none shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 transition-all"
+                                >
+                                  <Send size={18} />
+                                  <span>Reply to Letter</span>
+                                </SquishButton>
+                              </div>
+                            </footer>
+                          </div>
                         </div>
                       </div>
                     ) : (
