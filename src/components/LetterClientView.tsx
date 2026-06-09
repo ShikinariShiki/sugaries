@@ -227,63 +227,31 @@ function getDecorativeElement(theme: string = 'pink') {
 
 const REACTION_EMOJIS = ['❤️', '👍', '😢', '😂', '🥰', '🔥', '✨', '🫶']
 
-function ReactionsBar({ letterId, recipientName, isAdminView = false }: { letterId: string; recipientName: string; isAdminView?: boolean }) {
-  const { data: session } = useSession()
-  const [reactions, setReactions] = useState<Record<string, { count: number; names: string[]; details?: { id: string; name: string; createdAt: string }[] }>>({})
-  const [isReacting, setIsReacting] = useState(false)
+interface ReactionsBarProps {
+  letterId: string
+  recipientName: string
+  isAdminView?: boolean
+  reactions: Record<string, { count: number; names: string[]; details?: { id: string; name: string; createdAt: string }[] }>
+  isReacting: boolean
+  addReaction: (emoji: string) => Promise<void>
+  onEmojiClick: (emoji: string) => void
+}
+
+function ReactionsBar({
+  letterId,
+  recipientName,
+  isAdminView = false,
+  reactions,
+  isReacting,
+  addReaction,
+  onEmojiClick,
+}: ReactionsBarProps) {
   const [showPicker, setShowPicker] = useState(false)
   const [hoveredEmoji, setHoveredEmoji] = useState<string | null>(null)
-  
-  // State for the admin reactions list modal
-  const [activeEmojiList, setActiveEmojiList] = useState<string | null>(null)
-  const [isDeletingId, setIsDeletingId] = useState<string | null>(null)
 
-  const fetchReactions = useCallback(async () => {
-    try {
-      const r = await fetch(`/api/letter/reaction?letterId=${letterId}`)
-      const d = await r.json()
-      setReactions(d.reactions || {})
-    } catch {}
-  }, [letterId])
-
-  useEffect(() => {
-    fetchReactions()
-  }, [fetchReactions])
-
-  const addReaction = async (emoji: string) => {
-    if (isReacting) return
-    setIsReacting(true)
-    try {
-      await fetch('/api/letter/reaction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ letterId, emoji, name: recipientName }),
-      })
-      await fetchReactions()
-    } catch {}
-    setIsReacting(false)
+  const handleAddReaction = async (emoji: string) => {
+    await addReaction(emoji)
     setShowPicker(false)
-  }
-
-  const deleteReaction = async (reactionId: string) => {
-    if (isDeletingId) return
-    setIsDeletingId(reactionId)
-    try {
-      const response = await fetch(`/api/letter/reaction?reactionId=${reactionId}`, {
-        method: 'DELETE',
-      })
-      if (response.ok) {
-        await fetchReactions()
-      } else {
-        const errorData = await response.json()
-        alert(errorData.error || 'Failed to delete reaction')
-      }
-    } catch (err) {
-      console.error(err)
-      alert('Error deleting reaction')
-    } finally {
-      setIsDeletingId(null)
-    }
   }
 
   const existingEmojis = Object.entries(reactions).filter(([, v]) => v.count > 0)
@@ -299,14 +267,14 @@ function ReactionsBar({ letterId, recipientName, isAdminView = false }: { letter
             whileTap={{ scale: 0.9 }}
             onClick={() => {
               if (isAdminView) {
-                setActiveEmojiList(emoji)
+                onEmojiClick(emoji)
               } else {
-                addReaction(emoji)
+                handleAddReaction(emoji)
               }
             }}
             onMouseEnter={() => setHoveredEmoji(emoji)}
             onMouseLeave={() => setHoveredEmoji(null)}
-            className="relative flex items-center gap-1.5 px-3 py-1.5 bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-black/10 rounded-full text-sm transition-all shadow-sm hover:shadow-md cursor-pointer"
+            className="relative flex items-center gap-1.5 px-3 py-1.5 bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-black/10 rounded-full text-sm transition-all shadow-sm hover:shadow-md cursor-pointer text-gray-900"
             disabled={!isAdminView && isReacting}
           >
             <span className="text-lg">{emoji}</span>
@@ -359,7 +327,7 @@ function ReactionsBar({ letterId, recipientName, isAdminView = false }: { letter
                     key={emoji}
                     whileHover={{ scale: 1.3 }}
                     whileTap={{ scale: 0.8 }}
-                    onClick={() => addReaction(emoji)}
+                    onClick={() => handleAddReaction(emoji)}
                     className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 text-xl transition-colors"
                     disabled={isReacting}
                   >
@@ -371,81 +339,6 @@ function ReactionsBar({ letterId, recipientName, isAdminView = false }: { letter
           </AnimatePresence>
         </div>
       </div>
-
-      {/* Admin Reaction Details Modal */}
-      <AnimatePresence>
-        {activeEmojiList && isAdminView && reactions[activeEmojiList] && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] flex items-center justify-center p-4"
-            onClick={() => setActiveEmojiList(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-black/5 text-gray-900"
-            >
-              {/* Header */}
-              <div className="p-6 pb-4 border-b border-black/5 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-3xl">{activeEmojiList}</span>
-                  <div className="text-left">
-                    <h3 className="font-bold text-gray-900 font-poppins">Reactions</h3>
-                    <p className="text-xs text-gray-505">{reactions[activeEmojiList].count} reaction{reactions[activeEmojiList].count !== 1 ? 's' : ''}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setActiveEmojiList(null)}
-                  className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              {/* List of reactions */}
-              <div className="p-6 max-h-[350px] overflow-y-auto space-y-3">
-                {reactions[activeEmojiList].details && reactions[activeEmojiList].details!.length > 0 ? (
-                  reactions[activeEmojiList].details!.map((detail) => (
-                    <div key={detail.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl hover:bg-gray-100/70 transition-all border border-gray-100/50">
-                      <div className="min-w-0 flex-1 text-left">
-                        <p className="font-semibold text-gray-800 text-sm font-poppins truncate">{detail.name}</p>
-                        <p className="text-[10px] text-gray-400 font-poppins">
-                          {new Date(detail.createdAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => deleteReaction(detail.id)}
-                        disabled={isDeletingId === detail.id}
-                        className="p-2 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all disabled:opacity-50 flex-shrink-0 ml-2"
-                        title="Delete reaction"
-                      >
-                        {isDeletingId === detail.id ? (
-                          <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-red-500 border-t-transparent" />
-                        ) : (
-                          <Trash2 size={16} />
-                        )}
-                      </motion.button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-gray-400 py-6 text-sm font-poppins">No reactions found</p>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }
@@ -461,6 +354,61 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const { width, height } = useWindowSize()
+
+  // Reactions state lifted to root
+  const [reactions, setReactions] = useState<Record<string, { count: number; names: string[]; details?: { id: string; name: string; createdAt: string }[] }>>({})
+  const [isReacting, setIsReacting] = useState(false)
+  const [activeEmojiList, setActiveEmojiList] = useState<string | null>(null)
+  const [isDeletingId, setIsDeletingId] = useState<string | null>(null)
+
+  const fetchReactions = useCallback(async () => {
+    try {
+      const r = await fetch(`/api/letter/reaction?letterId=${letterId}`)
+      const d = await r.json()
+      setReactions(d.reactions || {})
+    } catch {}
+  }, [letterId])
+
+  useEffect(() => {
+    if (state.state === 'READING') {
+      fetchReactions()
+    }
+  }, [state.state, fetchReactions])
+
+  const addReaction = async (emoji: string) => {
+    if (isReacting) return
+    setIsReacting(true)
+    try {
+      await fetch('/api/letter/reaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ letterId, emoji, name: state.recipientName || 'Anonymous' }),
+      })
+      await fetchReactions()
+    } catch {}
+    setIsReacting(false)
+  }
+
+  const deleteReaction = async (reactionId: string) => {
+    if (isDeletingId) return
+    setIsDeletingId(reactionId)
+    try {
+      const response = await fetch(`/api/letter/reaction?reactionId=${reactionId}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        await fetchReactions()
+      } else {
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to delete reaction')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error deleting reaction')
+    } finally {
+      setIsDeletingId(null)
+    }
+  }
 
   // Get theme colors and font
   const themeColors = getThemeColors(state.letterColor)
@@ -694,7 +642,7 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 50 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-3xl w-full px-4"
+              className={cn("w-full px-4 transition-all duration-500", state.imageUrl ? "max-w-6xl" : "max-w-3xl")}
             >
               <div className="relative">
                 {/* Decorative Elements */}
@@ -718,85 +666,154 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
                     transition={{ delay: 0.5 }}
                     className="relative z-10"
                   >
-                    <header className="mb-12 flex justify-between items-start border-b border-black/5 pb-8">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40 mb-2">Recipient</p>
-                        <h2 className="text-3xl md:text-5xl font-handwriting font-bold text-gray-900 leading-tight">
-                          Dear {session?.user?.name || state.recipientName},
-                        </h2>
-                      </div>
-                      <div className="w-16 h-16 bg-white/40 rounded-full flex items-center justify-center border border-white/60">
-                        {getThemeIcon(state.letterColor)}
-                      </div>
-                    </header>
+                    {state.imageUrl ? (
+                      /* 2-Column Desktop Responsive Layout */
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start text-left">
+                        {/* Left: Sticky Image container */}
+                        <div className="md:col-span-5 md:sticky md:top-6">
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.7 }}
+                            className="group cursor-zoom-in"
+                            onClick={() => setIsLightboxOpen(true)}
+                          >
+                            <div className="p-2 bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg border border-white/80 overflow-hidden relative">
+                              <img
+                                src={state.imageUrl}
+                                alt="Letter attachment"
+                                className="w-full h-auto object-contain rounded-2xl max-h-[500px]"
+                              />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                <Eye className="text-white drop-shadow-lg" size={48} />
+                              </div>
+                            </div>
+                          </motion.div>
+                        </div>
 
-                    {/* Image if provided */}
-                    {state.imageUrl && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7 }}
-                        className="mb-10 group cursor-zoom-in"
-                        onClick={() => setIsLightboxOpen(true)}
-                      >
-                        <div className="p-2 bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg border border-white/80 overflow-hidden relative">
-                          <img
-                            src={state.imageUrl}
-                            alt="Letter attachment"
-                            className="w-full h-auto object-contain rounded-2xl max-h-[500px]"
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
-                            <Eye className="text-white drop-shadow-lg" size={48} />
+                        {/* Right: Content details */}
+                        <div className="md:col-span-7 flex flex-col justify-between h-full">
+                          <header className="mb-8 flex justify-between items-start border-b border-black/5 pb-6">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40 mb-2">Recipient</p>
+                              <h2 className="text-3xl md:text-4xl font-handwriting font-bold text-gray-900 leading-tight">
+                                Dear {session?.user?.name || state.recipientName},
+                              </h2>
+                            </div>
+                            <div className="w-14 h-14 bg-white/40 rounded-full flex items-center justify-center border border-white/60 flex-shrink-0">
+                              {getThemeIcon(state.letterColor)}
+                            </div>
+                          </header>
+
+                          <div
+                            className={cn(
+                              "prose prose-xl max-w-none text-gray-800 leading-[1.8] whitespace-pre-wrap mb-8",
+                              fontClass,
+                              "text-xl md:text-2xl"
+                            )}
+                          >
+                            {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
                           </div>
+
+                          <ReactionsBar
+                            letterId={letterId}
+                            recipientName={state.recipientName || 'Anonymous'}
+                            isAdminView={isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)}
+                            reactions={reactions}
+                            isReacting={isReacting}
+                            addReaction={addReaction}
+                            onEmojiClick={(emoji) => setActiveEmojiList(emoji)}
+                          />
+
+                          <footer className="mt-12 pt-8 border-t border-black/5">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                              <div className="text-center md:text-left">
+                                <p className="text-[10px] uppercase tracking-[0.2em] font-black text-black/20 mb-1">Delivered on</p>
+                                <p className="text-gray-500 text-sm font-medium italic">
+                                  {new Date().toLocaleDateString('en-US', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                  })}
+                                </p>
+                              </div>
+
+                              <SquishButton
+                                onClick={() => setShowReplyModal(true)}
+                                variant="secondary"
+                                size="lg"
+                                className="w-full md:w-auto px-10 py-4 rounded-2xl bg-white hover:bg-white text-gray-800 border-none shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 transition-all"
+                              >
+                                <Send size={20} />
+                                <span>Reply to Letter</span>
+                              </SquishButton>
+                            </div>
+                          </footer>
                         </div>
-                      </motion.div>
-                    )}
-
-                    <div
-                      className={cn(
-                        "prose prose-xl max-w-none text-gray-800 leading-[1.8] whitespace-pre-wrap",
-                        fontClass,
-                        "text-2xl md:text-3xl"
-                      )}
-                    >
-                      {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
-                    </div>
-
-                    {/* Reactions Bar */}
-                    <ReactionsBar
-                      letterId={letterId}
-                      recipientName={state.recipientName || 'Anonymous'}
-                      isAdminView={isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)}
-                    />
-
-                    <div className="hidden">
-                    </div>
-
-                    <footer className="mt-16 pt-10 border-t border-black/5">
-                      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="text-center md:text-left">
-                          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-black/20 mb-1">Delivered on</p>
-                          <p className="text-gray-500 text-sm font-medium italic">
-                            {new Date().toLocaleDateString('en-US', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </p>
-                        </div>
-
-                        <SquishButton
-                          onClick={() => setShowReplyModal(true)}
-                          variant="secondary"
-                          size="lg"
-                          className="w-full md:w-auto px-10 py-4 rounded-2xl bg-white hover:bg-white text-gray-800 border-none shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 transition-all"
-                        >
-                          <Send size={20} />
-                          <span>Reply to Letter</span>
-                        </SquishButton>
                       </div>
-                    </footer>
+                    ) : (
+                      /* Standard single column letter layout */
+                      <>
+                        <header className="mb-12 flex justify-between items-start border-b border-black/5 pb-8">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40 mb-2">Recipient</p>
+                            <h2 className="text-3xl md:text-5xl font-handwriting font-bold text-gray-900 leading-tight">
+                              Dear {session?.user?.name || state.recipientName},
+                            </h2>
+                          </div>
+                          <div className="w-16 h-16 bg-white/40 rounded-full flex items-center justify-center border border-white/60 flex-shrink-0">
+                            {getThemeIcon(state.letterColor)}
+                          </div>
+                        </header>
+
+                        <div
+                          className={cn(
+                            "prose prose-xl max-w-none text-gray-800 leading-[1.8] whitespace-pre-wrap mb-10 text-left",
+                            fontClass,
+                            "text-2xl md:text-3xl"
+                          )}
+                        >
+                          {state.content?.replace(/\{\{name\}\}|{name}/gi, state.recipientName || session?.user?.name || 'Friend')}
+                        </div>
+
+                        <ReactionsBar
+                          letterId={letterId}
+                          recipientName={state.recipientName || 'Anonymous'}
+                          isAdminView={isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)}
+                          reactions={reactions}
+                          isReacting={isReacting}
+                          addReaction={addReaction}
+                          onEmojiClick={(emoji) => setActiveEmojiList(emoji)}
+                        />
+
+                        <footer className="mt-16 pt-10 border-t border-black/5">
+                          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left">
+                              <p className="text-[10px] uppercase tracking-[0.2em] font-black text-black/20 mb-1">Delivered on</p>
+                              <p className="text-gray-500 text-sm font-medium italic">
+                                {new Date().toLocaleDateString('en-US', {
+                                  weekday: 'long',
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
+                              </p>
+                            </div>
+
+                            <SquishButton
+                              onClick={() => setShowReplyModal(true)}
+                              variant="secondary"
+                              size="lg"
+                              className="w-full md:w-auto px-10 py-4 rounded-2xl bg-white hover:bg-white text-gray-800 border-none shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 transition-all"
+                            >
+                              <Send size={20} />
+                              <span>Reply to Letter</span>
+                            </SquishButton>
+                          </div>
+                        </footer>
+                      </>
+                    )}
                   </motion.div>
                 </PaperCard>
               </div>
@@ -848,6 +865,79 @@ export default function LetterClientView({ letterId, isAdminView = false }: { le
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {activeEmojiList && (isAdminView || session?.user?.role === 'admin' || (!!session?.user?.id && session.user.id === state.userId)) && reactions[activeEmojiList] && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
+            onClick={() => setActiveEmojiList(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-black/5 text-gray-900"
+            >
+              {/* Header */}
+              <div className="p-6 pb-4 border-b border-black/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">{activeEmojiList}</span>
+                  <div className="text-left">
+                    <h3 className="font-bold text-gray-900 font-poppins">Reactions</h3>
+                    <p className="text-xs text-gray-500">{reactions[activeEmojiList].count} reaction{reactions[activeEmojiList].count !== 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveEmojiList(null)}
+                  className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* List of reactions */}
+              <div className="p-6 max-h-[350px] overflow-y-auto space-y-3">
+                {reactions[activeEmojiList].details && reactions[activeEmojiList].details!.length > 0 ? (
+                  reactions[activeEmojiList].details!.map((detail) => (
+                    <div key={detail.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl hover:bg-gray-100/70 transition-all border border-gray-100/50">
+                      <div className="min-w-0 flex-1 text-left">
+                        <p className="font-semibold text-gray-800 text-sm font-poppins truncate">{detail.name}</p>
+                        <p className="text-[10px] text-gray-400 font-poppins">
+                          {new Date(detail.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => deleteReaction(detail.id)}
+                        disabled={isDeletingId === detail.id}
+                        className="p-2 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all disabled:opacity-50 flex-shrink-0 ml-2"
+                        title="Delete reaction"
+                      >
+                        {isDeletingId === detail.id ? (
+                          <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-red-500 border-t-transparent" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </motion.button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-400 py-6 text-sm font-poppins">No reactions found</p>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {showReplyModal && (
           <ReplyModal
